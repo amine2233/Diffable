@@ -8,6 +8,12 @@
 import XCTest
 @testable import Diffable
 
+extension Int: Diffable {
+    public var primaryKeyValue: String {
+        return "\(self)"
+    }
+}
+
 class DiffableTests: XCTestCase {
 
     override func setUp() {
@@ -19,8 +25,12 @@ class DiffableTests: XCTestCase {
     }
 
     func testExample() {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
+        let actualArray = [AnyDiffable(1), AnyDiffable(2)]
+        let newArray = [AnyDiffable(1), AnyDiffable(2)]
+
+        let value = actualArray.diff(newArray)
+
+        print(value)
     }
 
     func testPerformanceExample() {

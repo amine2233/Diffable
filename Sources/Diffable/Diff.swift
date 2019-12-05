@@ -65,8 +65,57 @@ public class Diff {
         }
     }
 
-    func process<T: Diffable>(old: [T], new: [T]) -> [DiffableStep<T>] {
+    /// Process the old and new array to produce a list of diff steps.
+    ///
+    /// - Parameters:
+    ///   - old: The array to compare.
+    ///   - new: The array to compare against.
+    /// - Returns: A list of DiffStep operations to perform on the old array to get the new array.
+    func process<T: Diffable>(old: [T], new: [T]) -> [DiffStep<T>] {
 
+        setupContext(old: old, new: new)
+
+        /// Final pass
+        ///
+        /// one entry for each index in the new array containing either:
+        /// > a pointer to table[line]
+        /// > the entry index in the old array
+
+        var steps: [DiffStep<T>] = []
+
+        var deleteOffsets = Array(repeating: 0, count: old.count)
+        var offset = 0
+
+        for (index, item) in oldReferences.enumerated() {
+            deleteOffsets[index] = offset
+
+            if case .pointer(_) = item {
+                steps.append(.delete(index: index, value: old[index]))
+                offset += 1
+            }
+        }
+
+        offset = 0
+
+        for (index, item) in newReferences.enumerated() {
+            switch item {
+            case .pointer(_):
+                steps.append(.insert(index: index, value: new[index]))
+                offset += 1
+            case .index(let oldIndex):
+                if old[oldIndex] != new[index] {
+                    steps.append(.update(index: index, value: new[index]))
+                }
+
+                let deleteOffset = deleteOffsets[oldIndex]
+
+                if (oldIndex - deleteOffset + offset) != index {
+                    steps.append(.move(from: oldIndex, to: index, value: new[index]))
+                }
+            }
+        }
+
+        return steps
     }
 
     /// Setup the context for the diffing operation
@@ -149,7 +198,7 @@ public class Diff {
         expandUniqueEntries(direction: .ascending)
 
         /// Fifth pass
-        expandUniqueEntries(direction: .descending)
+        expandUniqueEntries(direction: .ascending)
     }
 
     private var table: [String: Reference.Symbol] = [:]
@@ -193,7 +242,7 @@ public class Diff {
                     continue
                 }
                 let oldIndex = entry.oldLineReferenceIndexes.removeFirst()
-                newReferences[index] = .index(oldIndex)
+                newReferences[index]    = .index(oldIndex)
                 newReferences[oldIndex] = .index(index)
             }
         }
@@ -271,8 +320,7 @@ public class Diff {
 
         while direction.isValid(i: i, references: newReferences) {
             if case .index(let j) = newReferences[i], direction.inRange(i: j, references: oldReferences) {
-                if case .pointer(let new) = newReferences[i + direction.step], case .pointer(let old) = oldReferences[j + direction.step],
-                    new === old {
+                if case .pointer(let new) = newReferences[i + direction.step], case .pointer(let old) = oldReferences[j + direction.step], new === old {
                     newReferences[i + direction.step] = .index(j + direction.step)
                     oldReferences[j + direction.step] = .index(i + direction.step)
                 }
@@ -283,7 +331,7 @@ public class Diff {
 }
 
 /// A description of a step to apply to an array to be able to transform one into the other.
-enum DiffableStep<T: Diffable>: CustomDebugStringConvertible {
+enum DiffStep<T: Diffable>: CustomDebugStringConvertible {
 
     /// - insert: A insertation step.
     case insert(index: Int, value: T)
