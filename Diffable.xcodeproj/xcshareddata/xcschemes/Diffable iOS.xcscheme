@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "FDC8E85B2398FE3700A8EAA4"
-               BuildableName = "Diffable_iOS.framework"
+               BuildableName = "Diffable.framework"
                BlueprintName = "Diffable iOS"
                ReferencedContainer = "container:Diffable.xcodeproj">
             </BuildableReference>
@@ -34,7 +34,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "FDC8E8642398FE3700A8EAA4"
-               BuildableName = "Diffable iOSTests.xctest"
+               BuildableName = "DiffableTests.xctest"
                BlueprintName = "Diffable iOSTests"
                ReferencedContainer = "container:Diffable.xcodeproj">
             </BuildableReference>
@@ -62,7 +62,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "FDC8E85B2398FE3700A8EAA4"
-            BuildableName = "Diffable_iOS.framework"
+            BuildableName = "Diffable.framework"
             BlueprintName = "Diffable iOS"
             ReferencedContainer = "container:Diffable.xcodeproj">
          </BuildableReference>

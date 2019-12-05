@@ -88,3 +88,45 @@ extension AnyDiffable: Hashable {
         hasher.combine(base)
     }
 }
+
+extension AnyDiffable {
+
+    /// Evaluates the given closure when this `AnyDiffable` instance is type `T`,
+    /// passing the unwrapped value as a parameter.
+    ///
+    /// Use the `map` method with a closure that returns a nonoptional value.
+    ///
+    /// - Parameter transform: A closure that takes the unwrapped value of the instance.
+    /// - Returns: The result of the given closure. If this instance is not type T, returns `self`.
+    public func map<T: Diffable, U: Diffable>(_ transform: (T) throws -> U) rethrows -> AnyDiffable {
+        guard let object = base as? T else {
+            return self
+        }
+        return try AnyDiffable(transform(object))
+    }
+
+    /// Evaluates the given closure when this `AnyDiffable` value instance is of type T,
+    /// passing the unwrapped value as a parameter.
+    ///
+    /// - Parameter transform: A closure that takes the unwrapped value of the instance.
+    /// - Returns: The result of the given closure.
+    public func flatMap<T: Diffable>(_ transform: (T) throws -> AnyDiffable) rethrows -> AnyDiffable {
+        guard let object = base as? T else {
+            return self
+        }
+        return try transform(object)
+    }
+
+    /// Evaluates the given closure when this `AnyDiffable` instance is not `nil`,
+    /// passing the unwrapped value as a parameter.
+    ///
+    /// Use the `apply` method with an optional closure that returns a nonoptional value.
+    ///
+    /// - Parameter transform: A closure that takes the unwrapped value
+    ///   of the instance.
+    /// - Returns: The result of the given closure. If the closure is `nil`,
+    ///   returns `nil`.
+    public func apply<T: Diffable, U: Diffable>(transform: ((T) throws -> U)?) throws -> AnyDiffable? {
+        return try transform.flatMap(map)
+    }
+}

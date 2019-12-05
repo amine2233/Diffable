@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
     s.name 				        = "Diffable"
-    s.version 			        = "0.1"
+    s.version 			        = "0.2"
     s.summary         	        = "The Paul Heckel's Diff Algorithm framework"
     s.homepage        	        = "https://github.com/amine2233/Diffable"
     s.license                   = { type: "MIT", file: "LICENSE" }

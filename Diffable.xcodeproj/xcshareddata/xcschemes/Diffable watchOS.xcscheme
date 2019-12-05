@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "FDC8E8782398FE5100A8EAA4"
-               BuildableName = "Diffable_watchOS.framework"
+               BuildableName = "Diffable.framework"
                BlueprintName = "Diffable watchOS"
                ReferencedContainer = "container:Diffable.xcodeproj">
             </BuildableReference>
@@ -53,7 +53,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "FDC8E8782398FE5100A8EAA4"
-            BuildableName = "Diffable_watchOS.framework"
+            BuildableName = "Diffable.framework"
             BlueprintName = "Diffable watchOS"
             ReferencedContainer = "container:Diffable.xcodeproj">
          </BuildableReference>

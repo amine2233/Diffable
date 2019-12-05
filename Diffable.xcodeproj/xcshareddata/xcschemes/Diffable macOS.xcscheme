@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "FDC8E8AE2398FE9E00A8EAA4"
-               BuildableName = "Diffable_macOS.framework"
+               BuildableName = "Diffable.framework"
                BlueprintName = "Diffable macOS"
                ReferencedContainer = "container:Diffable.xcodeproj">
             </BuildableReference>
@@ -34,7 +34,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "FDC8E8B62398FE9F00A8EAA4"
-               BuildableName = "Diffable macOSTests.xctest"
+               BuildableName = "DiffableTests.xctest"
                BlueprintName = "Diffable macOSTests"
                ReferencedContainer = "container:Diffable.xcodeproj">
             </BuildableReference>
@@ -62,7 +62,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "FDC8E8AE2398FE9E00A8EAA4"
-            BuildableName = "Diffable_macOS.framework"
+            BuildableName = "Diffable.framework"
             BlueprintName = "Diffable macOS"
             ReferencedContainer = "container:Diffable.xcodeproj">
          </BuildableReference>
