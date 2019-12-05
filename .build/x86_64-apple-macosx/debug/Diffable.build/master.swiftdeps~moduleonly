@@ -1,0 +1,10 @@
+version: "Apple Swift version 5.1.2 (swiftlang-1100.0.278 clang-1100.0.33.9)"
+options: "4dac75e556f686ea61b19e7834ba5881"
+build_time: [1575561915, 866129000]
+inputs:
+  "/Users/amine.bensalah/Projects/Diffable/Sources/Diffable/AnyDiffable.swift": [1575541406, 244544040]
+  "/Users/amine.bensalah/Projects/Diffable/Sources/Diffable/Diff.swift": [1575555851, 53011349]
+  "/Users/amine.bensalah/Projects/Diffable/Sources/Diffable/Diffable.swift": [1575539561, 694213414]
+  "/Users/amine.bensalah/Projects/Diffable/Sources/Diffable/Foundation/Array+Diff.swift": [1575558672, 665282940]
+  "/Users/amine.bensalah/Projects/Diffable/Sources/Diffable/UI/Array+UIDiff.swift": [1575558993, 558373010]
+  "/Users/amine.bensalah/Projects/Diffable/Sources/Diffable/UI/UICollectionViewExtension.swift": [1575558222, 46247825]

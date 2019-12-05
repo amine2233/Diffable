@@ -1,0 +1,363 @@
+### Swift dependencies file v0 ###
+provides-top-level:
+- "DiffableTests"
+provides-nominal:
+- "Si"
+- "13DiffableTestsAAC"
+provides-member:
+- ["Si", ""]
+- ["13DiffableTestsAAC", ""]
+provides-dynamic-lookup:
+- "setUp"
+- "tearDown"
+- "testAddNewElementDifference"
+- "testManyEntriesDifference"
+- "testManyEntryDifference"
+- "testManyMoveElementsDifference"
+- "testMoveElementDifference"
+- "testNewEntryDifference"
+- "testNoDifference"
+- "testPerformanceExample"
+- "testRemoveNewElementDifference"
+- "testUpdateElementDifference"
+depends-top-level:
+- !private "=="
+- !private "AnyDiffable"
+- !private "BooleanLiteralType"
+- "Diffable"
+- "DiffableTests"
+- !private "FloatLiteralType"
+- "Int"
+- !private "IntegerLiteralType"
+- "String"
+- !private "StringLiteralType"
+- !private "UnicodeScalarType"
+- !private "XCTAssertEqual"
+- "XCTestCase"
+depends-member:
+- ["s18AdditiveArithmeticP", "primaryKeyValue"]
+- !private ["8Diffable03AnyA0V", "init"]
+- !private ["Sa", "count"]
+- !private ["Sa", "diff"]
+- !private ["SK", "count"]
+- !private ["SK", "diff"]
+- ["Sz", "primaryKeyValue"]
+- !private ["s7CVarArgP", "AnyDiffable"]
+- !private ["s7CVarArgP", "XCTAssertEqual"]
+- ["s7CVarArgP", ""]
+- !private ["s7CVarArgP", "count"]
+- !private ["s7CVarArgP", "diff"]
+- !private ["s7CVarArgP", "init"]
+- !private ["s7CVarArgP", "measure"]
+- ["s7CVarArgP", "primaryKeyValue"]
+- !private ["Sl", "count"]
+- !private ["Sl", "diff"]
+- ["SL", "primaryKeyValue"]
+- !private ["10Foundation15ContiguousBytesP", "count"]
+- !private ["10Foundation15ContiguousBytesP", "diff"]
+- !private ["s28CustomDebugStringConvertibleP", "AnyDiffable"]
+- !private ["s28CustomDebugStringConvertibleP", "XCTAssertEqual"]
+- ["s28CustomDebugStringConvertibleP", ""]
+- !private ["s28CustomDebugStringConvertibleP", "count"]
+- !private ["s28CustomDebugStringConvertibleP", "diff"]
+- !private ["s28CustomDebugStringConvertibleP", "init"]
+- !private ["s28CustomDebugStringConvertibleP", "measure"]
+- !private ["s17CustomReflectableP", "count"]
+- !private ["s17CustomReflectableP", "diff"]
+- ["s17CustomReflectableP", "primaryKeyValue"]
+- !private ["s23CustomStringConvertibleP", "AnyDiffable"]
+- !private ["s23CustomStringConvertibleP", "XCTAssertEqual"]
+- ["s23CustomStringConvertibleP", ""]
+- !private ["s23CustomStringConvertibleP", "appendInterpolation"]
+- !private ["s23CustomStringConvertibleP", "appendLiteral"]
+- !private ["s23CustomStringConvertibleP", "count"]
+- !private ["s23CustomStringConvertibleP", "diff"]
+- !private ["s23CustomStringConvertibleP", "init"]
+- !private ["s23CustomStringConvertibleP", "measure"]
+- ["s23CustomStringConvertibleP", "primaryKeyValue"]
+- !private ["10Foundation12DataProtocolP", "count"]
+- !private ["10Foundation12DataProtocolP", "diff"]
+- !private ["Se", "count"]
+- !private ["Se", "diff"]
+- ["Se", "primaryKeyValue"]
+- !private ["s26DefaultStringInterpolationV", "appendInterpolation"]
+- !private ["s26DefaultStringInterpolationV", "appendLiteral"]
+- !private ["8DiffableAAP", "=="]
+- ["8DiffableAAP", ""]
+- !private ["8DiffableAAP", "_rawHashValue"]
+- !private ["8DiffableAAP", "hash"]
+- !private ["8DiffableAAP", "hashValue"]
+- !private ["8DiffableAAP", "id"]
+- !private ["8DiffableAAP", "init"]
+- ["8DiffableAAP", "primaryKeyValue"]
+- !private ["13DiffableTestsAAC", "AnyDiffable"]
+- !private ["13DiffableTestsAAC", "Diffable"]
+- !private ["13DiffableTestsAAC", "String"]
+- !private ["13DiffableTestsAAC", "XCTAssertEqual"]
+- ["13DiffableTestsAAC", "deinit"]
+- ["13DiffableTestsAAC", "init"]
+- !private ["13DiffableTestsAAC", "measure"]
+- ["13DiffableTestsAAC", "setUp"]
+- ["13DiffableTestsAAC", "tearDown"]
+- ["13DiffableTestsAAC", "testAddNewElementDifference"]
+- ["13DiffableTestsAAC", "testManyEntriesDifference"]
+- ["13DiffableTestsAAC", "testManyEntryDifference"]
+- ["13DiffableTestsAAC", "testManyMoveElementsDifference"]
+- ["13DiffableTestsAAC", "testMoveElementDifference"]
+- ["13DiffableTestsAAC", "testNewEntryDifference"]
+- ["13DiffableTestsAAC", "testNoDifference"]
+- ["13DiffableTestsAAC", "testPerformanceExample"]
+- ["13DiffableTestsAAC", "testRemoveNewElementDifference"]
+- ["13DiffableTestsAAC", "testUpdateElementDifference"]
+- !private ["SE", "count"]
+- !private ["SE", "diff"]
+- ["SE", "primaryKeyValue"]
+- !private ["SQ", "=="]
+- !private ["SQ", "AnyDiffable"]
+- !private ["SQ", "XCTAssertEqual"]
+- ["SQ", ""]
+- !private ["SQ", "_rawHashValue"]
+- !private ["SQ", "count"]
+- !private ["SQ", "diff"]
+- !private ["SQ", "hash"]
+- !private ["SQ", "hashValue"]
+- !private ["SQ", "id"]
+- !private ["SQ", "init"]
+- !private ["SQ", "measure"]
+- ["SQ", "primaryKeyValue"]
+- !private ["s25ExpressibleByArrayLiteralP", "count"]
+- !private ["s25ExpressibleByArrayLiteralP", "diff"]
+- ["s27ExpressibleByIntegerLiteralP", "primaryKeyValue"]
+- ["s17FixedWidthIntegerP", "primaryKeyValue"]
+- !private ["SH", "=="]
+- !private ["SH", "AnyDiffable"]
+- !private ["SH", "XCTAssertEqual"]
+- ["SH", ""]
+- !private ["SH", "_rawHashValue"]
+- !private ["SH", "count"]
+- !private ["SH", "diff"]
+- !private ["SH", "hash"]
+- !private ["SH", "hashValue"]
+- !private ["SH", "id"]
+- !private ["SH", "init"]
+- !private ["SH", "measure"]
+- ["SH", "primaryKeyValue"]
+- !private ["s6HasherV", "combine"]
+- ["Si", "String"]
+- ["Si", "deinit"]
+- ["Si", "primaryKeyValue"]
+- ["s25LosslessStringConvertibleP", "primaryKeyValue"]
+- ["s10MirrorPathP", "primaryKeyValue"]
+- !private ["SM", "count"]
+- !private ["SM", "diff"]
+- !private ["10Foundation19MutableDataProtocolP", "count"]
+- !private ["10Foundation19MutableDataProtocolP", "diff"]
+- !private ["So8NSObjectC", "AnyDiffable"]
+- !private ["So8NSObjectC", "Diffable"]
+- !private ["So8NSObjectC", "String"]
+- !private ["So8NSObjectC", "XCTAssertEqual"]
+- ["So8NSObjectC", "init"]
+- !private ["So8NSObjectC", "measure"]
+- ["So8NSObjectC", "setUp"]
+- ["So8NSObjectC", "tearDown"]
+- ["So8NSObjectC", "testAddNewElementDifference"]
+- ["So8NSObjectC", "testManyEntriesDifference"]
+- ["So8NSObjectC", "testManyEntryDifference"]
+- ["So8NSObjectC", "testManyMoveElementsDifference"]
+- ["So8NSObjectC", "testMoveElementDifference"]
+- ["So8NSObjectC", "testNewEntryDifference"]
+- ["So8NSObjectC", "testNoDifference"]
+- ["So8NSObjectC", "testPerformanceExample"]
+- ["So8NSObjectC", "testRemoveNewElementDifference"]
+- ["So8NSObjectC", "testUpdateElementDifference"]
+- !private ["So8NSObjectP", "AnyDiffable"]
+- !private ["So8NSObjectP", "XCTAssertEqual"]
+- ["So8NSObjectP", ""]
+- !private ["So8NSObjectP", "init"]
+- !private ["So8NSObjectP", "measure"]
+- ["Sj", "primaryKeyValue"]
+- !private ["Sk", "count"]
+- !private ["Sk", "diff"]
+- !private ["Sm", "count"]
+- !private ["Sm", "diff"]
+- ["s10SIMDScalarP", "primaryKeyValue"]
+- !private ["ST", "count"]
+- !private ["ST", "diff"]
+- ["SZ", "primaryKeyValue"]
+- ["s13SignedNumericP", "primaryKeyValue"]
+- ["Sx", "primaryKeyValue"]
+- !private ["s27StringInterpolationProtocolP", "appendInterpolation"]
+- !private ["s27StringInterpolationProtocolP", "appendLiteral"]
+- !private ["s16TextOutputStreamP", "appendInterpolation"]
+- !private ["s16TextOutputStreamP", "appendLiteral"]
+- !private ["So11XCTActivityP", "AnyDiffable"]
+- !private ["So11XCTActivityP", "XCTAssertEqual"]
+- ["So11XCTActivityP", ""]
+- !private ["So11XCTActivityP", "init"]
+- !private ["So11XCTActivityP", "measure"]
+- !private ["So17XCTWaiterDelegateP", "AnyDiffable"]
+- !private ["So17XCTWaiterDelegateP", "XCTAssertEqual"]
+- ["So17XCTWaiterDelegateP", ""]
+- !private ["So17XCTWaiterDelegateP", "init"]
+- !private ["So17XCTWaiterDelegateP", "measure"]
+- !private ["So6XCTestC", "AnyDiffable"]
+- !private ["So6XCTestC", "Diffable"]
+- !private ["So6XCTestC", "String"]
+- !private ["So6XCTestC", "XCTAssertEqual"]
+- ["So6XCTestC", "init"]
+- !private ["So6XCTestC", "measure"]
+- ["So6XCTestC", "setUp"]
+- ["So6XCTestC", "tearDown"]
+- ["So6XCTestC", "testAddNewElementDifference"]
+- ["So6XCTestC", "testManyEntriesDifference"]
+- ["So6XCTestC", "testManyEntryDifference"]
+- ["So6XCTestC", "testManyMoveElementsDifference"]
+- ["So6XCTestC", "testMoveElementDifference"]
+- ["So6XCTestC", "testNewEntryDifference"]
+- ["So6XCTestC", "testNoDifference"]
+- ["So6XCTestC", "testPerformanceExample"]
+- ["So6XCTestC", "testRemoveNewElementDifference"]
+- ["So6XCTestC", "testUpdateElementDifference"]
+- !private ["So10XCTestCaseC", "AnyDiffable"]
+- !private ["So10XCTestCaseC", "Diffable"]
+- !private ["So10XCTestCaseC", "String"]
+- !private ["So10XCTestCaseC", "XCTAssertEqual"]
+- ["So10XCTestCaseC", ""]
+- ["So10XCTestCaseC", "init"]
+- !private ["So10XCTestCaseC", "measure"]
+- ["So10XCTestCaseC", "setUp"]
+- ["So10XCTestCaseC", "tearDown"]
+- ["So10XCTestCaseC", "testAddNewElementDifference"]
+- ["So10XCTestCaseC", "testManyEntriesDifference"]
+- ["So10XCTestCaseC", "testManyEntryDifference"]
+- ["So10XCTestCaseC", "testManyMoveElementsDifference"]
+- ["So10XCTestCaseC", "testMoveElementDifference"]
+- ["So10XCTestCaseC", "testNewEntryDifference"]
+- ["So10XCTestCaseC", "testNoDifference"]
+- ["So10XCTestCaseC", "testPerformanceExample"]
+- ["So10XCTestCaseC", "testRemoveNewElementDifference"]
+- ["So10XCTestCaseC", "testUpdateElementDifference"]
+- !private ["s14_ArrayProtocolP", "count"]
+- !private ["s14_ArrayProtocolP", "diff"]
+- ["s30_CustomPlaygroundQuickLookableP", "primaryKeyValue"]
+- !private ["s24_DestructorSafeContainerP", "count"]
+- !private ["s24_DestructorSafeContainerP", "diff"]
+- ["s35_ExpressibleByBuiltinIntegerLiteralP", "primaryKeyValue"]
+- !private ["s19_HasContiguousBytesP", "count"]
+- !private ["s19_HasContiguousBytesP", "diff"]
+- !private ["s35_HasCustomAnyHashableRepresentationP", "count"]
+- !private ["s35_HasCustomAnyHashableRepresentationP", "diff"]
+- ["s35_HasCustomAnyHashableRepresentationP", "primaryKeyValue"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "AnyDiffable"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "XCTAssertEqual"]
+- ["10Foundation27_KeyValueCodingAndObservingP", ""]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "init"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "measure"]
+- !private ["10Foundation37_KeyValueCodingAndObservingPublishingP", "AnyDiffable"]
+- !private ["10Foundation37_KeyValueCodingAndObservingPublishingP", "XCTAssertEqual"]
+- ["10Foundation37_KeyValueCodingAndObservingPublishingP", ""]
+- !private ["10Foundation37_KeyValueCodingAndObservingPublishingP", "init"]
+- !private ["10Foundation37_KeyValueCodingAndObservingPublishingP", "measure"]
+- !private ["s21_ObjectiveCBridgeableP", "count"]
+- !private ["s21_ObjectiveCBridgeableP", "diff"]
+- ["s21_ObjectiveCBridgeableP", "primaryKeyValue"]
+depends-nominal:
+- "s18AdditiveArithmeticP"
+- !private "8Diffable03AnyA0V"
+- !private "Sa"
+- !private "SK"
+- "Sz"
+- "s7CVarArgP"
+- !private "Sl"
+- "SL"
+- !private "10Foundation15ContiguousBytesP"
+- "s28CustomDebugStringConvertibleP"
+- "s17CustomReflectableP"
+- "s23CustomStringConvertibleP"
+- !private "10Foundation12DataProtocolP"
+- "Se"
+- !private "s26DefaultStringInterpolationV"
+- "8DiffableAAP"
+- "13DiffableTestsAAC"
+- "SE"
+- "SQ"
+- !private "s25ExpressibleByArrayLiteralP"
+- "s27ExpressibleByIntegerLiteralP"
+- "s17FixedWidthIntegerP"
+- "SH"
+- !private "s6HasherV"
+- "Si"
+- "s25LosslessStringConvertibleP"
+- "s10MirrorPathP"
+- !private "SM"
+- !private "10Foundation19MutableDataProtocolP"
+- "So8NSObjectC"
+- "So8NSObjectP"
+- "Sj"
+- !private "Sk"
+- !private "Sm"
+- "s10SIMDScalarP"
+- !private "ST"
+- "SZ"
+- "s13SignedNumericP"
+- "Sx"
+- !private "s27StringInterpolationProtocolP"
+- !private "s16TextOutputStreamP"
+- "So11XCTActivityP"
+- "So17XCTWaiterDelegateP"
+- "So6XCTestC"
+- "So10XCTestCaseC"
+- !private "s14_ArrayProtocolP"
+- "s30_CustomPlaygroundQuickLookableP"
+- !private "s24_DestructorSafeContainerP"
+- "s35_ExpressibleByBuiltinIntegerLiteralP"
+- !private "s19_HasContiguousBytesP"
+- "s35_HasCustomAnyHashableRepresentationP"
+- "10Foundation27_KeyValueCodingAndObservingP"
+- "10Foundation37_KeyValueCodingAndObservingPublishingP"
+- "s21_ObjectiveCBridgeableP"
+depends-dynamic-lookup:
+depends-external:
+- "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk/usr/lib/swift/Swift.swiftmodule/x86_64.swiftinterface"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk/usr/lib/swift/SwiftOnoneSupport.swiftmodule/x86_64.swiftinterface"
+- "/Users/amine.bensalah/Projects/Diffable/.build/x86_64-apple-macosx/debug/Diffable.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/XPC.swiftmodule/x86_64-apple-macos.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/ObjectiveC.swiftmodule/x86_64-apple-macos.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/CoreData.swiftmodule/x86_64-apple-macos.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/CoreImage.swiftmodule/x86_64-apple-macos.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/Combine.swiftmodule/x86_64-apple-macos.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/QuartzCore.swiftmodule/x86_64-apple-macos.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/Dispatch.swiftmodule/x86_64-apple-macos.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/Metal.swiftmodule/x86_64-apple-macos.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/Darwin.swiftmodule/x86_64-apple-macos.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/Foundation.swiftmodule/x86_64-apple-macos.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/CoreFoundation.swiftmodule/x86_64-apple-macos.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/CoreGraphics.swiftmodule/x86_64-apple-macos.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/Swift.swiftmodule/x86_64-apple-macos.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/IOKit.swiftmodule/x86_64-apple-macos.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/AppKit.swiftmodule/x86_64-apple-macos.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx/prebuilt-modules/SwiftOnoneSupport.swiftmodule/x86_64-apple-macos.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk/usr/lib/swift/shims/ThreadLocalStorage.h"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk/usr/lib/swift/shims/SwiftStddef.h"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk/usr/lib/swift/shims/AssertionReporting.h"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk/usr/lib/swift/shims/KeyPath.h"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk/usr/lib/swift/shims/SwiftStdbool.h"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk/usr/lib/swift/shims/System.h"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk/usr/lib/swift/shims/Random.h"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk/usr/lib/swift/shims/RuntimeStubs.h"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk/usr/lib/swift/shims/LibcShims.h"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk/usr/lib/swift/shims/UnicodeShims.h"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk/usr/lib/swift/shims/RuntimeShims.h"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk/usr/lib/swift/shims/FoundationShims.h"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk/usr/lib/swift/shims/CoreFoundationShims.h"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk/usr/lib/swift/shims/GlobalObjects.h"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk/usr/lib/swift/shims/HeapObject.h"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk/usr/lib/swift/shims/Target.h"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk/usr/lib/swift/shims/SwiftStdint.h"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk/usr/lib/swift/shims/RefCount.h"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk/usr/lib/swift/shims/Visibility.h"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks/XCTest.framework/Modules/module.modulemap"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk/usr/lib/swift/shims/module.modulemap"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/apinotes/Dispatch.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks/XCTest.framework/Headers/XCTest.apinotes"
+interface-hash: "66d8335dad2593ccbb3ec4d5b2be797a"

@@ -1,0 +1,65 @@
+client:
+  name: basic
+tools: {}
+targets:
+  "main": ["/Users/amine.bensalah/Projects/Diffable/.build/x86_64-apple-macosx/debug/Diffable.swiftmodule","<Diffable-debug.module>"]
+  "test": ["/Users/amine.bensalah/Projects/Diffable/.build/x86_64-apple-macosx/debug/Diffable.swiftmodule","/Users/amine.bensalah/Projects/Diffable/.build/x86_64-apple-macosx/debug/DiffablePackageTests.xctest/Contents/MacOS/DiffablePackageTests","/Users/amine.bensalah/Projects/Diffable/.build/x86_64-apple-macosx/debug/DiffableTests.swiftmodule","<Diffable-debug.module>","<DiffablePackageTests-debug.test>","<DiffableTests-debug.module>"]
+  "Diffable-debug.module": ["/Users/amine.bensalah/Projects/Diffable/.build/x86_64-apple-macosx/debug/Diffable.swiftmodule","<Diffable-debug.module>"]
+  "DiffablePackageTests-debug.test": ["/Users/amine.bensalah/Projects/Diffable/.build/x86_64-apple-macosx/debug/DiffablePackageTests.xctest/Contents/MacOS/DiffablePackageTests","<DiffablePackageTests-debug.test>"]
+  "DiffableTests-debug.module": ["/Users/amine.bensalah/Projects/Diffable/.build/x86_64-apple-macosx/debug/DiffableTests.swiftmodule","<DiffableTests-debug.module>"]
+default: "main"
+commands: 
+  "<C.Diffable-debug.module>":
+    tool: phony
+    inputs: ["/Users/amine.bensalah/Projects/Diffable/.build/x86_64-apple-macosx/debug/Diffable.swiftmodule"]
+    outputs: ["<Diffable-debug.module>"]
+
+  "<C.DiffablePackageTests-debug.test>":
+    tool: phony
+    inputs: ["/Users/amine.bensalah/Projects/Diffable/.build/x86_64-apple-macosx/debug/DiffablePackageTests.xctest/Contents/MacOS/DiffablePackageTests"]
+    outputs: ["<DiffablePackageTests-debug.test>"]
+
+  "<C.DiffableTests-debug.module>":
+    tool: phony
+    inputs: ["/Users/amine.bensalah/Projects/Diffable/.build/x86_64-apple-macosx/debug/DiffableTests.swiftmodule"]
+    outputs: ["<DiffableTests-debug.module>"]
+
+  "C.Diffable-debug.module":
+    tool: swift-compiler
+    executable: "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc"
+    module-name: "Diffable"
+    module-output-path: "/Users/amine.bensalah/Projects/Diffable/.build/x86_64-apple-macosx/debug/Diffable.swiftmodule"
+    inputs: ["/Users/amine.bensalah/Projects/Diffable/Sources/Diffable/AnyDiffable.swift","/Users/amine.bensalah/Projects/Diffable/Sources/Diffable/Diff.swift","/Users/amine.bensalah/Projects/Diffable/Sources/Diffable/Diffable.swift","/Users/amine.bensalah/Projects/Diffable/Sources/Diffable/Foundation/Array+Diff.swift","/Users/amine.bensalah/Projects/Diffable/Sources/Diffable/UI/Array+UIDiff.swift","/Users/amine.bensalah/Projects/Diffable/Sources/Diffable/UI/UICollectionViewExtension.swift"]
+    outputs: ["/Users/amine.bensalah/Projects/Diffable/.build/x86_64-apple-macosx/debug/Diffable.build/AnyDiffable.swift.o","/Users/amine.bensalah/Projects/Diffable/.build/x86_64-apple-macosx/debug/Diffable.build/Diff.swift.o","/Users/amine.bensalah/Projects/Diffable/.build/x86_64-apple-macosx/debug/Diffable.build/Diffable.swift.o","/Users/amine.bensalah/Projects/Diffable/.build/x86_64-apple-macosx/debug/Diffable.build/Foundation/Array+Diff.swift.o","/Users/amine.bensalah/Projects/Diffable/.build/x86_64-apple-macosx/debug/Diffable.build/UI/Array+UIDiff.swift.o","/Users/amine.bensalah/Projects/Diffable/.build/x86_64-apple-macosx/debug/Diffable.build/UI/UICollectionViewExtension.swift.o","/Users/amine.bensalah/Projects/Diffable/.build/x86_64-apple-macosx/debug/Diffable.swiftmodule"]
+    import-paths: ["/Users/amine.bensalah/Projects/Diffable/.build/x86_64-apple-macosx/debug"]
+    temps-path: "/Users/amine.bensalah/Projects/Diffable/.build/x86_64-apple-macosx/debug/Diffable.build"
+    objects: ["/Users/amine.bensalah/Projects/Diffable/.build/x86_64-apple-macosx/debug/Diffable.build/AnyDiffable.swift.o","/Users/amine.bensalah/Projects/Diffable/.build/x86_64-apple-macosx/debug/Diffable.build/Diff.swift.o","/Users/amine.bensalah/Projects/Diffable/.build/x86_64-apple-macosx/debug/Diffable.build/Diffable.swift.o","/Users/amine.bensalah/Projects/Diffable/.build/x86_64-apple-macosx/debug/Diffable.build/Foundation/Array+Diff.swift.o","/Users/amine.bensalah/Projects/Diffable/.build/x86_64-apple-macosx/debug/Diffable.build/UI/Array+UIDiff.swift.o","/Users/amine.bensalah/Projects/Diffable/.build/x86_64-apple-macosx/debug/Diffable.build/UI/UICollectionViewExtension.swift.o"]
+    other-args: ["-target","x86_64-apple-macosx10.10","-swift-version","5","-enable-batch-mode","-index-store-path","/Users/amine.bensalah/Projects/Diffable/.build/x86_64-apple-macosx/debug/index/store","-sdk","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk","-F","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks","-Onone","-g","-enable-testing","-j12","-DSWIFT_PACKAGE","-DDEBUG","-module-cache-path","/Users/amine.bensalah/Projects/Diffable/.build/x86_64-apple-macosx/debug/ModuleCache","-parseable-output","-Xfrontend","-color-diagnostics"]
+    sources: ["/Users/amine.bensalah/Projects/Diffable/Sources/Diffable/AnyDiffable.swift","/Users/amine.bensalah/Projects/Diffable/Sources/Diffable/Diff.swift","/Users/amine.bensalah/Projects/Diffable/Sources/Diffable/Diffable.swift","/Users/amine.bensalah/Projects/Diffable/Sources/Diffable/Foundation/Array+Diff.swift","/Users/amine.bensalah/Projects/Diffable/Sources/Diffable/UI/Array+UIDiff.swift","/Users/amine.bensalah/Projects/Diffable/Sources/Diffable/UI/UICollectionViewExtension.swift"]
+    is-library: true
+    enable-whole-module-optimization: false
+    num-threads: "12"
+
+  "C.DiffablePackageTests-debug.test":
+    tool: shell
+    description: "Linking ./.build/x86_64-apple-macosx/debug/DiffablePackageTests.xctest/Contents/MacOS/DiffablePackageTests"
+    inputs: ["/Users/amine.bensalah/Projects/Diffable/.build/x86_64-apple-macosx/debug/Diffable.build/AnyDiffable.swift.o","/Users/amine.bensalah/Projects/Diffable/.build/x86_64-apple-macosx/debug/Diffable.build/Diff.swift.o","/Users/amine.bensalah/Projects/Diffable/.build/x86_64-apple-macosx/debug/Diffable.build/Diffable.swift.o","/Users/amine.bensalah/Projects/Diffable/.build/x86_64-apple-macosx/debug/Diffable.build/Foundation/Array+Diff.swift.o","/Users/amine.bensalah/Projects/Diffable/.build/x86_64-apple-macosx/debug/Diffable.build/UI/Array+UIDiff.swift.o","/Users/amine.bensalah/Projects/Diffable/.build/x86_64-apple-macosx/debug/Diffable.build/UI/UICollectionViewExtension.swift.o","/Users/amine.bensalah/Projects/Diffable/.build/x86_64-apple-macosx/debug/DiffableTests.build/DiffableTests.swift.o"]
+    outputs: ["/Users/amine.bensalah/Projects/Diffable/.build/x86_64-apple-macosx/debug/DiffablePackageTests.xctest/Contents/MacOS/DiffablePackageTests"]
+    args: ["/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc","-sdk","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk","-F","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks","-g","-L","/Users/amine.bensalah/Projects/Diffable/.build/x86_64-apple-macosx/debug","-o","/Users/amine.bensalah/Projects/Diffable/.build/x86_64-apple-macosx/debug/DiffablePackageTests.xctest/Contents/MacOS/DiffablePackageTests","-module-name","DiffablePackageTests","-Xlinker","-bundle","@/Users/amine.bensalah/Projects/Diffable/.build/x86_64-apple-macosx/debug/DiffablePackageTests.product/Objects.LinkFileList","-Xlinker","-rpath","-Xlinker","/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx","-target","x86_64-apple-macosx10.10","-L","/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib"]
+
+  "C.DiffableTests-debug.module":
+    tool: swift-compiler
+    executable: "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc"
+    module-name: "DiffableTests"
+    module-output-path: "/Users/amine.bensalah/Projects/Diffable/.build/x86_64-apple-macosx/debug/DiffableTests.swiftmodule"
+    inputs: ["/Users/amine.bensalah/Projects/Diffable/.build/x86_64-apple-macosx/debug/Diffable.swiftmodule","/Users/amine.bensalah/Projects/Diffable/Tests/DiffableTests/DiffableTests.swift"]
+    outputs: ["/Users/amine.bensalah/Projects/Diffable/.build/x86_64-apple-macosx/debug/DiffableTests.build/DiffableTests.swift.o","/Users/amine.bensalah/Projects/Diffable/.build/x86_64-apple-macosx/debug/DiffableTests.swiftmodule"]
+    import-paths: ["/Users/amine.bensalah/Projects/Diffable/.build/x86_64-apple-macosx/debug"]
+    temps-path: "/Users/amine.bensalah/Projects/Diffable/.build/x86_64-apple-macosx/debug/DiffableTests.build"
+    objects: ["/Users/amine.bensalah/Projects/Diffable/.build/x86_64-apple-macosx/debug/DiffableTests.build/DiffableTests.swift.o"]
+    other-args: ["-target","x86_64-apple-macosx10.10","-swift-version","5","-enable-batch-mode","-index-store-path","/Users/amine.bensalah/Projects/Diffable/.build/x86_64-apple-macosx/debug/index/store","-sdk","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk","-F","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks","-Onone","-g","-enable-testing","-j12","-DSWIFT_PACKAGE","-DDEBUG","-module-cache-path","/Users/amine.bensalah/Projects/Diffable/.build/x86_64-apple-macosx/debug/ModuleCache","-parseable-output","-Xfrontend","-color-diagnostics"]
+    sources: ["/Users/amine.bensalah/Projects/Diffable/Tests/DiffableTests/DiffableTests.swift"]
+    is-library: true
+    enable-whole-module-optimization: false
+    num-threads: "12"
+

@@ -1,0 +1,11 @@
+{
+  "": {
+    "swift-dependencies": "/Users/amine.bensalah/Projects/Diffable/.build/x86_64-apple-macosx/debug/DiffableTests.build/master.swiftdeps"
+  },
+  "/Users/amine.bensalah/Projects/Diffable/Tests/DiffableTests/DiffableTests.swift": {
+    "dependencies": "/Users/amine.bensalah/Projects/Diffable/.build/x86_64-apple-macosx/debug/DiffableTests.build/DiffableTests.d",
+    "object": "/Users/amine.bensalah/Projects/Diffable/.build/x86_64-apple-macosx/debug/DiffableTests.build/DiffableTests.swift.o",
+    "swiftmodule": "/Users/amine.bensalah/Projects/Diffable/.build/x86_64-apple-macosx/debug/DiffableTests.build/DiffableTests~partial.swiftmodule",
+    "swift-dependencies": "/Users/amine.bensalah/Projects/Diffable/.build/x86_64-apple-macosx/debug/DiffableTests.build/DiffableTests.swiftdeps"
+  }
+}

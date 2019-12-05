@@ -1,0 +1,41 @@
+{
+  "": {
+    "swift-dependencies": "/Users/amine.bensalah/Projects/Diffable/.build/x86_64-apple-macosx/debug/Diffable.build/master.swiftdeps"
+  },
+  "/Users/amine.bensalah/Projects/Diffable/Sources/Diffable/AnyDiffable.swift": {
+    "dependencies": "/Users/amine.bensalah/Projects/Diffable/.build/x86_64-apple-macosx/debug/Diffable.build/AnyDiffable.d",
+    "object": "/Users/amine.bensalah/Projects/Diffable/.build/x86_64-apple-macosx/debug/Diffable.build/AnyDiffable.swift.o",
+    "swiftmodule": "/Users/amine.bensalah/Projects/Diffable/.build/x86_64-apple-macosx/debug/Diffable.build/AnyDiffable~partial.swiftmodule",
+    "swift-dependencies": "/Users/amine.bensalah/Projects/Diffable/.build/x86_64-apple-macosx/debug/Diffable.build/AnyDiffable.swiftdeps"
+  },
+  "/Users/amine.bensalah/Projects/Diffable/Sources/Diffable/Diff.swift": {
+    "dependencies": "/Users/amine.bensalah/Projects/Diffable/.build/x86_64-apple-macosx/debug/Diffable.build/Diff.d",
+    "object": "/Users/amine.bensalah/Projects/Diffable/.build/x86_64-apple-macosx/debug/Diffable.build/Diff.swift.o",
+    "swiftmodule": "/Users/amine.bensalah/Projects/Diffable/.build/x86_64-apple-macosx/debug/Diffable.build/Diff~partial.swiftmodule",
+    "swift-dependencies": "/Users/amine.bensalah/Projects/Diffable/.build/x86_64-apple-macosx/debug/Diffable.build/Diff.swiftdeps"
+  },
+  "/Users/amine.bensalah/Projects/Diffable/Sources/Diffable/Diffable.swift": {
+    "dependencies": "/Users/amine.bensalah/Projects/Diffable/.build/x86_64-apple-macosx/debug/Diffable.build/Diffable.d",
+    "object": "/Users/amine.bensalah/Projects/Diffable/.build/x86_64-apple-macosx/debug/Diffable.build/Diffable.swift.o",
+    "swiftmodule": "/Users/amine.bensalah/Projects/Diffable/.build/x86_64-apple-macosx/debug/Diffable.build/Diffable~partial.swiftmodule",
+    "swift-dependencies": "/Users/amine.bensalah/Projects/Diffable/.build/x86_64-apple-macosx/debug/Diffable.build/Diffable.swiftdeps"
+  },
+  "/Users/amine.bensalah/Projects/Diffable/Sources/Diffable/Foundation/Array+Diff.swift": {
+    "dependencies": "/Users/amine.bensalah/Projects/Diffable/.build/x86_64-apple-macosx/debug/Diffable.build/Foundation/Array+Diff.d",
+    "object": "/Users/amine.bensalah/Projects/Diffable/.build/x86_64-apple-macosx/debug/Diffable.build/Foundation/Array+Diff.swift.o",
+    "swiftmodule": "/Users/amine.bensalah/Projects/Diffable/.build/x86_64-apple-macosx/debug/Diffable.build/Foundation/Array+Diff~partial.swiftmodule",
+    "swift-dependencies": "/Users/amine.bensalah/Projects/Diffable/.build/x86_64-apple-macosx/debug/Diffable.build/Foundation/Array+Diff.swiftdeps"
+  },
+  "/Users/amine.bensalah/Projects/Diffable/Sources/Diffable/UI/Array+UIDiff.swift": {
+    "dependencies": "/Users/amine.bensalah/Projects/Diffable/.build/x86_64-apple-macosx/debug/Diffable.build/UI/Array+UIDiff.d",
+    "object": "/Users/amine.bensalah/Projects/Diffable/.build/x86_64-apple-macosx/debug/Diffable.build/UI/Array+UIDiff.swift.o",
+    "swiftmodule": "/Users/amine.bensalah/Projects/Diffable/.build/x86_64-apple-macosx/debug/Diffable.build/UI/Array+UIDiff~partial.swiftmodule",
+    "swift-dependencies": "/Users/amine.bensalah/Projects/Diffable/.build/x86_64-apple-macosx/debug/Diffable.build/UI/Array+UIDiff.swiftdeps"
+  },
+  "/Users/amine.bensalah/Projects/Diffable/Sources/Diffable/UI/UICollectionViewExtension.swift": {
+    "dependencies": "/Users/amine.bensalah/Projects/Diffable/.build/x86_64-apple-macosx/debug/Diffable.build/UI/UICollectionViewExtension.d",
+    "object": "/Users/amine.bensalah/Projects/Diffable/.build/x86_64-apple-macosx/debug/Diffable.build/UI/UICollectionViewExtension.swift.o",
+    "swiftmodule": "/Users/amine.bensalah/Projects/Diffable/.build/x86_64-apple-macosx/debug/Diffable.build/UI/UICollectionViewExtension~partial.swiftmodule",
+    "swift-dependencies": "/Users/amine.bensalah/Projects/Diffable/.build/x86_64-apple-macosx/debug/Diffable.build/UI/UICollectionViewExtension.swiftdeps"
+  }
+}
