@@ -37,6 +37,10 @@
 		FDC8E8F42399174000A8EAA4 /* UICollectionViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDC8E8F22399174000A8EAA4 /* UICollectionViewExtension.swift */; };
 		FDC8E8F52399174000A8EAA4 /* UICollectionViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDC8E8F22399174000A8EAA4 /* UICollectionViewExtension.swift */; };
 		FDC8E8F62399174000A8EAA4 /* UICollectionViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDC8E8F22399174000A8EAA4 /* UICollectionViewExtension.swift */; };
+		FDC8E8F82399552900A8EAA4 /* Array+UIDiff.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDC8E8F72399552900A8EAA4 /* Array+UIDiff.swift */; };
+		FDC8E8F92399552900A8EAA4 /* Array+UIDiff.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDC8E8F72399552900A8EAA4 /* Array+UIDiff.swift */; };
+		FDC8E8FA2399552900A8EAA4 /* Array+UIDiff.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDC8E8F72399552900A8EAA4 /* Array+UIDiff.swift */; };
+		FDC8E8FB2399552900A8EAA4 /* Array+UIDiff.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDC8E8F72399552900A8EAA4 /* Array+UIDiff.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -86,6 +90,7 @@
 		FDC8E8E6239910E000A8EAA4 /* AnyDiffable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyDiffable.swift; sourceTree = "<group>"; };
 		FDC8E8EB2399123100A8EAA4 /* Array+Diff.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+Diff.swift"; sourceTree = "<group>"; };
 		FDC8E8F22399174000A8EAA4 /* UICollectionViewExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UICollectionViewExtension.swift; sourceTree = "<group>"; };
+		FDC8E8F72399552900A8EAA4 /* Array+UIDiff.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+UIDiff.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -207,7 +212,7 @@
 				FDC8E8E123990AE600A8EAA4 /* Diffable.swift */,
 				FDC8E8E6239910E000A8EAA4 /* AnyDiffable.swift */,
 				FDC8E8F02399157000A8EAA4 /* Foundation */,
-				FDC8E8F12399158C00A8EAA4 /* UIKit */,
+				FDC8E8F12399158C00A8EAA4 /* UI */,
 			);
 			path = Diffable;
 			sourceTree = "<group>";
@@ -220,12 +225,13 @@
 			path = Foundation;
 			sourceTree = "<group>";
 		};
-		FDC8E8F12399158C00A8EAA4 /* UIKit */ = {
+		FDC8E8F12399158C00A8EAA4 /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				FDC8E8F72399552900A8EAA4 /* Array+UIDiff.swift */,
 				FDC8E8F22399174000A8EAA4 /* UICollectionViewExtension.swift */,
 			);
-			path = UIKit;
+			path = UI;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -513,6 +519,7 @@
 				FDC8E8E7239910E000A8EAA4 /* AnyDiffable.swift in Sources */,
 				FDC8E8EC2399123100A8EAA4 /* Array+Diff.swift in Sources */,
 				FDC8E8DD23990AD800A8EAA4 /* Diff.swift in Sources */,
+				FDC8E8F82399552900A8EAA4 /* Array+UIDiff.swift in Sources */,
 				FDC8E8F32399174000A8EAA4 /* UICollectionViewExtension.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -533,6 +540,7 @@
 				FDC8E8E8239910E000A8EAA4 /* AnyDiffable.swift in Sources */,
 				FDC8E8ED2399123100A8EAA4 /* Array+Diff.swift in Sources */,
 				FDC8E8DE23990AD800A8EAA4 /* Diff.swift in Sources */,
+				FDC8E8F92399552900A8EAA4 /* Array+UIDiff.swift in Sources */,
 				FDC8E8F42399174000A8EAA4 /* UICollectionViewExtension.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -545,6 +553,7 @@
 				FDC8E8E9239910E000A8EAA4 /* AnyDiffable.swift in Sources */,
 				FDC8E8EE2399123100A8EAA4 /* Array+Diff.swift in Sources */,
 				FDC8E8DF23990AD800A8EAA4 /* Diff.swift in Sources */,
+				FDC8E8FA2399552900A8EAA4 /* Array+UIDiff.swift in Sources */,
 				FDC8E8F52399174000A8EAA4 /* UICollectionViewExtension.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -565,6 +574,7 @@
 				FDC8E8EA239910E000A8EAA4 /* AnyDiffable.swift in Sources */,
 				FDC8E8EF2399123100A8EAA4 /* Array+Diff.swift in Sources */,
 				FDC8E8E023990AD800A8EAA4 /* Diff.swift in Sources */,
+				FDC8E8FB2399552900A8EAA4 /* Array+UIDiff.swift in Sources */,
 				FDC8E8F62399174000A8EAA4 /* UICollectionViewExtension.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

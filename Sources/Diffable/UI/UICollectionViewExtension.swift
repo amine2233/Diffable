@@ -9,6 +9,7 @@
 
 import UIKit
 
+#if !os(watchOS)
 extension UICollectionView {
 
     func applay(_ block: () -> Void, updates: [IndexPath], insertions: [IndexPath], deletions: [IndexPath], moves: [(from: IndexPath, to: IndexPath)], completion: (() -> Void)?) {
@@ -44,4 +45,5 @@ extension UICollectionView {
         })
     }
 }
+#endif
 #endif

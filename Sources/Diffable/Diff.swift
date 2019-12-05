@@ -198,7 +198,7 @@ public class Diff {
         expandUniqueEntries(direction: .ascending)
 
         /// Fifth pass
-        expandUniqueEntries(direction: .ascending)
+        expandUniqueEntries(direction: .descending)
     }
 
     private var table: [String: Reference.Symbol] = [:]
@@ -243,7 +243,7 @@ public class Diff {
                 }
                 let oldIndex = entry.oldLineReferenceIndexes.removeFirst()
                 newReferences[index]    = .index(oldIndex)
-                newReferences[oldIndex] = .index(index)
+                oldReferences[oldIndex] = .index(index)
             }
         }
     }

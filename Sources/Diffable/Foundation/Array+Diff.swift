@@ -9,7 +9,7 @@ import Foundation
 
 extension Array where Element: Diffable {
 
-    /// Calculate the changes between self and the `new` array.
+    /// Calculate the changes between current and the `new` array.
     ///
     /// - Parameters:
     ///   - new: a collection to compare the calee to
