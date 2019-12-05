@@ -1,5 +1,0 @@
-version: "Apple Swift version 5.1.2 (swiftlang-1100.0.278 clang-1100.0.33.9)"
-options: "f4b542ae09d3b56c44702b7fd351d227"
-build_time: [1575561925, 930502000]
-inputs:
-  "/Users/amine.bensalah/Projects/Diffable/Tests/DiffableTests/DiffableTests.swift": [1575556457, 551943216]
