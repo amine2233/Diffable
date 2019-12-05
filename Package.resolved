@@ -1,0 +1,25 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "HTMLString",
+        "repositoryURL": "https://github.com/alexaubry/HTMLString.git",
+        "state": {
+          "branch": null,
+          "revision": "7fb27bf13771e239c9952507199920dfe1605ca9",
+          "version": "4.0.2"
+        }
+      },
+      {
+        "package": "SwiftTestReporter",
+        "repositoryURL": "https://github.com/allegro/swift-junit.git",
+        "state": {
+          "branch": null,
+          "revision": "a8d149180979aabee31164618e0514e10ce79b43",
+          "version": "1.0.2"
+        }
+      }
+    ]
+  },
+  "version": 1
+}
