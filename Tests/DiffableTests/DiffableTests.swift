@@ -159,4 +159,15 @@ class DiffableTests: XCTestCase {
         }
     }
 
+    static var allTests = [
+        ("testNewEntryDifference",testNewEntryDifference),
+        ("testNoDifference",testNoDifference),
+        ("testAddNewElementDifference",testAddNewElementDifference),
+        ("testRemoveNewElementDifference",testRemoveNewElementDifference),
+        ("testMoveElementDifference",testMoveElementDifference),
+        ("testUpdateElementDifference",testUpdateElementDifference),
+        ("testManyEntryDifference",testManyEntryDifference),
+        ("testManyEntriesDifference",testManyEntriesDifference),
+        ("testManyMoveElementsDifference",testManyMoveElementsDifference)
+    ]
 }
