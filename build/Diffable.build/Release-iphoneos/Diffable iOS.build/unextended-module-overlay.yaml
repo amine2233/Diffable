@@ -1,0 +1,13 @@
+{
+  'version': 0,
+  'case-sensitive': 'false',
+  'roots': [{
+    'type': 'directory',
+    'name': "/Users/amine/Projects/github/Diffable/build/Release-iphoneos/Diffable.framework/Modules"
+    'contents': [{
+      'type': 'file',
+      'name': "module.modulemap",
+      'external-contents': "/Users/amine/Projects/github/Diffable/build/Diffable.build/Release-iphoneos/Diffable iOS.build/unextended-module.modulemap",
+    }]
+  }]
+}
