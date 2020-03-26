@@ -12,7 +12,7 @@ import AppKit
 import UIKit
 #endif
 
-#if os(OSX) || os(iOS) || os(tvOS) || os(watchOS)
+#if !os(Linux)
 extension Array where Element: Diffable {
 
     /// Calculate the changes between current and the `new` array.

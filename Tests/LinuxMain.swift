@@ -1,9 +1,12 @@
+#if os(Linux)
 import XCTest
-import DiffableTests
 import SwiftTestReporter
+import DiffableTests
+
+_ = TestObserver()
 
 var tests = [XCTestCaseEntry]()
 tests += DiffableTests.allTests()
 XCTMain(tests)
 
-_ = TestObserver()
+#endif
