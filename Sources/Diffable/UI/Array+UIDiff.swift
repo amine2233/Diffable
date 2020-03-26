@@ -5,12 +5,14 @@
 //  Created by Amine Bensalah on 05/12/2019.
 //
 
+
 #if os(OSX)
 import AppKit
 #elseif os(iOS) || os(tvOS) || os(watchOS)
 import UIKit
 #endif
 
+#if os(OSX) || os(iOS) || os(tvOS) || os(watchOS)
 extension Array where Element: Diffable {
 
     /// Calculate the changes between current and the `new` array.
@@ -46,5 +48,5 @@ extension Array where Element: Diffable {
 
         return (updates, insertions, deletions, moves)
     }
-
 }
+#endif
