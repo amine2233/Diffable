@@ -12,12 +12,23 @@ public protocol Diffable: Hashable {
 }
 
 public protocol DiffableTree: Diffable {
-    associatedtype DiffableItem: DiffableTree
+    associatedtype Value: Hashable
+    associatedtype Children: Collection where
+    Children.Element: DiffableTree,
+    Children.Element.Children == Children,
+    Children.Index == Int
+
+    var value: Value { get }
+    var children: Children { get }
+}
+
+public protocol DiffableArrayTree: Diffable {
+    associatedtype DiffableItem: DiffableArrayTree
 
     var children: [DiffableItem] { get }
 }
 
-extension Array where Element: DiffableTree {
+extension Array where Element: DiffableArrayTree {
     var countChildren: Int {
         reduce(count) { partialResult, child in
             return partialResult + child.children.countChildren

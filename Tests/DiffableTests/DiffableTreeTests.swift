@@ -8,180 +8,116 @@
 import XCTest
 @testable import Diffable
 
-struct File: DiffableTree, Hashable {
-    public var primaryKeyValue: String {
-        return "\(name)"
-    }
-
-    var name: String
-    var children: [File]
-    var count: Int { children.countChildren }
-
-    init(name: String, children: [File] = []) {
-        self.name = name
-        self.children = children
-    }
-
-    mutating func add(element: File) {
-        children.append(element)
-    }
-
-    mutating func delete(element: File) {
-        children = children.filter { $0 != element }
-    }
-}
-
 class DiffableTreeTests: XCTestCase {
 
-    override func setUp() {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
+    func test_update_parent() throws {
+        // Given
+        let file = Node("hello.pgp")
+        let file2 = Node("hello_2.pgp")
+
+        // When
+        let operation = file.diff(file2)
+
+        // Then
+        XCTAssert(operation.operation == .updated(parent: nil, newValue: file2, at: 0))
+        XCTAssert(operation.children.isEmpty == true)
     }
 
-    override func tearDown() {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
+    func test_insert_children() throws {
+        // Given
+        let file = Node("hello.pgp")
+        let file2 = Node("hello.pgp") {
+            Node("world_1.pgp")
+            Node("world_2.pgp")
+        }
+
+        // When
+        let operation = file.diff(file2)
+
+        // Then
+        XCTAssert(operation.operation == .unchanged(parent: nil, at: 0))
+        XCTAssert(operation.children == [
+            DiffableTreeNode<Node<String>>.init(value: Node("world_1.pgp"), operation: .inserted(parent: file, at: 0), children: []),
+            DiffableTreeNode<Node<String>>.init(value: Node("world_2.pgp"), operation: .inserted(parent: file, at: 1), children: [])
+        ])
     }
 
-    func test_insert_without_children() {
-        let file = File(name: "hello.pgp")
+    func test_remove_children() throws {
+        // Given
+        let file = Node("hello.pgp") {
+            Node("world_1.pgp")
+            Node("world_2.pgp")
+        }
+        let file2 = Node("hello.pgp")
 
-        let actualArray: [File] = []
-        let newArray: [File] = [file]
+        // When
+        let operation = file.diff(file2)
 
-        let value = actualArray.diffTree(newArray)
-
-        XCTAssertEqual(value.insertions, [IndexPath(item: 0, section: 0)])
-        XCTAssertTrue(value.updates.isEmpty)
-        XCTAssertTrue(value.moves.isEmpty)
-        XCTAssertTrue(value.deletions.isEmpty)
+        // Then
+        XCTAssert(operation.operation == .unchanged(parent: nil, at: 0))
+        XCTAssert(operation.children == [
+            DiffableTreeNode<Node<String>>.init(value: Node("world_1.pgp"), operation: .deleted(parent: file, at: 0), children: []),
+            DiffableTreeNode<Node<String>>.init(value: Node("world_2.pgp"), operation: .deleted(parent: file, at: 1), children: [])
+        ])
     }
 
-    func test_insert_with_children() {
-        var file = File(name: "hello.pgp")
-        let newFile = File(name: "world.pgp")
-        file.add(element: newFile)
+    func test_add_element_in_child_of_root() throws {
+        // Given
+        let file = Node("hello.pgp") {
+            Node("world.pgp")
+        }
+        let file2 = Node("hello.pgp") {
+            Node("world.pgp") {
+                Node("under_world.pgp")
+            }
+        }
 
-        let actualArray: [File] = []
-        let newArray: [File] = [file]
+        // When
+        let operation = file.diff(file2)
 
-        let value = actualArray.diffTree(newArray)
-
-        XCTAssertEqual(value.insertions, [IndexPath(item: 0, section: 0), IndexPath(item: 0, section: 1)])
-        XCTAssertTrue(value.updates.isEmpty)
-        XCTAssertTrue(value.moves.isEmpty)
-        XCTAssertTrue(value.deletions.isEmpty)
+        // Then
+        XCTAssert(operation.operation == .unchanged(parent: nil, at: 0))
+        XCTAssert(operation.children == [
+            DiffableTreeNode<Node<String>>.init(value: Node("world.pgp"), operation: .unchanged(parent: file, at: 1), children: [
+                DiffableTreeNode<Node<String>>.init(value: Node("under_world.pgp"), operation: .inserted(parent: Node("world.pgp"), at: 0), children: []),
+            ]),
+        ])
     }
 
-    func test_insert_with_childrens() {
-        var file = File(name: "hello.pgp")
-        let newFile = File(name: "world.pgp")
-        let newFile2 = File(name: "world2.pgp")
-        file.add(element: newFile)
-        file.add(element: newFile2)
+    func test_complex_example() throws {
+        // Given
+        let file = Node("hello.pgp") {
+            Node("world.pgp")
+            Node("world_1.pgp") {
+                Node("under_world_1.pgp")
+            }
+        }
+        let file2 = Node("hello_new.pgp") {
+            Node("world*.pgp") {
+                Node("under_world*.pgp")
+            }
+            Node("world_1.pgp")
+            Node("world_2.pgp")
+        }
 
-        let actualArray: [File] = []
-        let newArray: [File] = [file]
+        // When
+        let operation = file.diff(file2)
 
-        let value = actualArray.diffTree(newArray)
-
-        XCTAssertEqual(value.insertions, [IndexPath(item: 0, section: 0), IndexPath(item: 0, section: 1), IndexPath(item: 1, section: 1)])
-        XCTAssertTrue(value.updates.isEmpty)
-        XCTAssertTrue(value.moves.isEmpty)
-        XCTAssertTrue(value.deletions.isEmpty)
-    }
-
-    func test_insert_with_children_has_children() {
-        var file = File(name: "hello.pgp")
-        var newFile = File(name: "world.pgp")
-        let otherFile = File(name: "world.pgp")
-        newFile.add(element: otherFile)
-        file.add(element: newFile)
-
-        let actualArray: [File] = []
-        let newArray: [File] = [file]
-
-        let value = actualArray.diffTree(newArray)
-
-        XCTAssertEqual(value.insertions, [IndexPath(item: 0, section: 0), IndexPath(item: 0, section: 1), IndexPath(item: 0, section: 2)])
-        XCTAssertTrue(value.updates.isEmpty)
-        XCTAssertTrue(value.moves.isEmpty)
-        XCTAssertTrue(value.deletions.isEmpty)
-    }
-
-    func test_update_parent_using_insertion_children() {
-        var file = File(name: "hello.pgp")
-        let newFile = File(name: "world.pgp")
-
-        let actualArray: [File] = [file]
-        file.add(element: newFile)
-        let newArray: [File] = [file]
-
-        let value = actualArray.diffTree(newArray)
-
-        XCTAssertEqual(value.insertions, [IndexPath(item: 0, section: 1)])
-        XCTAssertEqual(value.updates, [IndexPath(item: 0, section: 0)])
-        XCTAssertTrue(value.moves.isEmpty)
-        XCTAssertTrue(value.deletions.isEmpty)
-    }
-
-    func test_update_parent_using_insertion_in_children_of_children() {
-        var file = File(name: "hello.pgp")
-        let newFile = File(name: "world.pgp")
-        file.add(element: newFile)
-
-        let actualArray: [File] = [file]
-
-        var file2 = File(name: "hello.pgp")
-        var newFile2 = File(name: "world.pgp")
-        let otherFile = File(name: "world2.pgp")
-        newFile2.add(element: otherFile)
-        file2.add(element: newFile2)
-
-        let newArray: [File] = [file2]
-
-        let value = actualArray.diffTree(newArray)
-        XCTAssertEqual(value.insertions, [IndexPath(item: 0, section: 2)])
-        XCTAssertEqual(value.updates, [IndexPath(item: 0, section: 0), IndexPath(item: 0, section: 1)])
-        XCTAssertTrue(value.moves.isEmpty)
-        XCTAssertTrue(value.deletions.isEmpty)
-    }
-
-    func test_update_parent_using_removing_children() {
-        var file = File(name: "hello.pgp")
-        let newFile = File(name: "world.pgp")
-        file.add(element: newFile)
-
-        let actualArray: [File] = [file]
-        file.delete(element: newFile)
-        let newArray: [File] = [file]
-
-        let value = actualArray.diffTree(newArray)
-
-        XCTAssertTrue(value.insertions.isEmpty)
-        XCTAssertEqual(value.updates, [IndexPath(item: 0, section: 0)])
-        XCTAssertTrue(value.moves.isEmpty)
-        XCTAssertEqual(value.deletions, [IndexPath(item: 0, section: 1)])
-    }
-
-    func test_update_parent_using_removing_children_of_children() {
-        var file = File(name: "hello.pgp")
-        var newFile = File(name: "world.pgp")
-        let otherFile = File(name: "world2.pgp")
-        newFile.add(element: otherFile)
-        file.add(element: newFile)
-
-        let actualArray: [File] = [file]
-
-        var file2 = File(name: "hello.pgp")
-        let newFile2 = File(name: "world.pgp")
-        file2.add(element: newFile2)
-
-        let newArray: [File] = [file2]
-
-        let value = actualArray.diffTree(newArray)
-
-        XCTAssertTrue(value.insertions.isEmpty)
-        XCTAssertEqual(value.updates, [IndexPath(item: 0, section: 0), IndexPath(item: 0, section: 1)])
-        XCTAssertTrue(value.moves.isEmpty)
-        XCTAssertEqual(value.deletions, [IndexPath(item: 0, section: 2)])
+        // Then
+        let expected = [
+            DiffableTreeNode<Node<String>>.init(value: Node("world.pgp"), operation: .updated(parent: file, newValue: Node("world*.pgp") {
+                Node("under_world*.pgp")
+            }, at: 1), children: [
+                DiffableTreeNode<Node<String>>.init(value: Node("under_world*.pgp"), operation: .inserted(parent: Node("world.pgp"), at: 0), children: [])
+            ]),
+            DiffableTreeNode<Node<String>>.init(value: Node("world_1.pgp") { Node("under_world_1.pgp") }, operation: .unchanged(parent: file, at: 1), children: [
+                DiffableTreeNode<Node<String>>(value: Node("under_world_1.pgp"), operation: .deleted(parent: Node("world_1.pgp") {
+                    Node("under_world_1.pgp")
+                }, at: 0), children: [])
+            ]),
+            DiffableTreeNode<Node<String>>.init(value: Node("world_2.pgp"), operation: .inserted(parent: file, at: 2), children: [])
+        ]
+        XCTAssert(operation.operation == .updated(parent: nil, newValue: file2, at: 0))
+        XCTAssert(operation.children == expected)
     }
 }
