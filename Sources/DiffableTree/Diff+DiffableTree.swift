@@ -20,9 +20,33 @@ public enum DiffableTreeOperation<T: DiffableTree, Index>: Equatable, CustomStri
                 return String("U(\(newValue.value) at \(at)")
         }
     }
+
+    public var isEmpty: Bool {
+        switch self {
+            case .unchanged(_, _): return true
+            case .inserted(_, _), .deleted( _, _), .updated(_, _, _): return false
+        }
+    }
 }
 
-public struct DiffableTreeNode<T: DiffableTree>: Equatable {
+public protocol DiffableTreeNodeProtocol: Equatable {
+    associatedtype Item: DiffableTree
+
+    var value: Item { get }
+    var operation: DiffableTreeOperation<Item, Item.Children.Index> { get }
+    var children: [DiffableTreeNode<Item>] { get }
+
+    var isEmpty: Bool { get }
+}
+
+extension DiffableTreeNodeProtocol {
+
+    public var isEmpty: Bool {
+        operation.isEmpty && children.isEmptyOperation
+    }
+}
+
+public struct DiffableTreeNode<T: DiffableTree>: DiffableTreeNodeProtocol {
 
     public var value: T
     public var operation: DiffableTreeOperation<T, T.Children.Index>

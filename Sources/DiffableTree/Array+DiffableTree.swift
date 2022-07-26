@@ -26,3 +26,12 @@ extension Collection where Element: DiffableTree, Index == Int {
         return operation
     }
 }
+
+extension Collection where Element: DiffableTreeNodeProtocol {
+
+    public var isEmptyOperation: Bool {
+        reduce(true) { partialResult, elements in
+            partialResult && elements.isEmpty
+        }
+    }
+}

@@ -12,10 +12,51 @@ public protocol DiffableTree: Diffable {
     var children: Children { get }
 }
 
-extension Array where Element: DiffableTree {
-    var countChildren: Int {
+extension Collection where Element: DiffableTree {
+
+    public var countChildren: Int {
         reduce(count) { partialResult, element in
-            return partialResult + element.children.count
+            return partialResult + element.countChildren
         }
     }
+
+    func parent(whereChild predicate: (Element) -> Bool, parent: ItemPosition<Element> = .root) -> Element? where Element.Children.Element == Element {
+        var element: Element?
+        for _element in self {
+            guard let _element = _element.parent(whereChild: predicate, parent: parent) else { continue }
+            element = _element
+            break
+        }
+        return element
+    }
+}
+
+extension DiffableTree {
+
+    public subscript(childAt index: Int) -> Children.Element? {
+        guard index >= 0, index < children.endIndex else {
+            return nil
+        }
+        return children[index]
+    }
+
+    public var countChildren: Int {
+        children.count
+    }
+
+    func parent(whereChild predicate: (Self) -> Bool, parent: ItemPosition<Self> = .root) -> Self? where Self.Children.Element == Self {
+        if predicate(self) {
+            switch parent {
+                case .root: return nil
+                case .item(let node): return node
+            }
+        } else {
+            return children.parent(whereChild: predicate, parent: .item(self))
+        }
+    }
+}
+
+public enum ItemPosition<T: DiffableTree>: Equatable {
+    case root
+    case item(T)
 }
