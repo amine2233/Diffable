@@ -6,9 +6,10 @@
 //
 
 import XCTest
-@testable import Diffable
+import Diffable
+@testable import DiffableTree
 
-class DiffableTreeTests: XCTestCase {
+final class DiffableTreeTests: XCTestCase {
 
     func test_update_parent() throws {
         // Given

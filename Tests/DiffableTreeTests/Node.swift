@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import Diffable
+import DiffableTree
 
 @resultBuilder
 struct NodeBuilder {

@@ -10,6 +10,12 @@ let package = Package(
         .library(
             name: "Diffable",
             targets: ["Diffable"]),
+        .library(
+            name: "DiffableTree",
+            targets: ["DiffableTree"]),
+        .library(
+            name: "DiffableUI",
+            targets: ["DiffableUI"]),
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
@@ -22,10 +28,22 @@ let package = Package(
         .target(
             name: "Diffable",
             dependencies: []),
+        .target(
+            name: "DiffableTree",
+            dependencies: ["Diffable"]),
+        .target(
+            name: "DiffableUI",
+            dependencies: ["DiffableTree"]),
         .testTarget(
             name: "DiffableTests",
             dependencies: [
                 "Diffable",
+                .product(name: "SwiftTestReporter", package: "swift-junit")
+            ]),
+        .testTarget(
+            name: "DiffableTreeTests",
+            dependencies: [
+                "DiffableTree",
                 .product(name: "SwiftTestReporter", package: "swift-junit")
             ])
     ]

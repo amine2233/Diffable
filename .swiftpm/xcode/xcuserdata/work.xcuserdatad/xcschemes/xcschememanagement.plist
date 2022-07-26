@@ -4,10 +4,25 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
-		<key>Diffable.xcscheme_^#shared#^_</key>
+		<key>Diffable-Package.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
 			<integer>0</integer>
+		</dict>
+		<key>Diffable.xcscheme_^#shared#^_</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>1</integer>
+		</dict>
+		<key>DiffableTree.xcscheme_^#shared#^_</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>2</integer>
+		</dict>
+		<key>DiffableUI.xcscheme_^#shared#^_</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>3</integer>
 		</dict>
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
@@ -18,6 +33,21 @@
 			<true/>
 		</dict>
 		<key>DiffableTests</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>DiffableTree</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>DiffableTreeTests</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>DiffableUI</key>
 		<dict>
 			<key>primary</key>
 			<true/>
