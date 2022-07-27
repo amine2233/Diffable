@@ -15,11 +15,11 @@ extension Collection where Element: DiffableTree, Index == Int {
 
         for i in 0...diffCount {
             if self[safeIndex: i] == nil && new[safeIndex: i] != nil {
-                operation.append(.init(value: new[safeIndex: i]!, operation: .inserted(parent: self[safeIndex: i], at: i), children: []))
+                operation.append(.init(value: new[safeIndex: i]!, operation: .inserted(parent: parent, at: i), children: []))
             } else if self[safeIndex: i] != nil && new[safeIndex: i] == nil {
-                operation.append(.init(value: self[safeIndex: i]!, operation: .deleted(parent: self[safeIndex: i], at: i), children: []))
+                operation.append(.init(value: self[safeIndex: i]!, operation: .deleted(parent: parent, at: i), children: []))
             } else if self[safeIndex: i] != nil && new[safeIndex: i] != nil {
-                operation.append(self[i].diff(new[i]))
+                operation.append(self[i].diff(new[i], parent: parent, level: level+1))
             }
         }
 

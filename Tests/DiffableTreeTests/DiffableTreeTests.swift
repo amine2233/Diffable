@@ -20,7 +20,7 @@ final class DiffableTreeTests: XCTestCase {
         let operation = file.diff(file2)
 
         // Then
-        XCTAssert(operation.operation == .updated(parent: nil, newValue: file2, at: 0))
+        XCTAssert(operation.operation == .updated(parent: nil, newValue: file2))
         XCTAssert(operation.children.isEmpty == true)
     }
 
@@ -36,7 +36,7 @@ final class DiffableTreeTests: XCTestCase {
         let operation = file.diff(file2)
 
         // Then
-        XCTAssert(operation.operation == .unchanged(parent: nil, at: 0))
+        XCTAssert(operation.operation == .unchanged(parent: nil))
         XCTAssert(operation.children == [
             DiffableTreeNode<Node<String>>.init(value: Node("world_1.pgp"), operation: .inserted(parent: file, at: 0), children: []),
             DiffableTreeNode<Node<String>>.init(value: Node("world_2.pgp"), operation: .inserted(parent: file, at: 1), children: [])
@@ -55,7 +55,7 @@ final class DiffableTreeTests: XCTestCase {
         let operation = file.diff(file2)
 
         // Then
-        XCTAssert(operation.operation == .unchanged(parent: nil, at: 0))
+        XCTAssert(operation.operation == .unchanged(parent: nil))
         XCTAssert(operation.children == [
             DiffableTreeNode<Node<String>>.init(value: Node("world_1.pgp"), operation: .deleted(parent: file, at: 0), children: []),
             DiffableTreeNode<Node<String>>.init(value: Node("world_2.pgp"), operation: .deleted(parent: file, at: 1), children: [])
@@ -77,9 +77,9 @@ final class DiffableTreeTests: XCTestCase {
         let operation = file.diff(file2)
 
         // Then
-        XCTAssert(operation.operation == .unchanged(parent: nil, at: 0))
+        XCTAssert(operation.operation == .unchanged(parent: nil))
         XCTAssert(operation.children == [
-            DiffableTreeNode<Node<String>>.init(value: Node("world.pgp"), operation: .unchanged(parent: file, at: 1), children: [
+            DiffableTreeNode<Node<String>>.init(value: Node("world.pgp"), operation: .unchanged(parent: file), children: [
                 DiffableTreeNode<Node<String>>.init(value: Node("under_world.pgp"), operation: .inserted(parent: Node("world.pgp"), at: 0), children: []),
             ]),
         ])
@@ -108,17 +108,17 @@ final class DiffableTreeTests: XCTestCase {
         let expected = [
             DiffableTreeNode<Node<String>>.init(value: Node("world.pgp"), operation: .updated(parent: file, newValue: Node("world*.pgp") {
                 Node("under_world*.pgp")
-            }, at: 1), children: [
+            }), children: [
                 DiffableTreeNode<Node<String>>.init(value: Node("under_world*.pgp"), operation: .inserted(parent: Node("world.pgp"), at: 0), children: [])
             ]),
-            DiffableTreeNode<Node<String>>.init(value: Node("world_1.pgp") { Node("under_world_1.pgp") }, operation: .unchanged(parent: file, at: 1), children: [
+            DiffableTreeNode<Node<String>>.init(value: Node("world_1.pgp") { Node("under_world_1.pgp") }, operation: .unchanged(parent: file), children: [
                 DiffableTreeNode<Node<String>>(value: Node("under_world_1.pgp"), operation: .deleted(parent: Node("world_1.pgp") {
                     Node("under_world_1.pgp")
                 }, at: 0), children: [])
             ]),
             DiffableTreeNode<Node<String>>.init(value: Node("world_2.pgp"), operation: .inserted(parent: file, at: 2), children: [])
         ]
-        XCTAssert(operation.operation == .updated(parent: nil, newValue: file2, at: 0))
+        XCTAssert(operation.operation == .updated(parent: nil, newValue: file2))
         XCTAssert(operation.children == expected)
     }
 

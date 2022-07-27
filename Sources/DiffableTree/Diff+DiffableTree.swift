@@ -3,28 +3,28 @@ import Diffable
 
 public enum DiffableTreeOperation<T: DiffableTree, Index>: Equatable, CustomStringConvertible where Index: Equatable {
 
-    case unchanged(parent: T?, at: Index)
+    case unchanged(parent: T?)
     case inserted(parent: T?, at: Index)
     case deleted(parent: T?, at: Index)
-    case updated(parent: T?, newValue: T, at: Index)
+    case updated(parent: T?, newValue: T)
 
     public var description: String {
         switch self {
-            case .unchanged(_, let at):
-                return String("NOP at \(at)")
+            case .unchanged(_):
+                return String("NOP")
             case .inserted(_, let at):
                 return String("I at \(at)")
             case .deleted(_, let at):
                 return String("D at \(at)")
-            case .updated(_, let newValue, let at):
-                return String("U(\(newValue.value) at \(at)")
+            case .updated(_, let newValue):
+                return String("U(\(newValue.value)")
         }
     }
 
     public var isEmpty: Bool {
         switch self {
-            case .unchanged(_, _): return true
-            case .inserted(_, _), .deleted( _, _), .updated(_, _, _): return false
+            case .unchanged(_): return true
+            case .inserted(_, _), .deleted( _, _), .updated(_, _): return false
         }
     }
 }
@@ -71,29 +71,18 @@ extension DiffableTree {
 
     public func diff(_ tree: Self, parent: Self? = nil, level: Int = 0) -> DiffableTreeNode<Self> where Self == Self.Children.Element {
 
-        var operation: DiffableTreeNode<Self> = .init(value: self, operation: .unchanged(parent: parent, at: level), children: [])
+        var operation: DiffableTreeNode<Self> = .init(value: self, operation: .unchanged(parent: parent), children: [])
 
         if value != tree.value {
-            operation.operation = .updated(parent: parent, newValue: tree, at: level)
+            operation.operation = .updated(parent: parent, newValue: tree)
         }
 
         if !children.isEmpty {
-            var childrenOperations: [DiffableTreeNode<Self>] = []
-
-            let count = max(children.endIndex, tree.children.endIndex)
-
-            for i in 0...count {
-                if children[safeIndex: i] == nil && tree.children[safeIndex: i] != nil {
-                    childrenOperations.append(.init(value: tree.children[safeIndex: i]!, operation: .inserted(parent: self, at: i), children: []))
-                } else if children[safeIndex: i] != nil && tree.children[safeIndex: i] == nil {
-                    childrenOperations.append(.init(value: children[safeIndex: i]!, operation: .deleted(parent: self, at: i), children: []))
-                } else if children[safeIndex: i] != nil && tree.children[safeIndex: i] != nil {
-                    childrenOperations.append(children[i].diff(tree.children[i], parent: self, level: level + 1))
-                }
+            if tree.children.isEmpty {
+                operation.children.append(contentsOf: children.enumerated().map { DiffableTreeNode<Self>(value: $1, operation: .deleted(parent: self, at: $0), children: []) })
+            } else {
+                operation.children.append(contentsOf: children.diffTree(tree.children, parent: self, level: level + 1))
             }
-
-            operation.children.append(contentsOf: childrenOperations)
-
         } else {
             if !tree.children.isEmpty {
                 operation.children = tree.children.enumerated().map { .init(value: $1 , operation: .inserted(parent: self, at: $0), children: []) }

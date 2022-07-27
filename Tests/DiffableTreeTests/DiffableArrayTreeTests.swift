@@ -27,7 +27,7 @@ class DiffableArrayTreeTests: XCTestCase {
         let operation = [file].diffTree([file2]).first!
 
         // Then
-        XCTAssert(operation.operation == .updated(parent: nil, newValue: file2, at: 0))
+        XCTAssert(operation.operation == .updated(parent: nil, newValue: file2))
         XCTAssert(operation.children.isEmpty == true)
     }
 

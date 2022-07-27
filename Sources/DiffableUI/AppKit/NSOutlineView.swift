@@ -9,11 +9,11 @@ extension NSOutlineView {
             for operation in operations {
 
                 switch operation.operation {
-                    case .unchanged(_, _):
+                    case .unchanged(_):
                         break
                     case .inserted(let parent, let at):
                         insertItems(at: IndexSet(integer: at), inParent: parent, withAnimation: [.effectFade])
-                    case .updated(_, _, _):
+                    case .updated(_, _):
                         break
                     case .deleted(let parent, let at):
                         removeItems(at: IndexSet(integer: at), inParent: parent, withAnimation: [.effectFade])
