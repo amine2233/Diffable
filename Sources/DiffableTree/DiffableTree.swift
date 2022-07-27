@@ -20,7 +20,7 @@ extension Collection where Element: DiffableTree {
         }
     }
 
-    func parent(whereChild predicate: (Element) -> Bool, parent: ItemPosition<Element> = .root) -> Element? where Element.Children.Element == Element {
+    public func parent(whereChild predicate: (Element) -> Bool, parent: ItemPosition<Element> = .root) -> Element? where Element.Children.Element == Element {
         var element: Element?
         for _element in self {
             guard let _element = _element.parent(whereChild: predicate, parent: parent) else { continue }
@@ -44,7 +44,7 @@ extension DiffableTree {
         children.count
     }
 
-    func parent(whereChild predicate: (Self) -> Bool, parent: ItemPosition<Self> = .root) -> Self? where Self.Children.Element == Self {
+    public func parent(whereChild predicate: (Self) -> Bool, parent: ItemPosition<Self> = .root) -> Self? where Self.Children.Element == Self {
         if predicate(self) {
             switch parent {
                 case .root: return nil
