@@ -1,10 +1,3 @@
-//
-//  Array+Diff.swift
-//  Diffable
-//
-//  Created by Amine Bensalah on 05/12/2019.
-//
-
 import Foundation
 
 extension Array where Element: Diffable {

@@ -1,11 +1,4 @@
-//
-//  Array+UIDiff.swift
-//  Diffable
-//
-//  Created by Amine Bensalah on 05/12/2019.
-//
-
-
+import Diffable
 #if os(OSX)
 import AppKit
 #elseif os(iOS) || os(tvOS) || os(watchOS)

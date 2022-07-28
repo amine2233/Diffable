@@ -1,10 +1,3 @@
-//
-//  Diffable.swift
-//  Diffable
-//
-//  Created by Amine Bensalah on 05/12/2019.
-//
-
 import Foundation
 
 public class Diff {
@@ -65,13 +58,16 @@ public class Diff {
         }
     }
 
+    /// Initialise a new `Diff` structure
+    public init() {}
+
     /// Process the old and new array to produce a list of diff steps.
     ///
     /// - Parameters:
     ///   - old: The array to compare.
     ///   - new: The array to compare against.
     /// - Returns: A list of DiffStep operations to perform on the old array to get the new array.
-    func process<T: Diffable>(old: [T], new: [T]) -> [DiffStep<T>] {
+    public func process<T: Diffable>(old: [T], new: [T]) -> [DiffStep<T>] {
 
         setupContext(old: old, new: new)
 
@@ -331,7 +327,7 @@ public class Diff {
 }
 
 /// A description of a step to apply to an array to be able to transform one into the other.
-enum DiffStep<T: Diffable>: CustomDebugStringConvertible {
+public enum DiffStep<T: Diffable>: CustomDebugStringConvertible {
 
     /// - insert: A insertation step.
     case insert(index: Int, value: T)
