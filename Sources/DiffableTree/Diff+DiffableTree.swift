@@ -73,10 +73,6 @@ extension DiffableTree {
 
         var operation: DiffableTreeNode<Self> = .init(value: self, operation: .unchanged(parent: parent), children: [])
 
-        if value != tree.value {
-            operation.operation = .updated(parent: parent, newValue: tree)
-        }
-
         if !children.isEmpty {
             if tree.children.isEmpty {
                 operation.children.append(contentsOf: children.enumerated().map { DiffableTreeNode<Self>(value: $1, operation: .deleted(parent: self, at: $0), children: []) })
@@ -87,6 +83,10 @@ extension DiffableTree {
             if !tree.children.isEmpty {
                 operation.children = tree.children.enumerated().map { .init(value: $1 , operation: .inserted(parent: self, at: $0), children: []) }
             }
+        }
+
+        if value != tree.value || !operation.children.isEmpty {
+            operation.operation = .updated(parent: parent, newValue: tree)
         }
 
         return operation
