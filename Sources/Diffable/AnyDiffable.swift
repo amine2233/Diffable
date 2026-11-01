@@ -12,8 +12,6 @@ import Foundation
 /// ]
 ///
 public struct AnyDiffable: Diffable {
-    private let _primaryKeyValue: () -> String
-
     /// The value wrapped by this instance.
     /// The base property can be cast back to its original type using one of the casting operators (as?, as!,
     /// or as).
@@ -37,30 +35,20 @@ public struct AnyDiffable: Diffable {
     ///
     public init<D: Diffable>(_ base: D) {
         self.base = base
-        self.baseType = ObjectIdentifier(D.self)
-        self._primaryKeyValue = { base.primaryKeyValue }
+        self.id = DiffID(TypedKey(type: ObjectIdentifier(D.self), id: DiffID(base.id)))
     }
 
-    /// The primaryKeyValue value
-    public var primaryKeyValue: String {
-        _primaryKeyValue()
-    }
-
-    /// The identity used by the algorithms: the wrapped type AND its key.
+    /// The identity used by the algorithms: the wrapped type AND its `id`.
     ///
     /// ```
-    ///  Article(42)  -> (Article, "42")
-    ///  Video(42)    -> (Video,   "42")     different identities, never matched together
+    ///  Article(42)  -> (Article, 42)
+    ///  Video(42)    -> (Video,   42)     different identities, never matched together
     /// ```
-    public var diffIdentity: AnyHashable {
-        TypedKey(type: baseType, key: primaryKeyValue)
-    }
+    public let id: DiffID
 
-    private let baseType: ObjectIdentifier
-
-    private struct TypedKey: Hashable {
+    private struct TypedKey: Hashable, Sendable {
         let type: ObjectIdentifier
-        let key: String
+        let id: DiffID
     }
 }
 

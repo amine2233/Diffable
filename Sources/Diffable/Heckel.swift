@@ -2,7 +2,7 @@ import Foundation
 
 /// Paul Heckel's linear-time diff ("A technique for isolating differences between files", 1978).
 ///
-/// Heckel identifies items by key (`Diffable.diffIdentity`) with a hash table, so it runs in O(n)
+/// Heckel identifies items by key (`Diffable.id`) with a hash table, so it runs in O(n)
 /// and, unlike Myers, it natively detects **moves**.
 ///
 /// ## The five passes
@@ -63,7 +63,7 @@ import Foundation
 ///
 /// - Complexity: O(n) time and memory for the passes, O(n log n) for the move detection.
 /// - Not guaranteed to produce the *shortest* script. See `Myers` for that.
-struct Diff {
+struct Heckel {
     private var oldReferences: [Reference] = []
     private var newReferences: [Reference] = []
     private var table: [AnyHashable: Reference.Symbol] = [:]
@@ -151,7 +151,7 @@ struct Diff {
             }
         }
 
-        let unmoved = Diff.longestIncreasingSubsequence(matches.map { $0.oldIndex })
+        let unmoved = Heckel.longestIncreasingSubsequence(matches.map { $0.oldIndex })
 
         for (position, match) in matches.enumerated() where !unmoved.contains(position) {
             steps.append(.move(from: match.oldIndex, to: match.newIndex, value: new[match.newIndex]))
@@ -250,7 +250,7 @@ struct Diff {
         var entries: [Reference] = []
 
         for (index, item) in array.enumerated() {
-            let key = item.diffIdentity
+            let key = AnyHashable(item.id)
             let entry = table[key] ?? Reference.Symbol()
 
             table[key] = entry
@@ -283,7 +283,7 @@ struct Diff {
         }
 
         var prefix = 0
-        while prefix < old.count, prefix < new.count, old[prefix].diffIdentity == new[prefix].diffIdentity {
+        while prefix < old.count, prefix < new.count, AnyHashable(old[prefix].id) == AnyHashable(new[prefix].id) {
             link(old: prefix, new: prefix)
             prefix += 1
         }
@@ -291,7 +291,7 @@ struct Diff {
         var oldIndex = old.count - 1
         var newIndex = new.count - 1
         while oldIndex >= prefix, newIndex >= prefix,
-              old[oldIndex].diffIdentity == new[newIndex].diffIdentity {
+              AnyHashable(old[oldIndex].id) == AnyHashable(new[newIndex].id) {
             link(old: oldIndex, new: newIndex)
             oldIndex -= 1
             newIndex -= 1
@@ -405,7 +405,7 @@ struct Diff {
 
 /// A description of a step to apply to an array to be able to transform one into the other.
 ///
-/// See `Diff` for the index space of each case.
+/// See `Heckel` for the index space of each case.
 enum DiffStep<T: Diffable>: CustomDebugStringConvertible {
     /// - insert: A insertation step.
     case insert(index: Int, value: T)

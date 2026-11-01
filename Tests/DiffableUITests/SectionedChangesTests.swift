@@ -13,7 +13,7 @@ private struct Section: DiffableTree {
     var header = 0
     var children: [Row] = []
 
-    var primaryKeyValue: String {
+    var id: String {
         title
     }
 

@@ -1,6 +1,9 @@
+#if SWIFT_PACKAGE
+import Diffable
+#endif
 import Foundation
 
-/// The identity of a node in a tree: the keys from the root to the node.
+/// The identity of a node in a tree: the ids from the root to the node.
 ///
 /// ```
 ///  root/
@@ -11,9 +14,9 @@ import Foundation
 /// Two files with the same name in different folders have different paths, which makes it a safe
 /// item identifier for diffable data sources.
 public struct TreePath: Hashable, CustomStringConvertible, Sendable {
-    public let components: [String]
+    public let components: [DiffID]
 
-    public init(_ components: [String]) {
+    public init(_ components: [DiffID]) {
         self.components = components
     }
 
@@ -22,6 +25,6 @@ public struct TreePath: Hashable, CustomStringConvertible, Sendable {
     }
 
     public var description: String {
-        components.joined(separator: "/")
+        components.map { "\($0)" }.joined(separator: "/")
     }
 }

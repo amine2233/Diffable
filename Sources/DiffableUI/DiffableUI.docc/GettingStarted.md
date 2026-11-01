@@ -4,7 +4,7 @@ Animate a change in a list view with one call.
 
 ## Make your model diffable
 
-Models conform to `Diffable`: a stable `primaryKeyValue` is the identity, and `==` says whether the content changed.
+Models conform to `Diffable`: a stable `id` (`Identifiable`) is the identity, and `==` says whether the content changed.
 
 ```swift
 import Diffable
@@ -13,7 +13,6 @@ import DiffableUI
 struct Message: Diffable {
     let id: Int
     var text: String
-    var primaryKeyValue: String { String(id) }
 }
 ```
 

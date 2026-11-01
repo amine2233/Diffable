@@ -5,7 +5,7 @@ import Diffable
 #endif
 import MapKit
 
-/// An annotation that can be diffed: `primaryKeyValue` is its identity (a place id), `==` its content
+/// An annotation that can be diffed: `id` is its identity (a place id), `==` its content
 /// (title, coordinate...).
 public protocol DiffableAnnotation: Diffable, MKAnnotation {}
 
@@ -49,14 +49,14 @@ extension MKMapView {
 
         var onMap: [AnyHashable: Annotation] = [:]
         for annotation in old {
-            onMap[annotation.diffIdentity] = annotation
+            onMap[AnyHashable(annotation.id)] = annotation
         }
 
         var result: [Annotation] = []
         var toAdd: [Annotation] = []
 
         for (index, annotation) in new.enumerated() {
-            guard !inserted.contains(index), let existing = onMap[annotation.diffIdentity] else {
+            guard !inserted.contains(index), let existing = onMap[AnyHashable(annotation.id)] else {
                 toAdd.append(annotation)
                 result.append(annotation)
                 continue

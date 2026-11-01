@@ -14,7 +14,7 @@ import Foundation
 ///                                                     readable minimal diffs
 /// ```
 public enum DiffAlgorithm: Sendable {
-    /// Paul Heckel's linear algorithm. See `Diff`.
+    /// Paul Heckel's linear algorithm. See `Heckel`.
     case heckel
 
     /// Eugene Myers' shortest-edit-script algorithm. See `Myers`.
@@ -23,8 +23,8 @@ public enum DiffAlgorithm: Sendable {
     func process<T: Diffable>(old: [T], new: [T]) -> [DiffStep<T>] {
         switch self {
         case .heckel:
-            var diff = Diff()
-            return diff.process(old: old, new: new)
+            var heckel = Heckel()
+            return heckel.process(old: old, new: new)
         case .myers:
             return Myers().process(old: old, new: new)
         }

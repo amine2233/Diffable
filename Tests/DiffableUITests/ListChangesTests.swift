@@ -7,7 +7,7 @@ private struct Node: DiffableTree {
     var size = 0
     var children: [Node] = []
 
-    var primaryKeyValue: String {
+    var id: String {
         name
     }
 
@@ -63,5 +63,13 @@ struct ListChangesTests {
         #expect(path.description == "root/src/a.swift")
         #expect(path.parent == TreePath(["root", "src"]))
         #expect(TreePath(["root"]).parent == nil)
+    }
+
+    @Test("TreePath components can be any id, not only strings")
+    func treePathWithMixedIds() {
+        let path = TreePath([1, "src", 2])
+        #expect(path.description == "1/src/2")
+        #expect(path.parent == TreePath([1, "src"]))
+        #expect(TreePath([1]) != TreePath(["1"]))
     }
 }

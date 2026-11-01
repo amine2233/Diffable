@@ -37,7 +37,7 @@ extension NSDiffableDataSourceSectionSnapshot where ItemIdentifierType == TreePa
         parent: TreePath?,
         to snapshot: inout NSDiffableDataSourceSectionSnapshot<TreePath>
     ) {
-        let paths = nodes.map { TreePath((parent?.components ?? []) + [$0.primaryKeyValue]) }
+        let paths = nodes.map { TreePath((parent?.components ?? []) + [$0.diffID]) }
         snapshot.append(paths, to: parent)
         for (node, path) in zip(nodes, paths) {
             append(node.children, parent: path, to: &snapshot)

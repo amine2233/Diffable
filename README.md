@@ -29,7 +29,7 @@ Two things drive every diff:
               IDENTITY                            CONTENT
         "is it the same item?"             "did the item change?"
         ----------------------             ----------------------
-        primaryKeyValue                    Hashable (== / hash)
+        Identifiable.id                    Hashable (== / hash)
 
   old: [ A(id 1, "x") ]                same identity, other content  ==>  UPDATE
   new: [ A(id 1, "y") ]
@@ -42,7 +42,7 @@ Two things drive every diff:
 struct Product: Diffable {
     let sku: String
     var quantity: Int
-    var primaryKeyValue: String { sku }
+    var id: String { sku }
 }
 ```
 
@@ -88,7 +88,7 @@ struct Item: DiffableTree {
     var size = 0
     var children: [Item] = []
 
-    var primaryKeyValue: String { name }
+    var id: String { name }
 
     static func == (lhs: Item, rhs: Item) -> Bool { lhs.name == rhs.name && lhs.size == rhs.size }
     func hash(into hasher: inout Hasher) { hasher.combine(name); hasher.combine(size) }
@@ -116,7 +116,7 @@ MyApp                            MyApp                         = MyApp
 - Identity is the whole path, so `README.md` in two folders never collide.
 - An inserted or deleted folder is **one** entry, its files are not repeated.
 - A node moved to another parent is a delete plus an insert.
-- Siblings must have unique `primaryKeyValue`s.
+- Siblings must have unique `id`s.
 - Recursion is one stack frame set per level: keep trees well under ~150 levels deep.
 
 ## Views (DiffableUI)
@@ -163,7 +163,7 @@ macOS 10.15 guards the call:
 
 ```swift
 if #available(macOS 10.15.1, iOS 13.0, *) {
-    let snapshot = NSDiffableDataSourceSnapshot<String, SnapshotItemID>(from: oldSections, to: newSections)
+    let snapshot = NSDiffableDataSourceSnapshot<DiffID, SnapshotItemID>(from: oldSections, to: newSections)
     dataSource.apply(snapshot)
 } else {
     outlineOrTableView.applyDiff(from: old, to: new) { items = new }   // any other view works as before
@@ -223,12 +223,14 @@ let feed: [AnyDiffable] = [AnyDiffable(article), AnyDiffable(video)]
 
 ## Requirements
 
-Swift 6.0+ / Xcode 16+ (SwiftPM only, built in the Swift 6 language mode). The Swift Testing suites need a recent Xcode toolchain. `UIMenu` is iOS only; the diffable data source bridges need iOS 13 / macOS 10.15.1.
+Swift 6.0+ / Xcode 16+ (SwiftPM only, built in the Swift 6 language mode). Deployment targets: iOS 13, macOS 10.15, tvOS 13, watchOS 6. The Swift Testing suites need a recent Xcode toolchain. `UIMenu` is iOS only; the diffable data source bridges need iOS 13 / macOS 10.15.1.
 
 ## Migrating from 1.x
 
 Version 2.0 is a major release. What you have to change:
 
+- **`primaryKeyValue` is replaced by `Identifiable`.** `Diffable` now inherits from `Identifiable`: delete `var primaryKeyValue: String { ... }` and expose an `id` (any `Hashable` and `Sendable` type: `String`, `Int`, `UUID`...). A model that already is `Identifiable` only has to add `Diffable`. `TreeChange.key` / `path`, `TreePath` and `SnapshotItemID` hold `DiffID` values (string and integer literals still convert).
+- **Minimum OS: iOS 13, macOS 10.15, tvOS 13, watchOS 6** (`Identifiable` requires it).
 - **Swift 6.0 / Xcode 16 or later.** The package uses `swift-tools-version:6.0` and builds in the Swift 6 language mode. Older toolchains cannot resolve it.
 - **UI helpers moved to a new product.** In 1.x the `IndexPath` diff (`diff(_:forSection:)`) and the `UICollectionView` helper lived in `Diffable`. They are now in `DiffableUI`: add the product to your target and `import DiffableUI`.
 - **View adapters are `@MainActor`**, and so are the closures you pass to them (`updateData`, `completion`, `makeView`...). Calling them from a non-isolated context needs a main-actor hop. See [Concurrency](#concurrency).
@@ -237,7 +239,7 @@ Version 2.0 is a major release. What you have to change:
 - **`AnyDiffable` identity includes the wrapped type.** `Article(1)` and `Video(1)` are no longer matched as the same item.
 - **`Diff` is no longer public.** Use `array.diff(_:)` / `diff(_:algorithm:)`, or `DiffAlgorithm`.
 
-Nothing to do for the rest: `Diffable` gained `diffIdentity` with a default implementation, `DiffableTree` and `treeDiff` are new, and `Diffable` still does not require `Sendable`.
+Nothing to do for the rest: `DiffableTree` and `treeDiff` are new, and `Diffable` still does not require the model itself to be `Sendable`, only its `id`.
 
 ## Documentation
 

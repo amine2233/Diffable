@@ -3,9 +3,6 @@ import Diffable
 struct Row: Diffable {
     let id: String
     var value = 0
-    var primaryKeyValue: String {
-        id
-    }
 }
 
 func rows(_ ids: String, value: Int = 0) -> [Row] {

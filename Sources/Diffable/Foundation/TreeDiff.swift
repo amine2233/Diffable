@@ -14,7 +14,7 @@ import Foundation
 /// - Important: `==` and `hash(into:)` must compare the node's **own** properties only (name, size,
 ///   modification date...) and NOT `children`. Children are compared by recursion, which is what lets
 ///   the result say *which* descendant changed instead of flagging the whole folder as updated.
-/// - `primaryKeyValue` must be unique among the children of one parent (a file name for example).
+/// - `id` must be unique among the children of one parent (a file name for example).
 ///   Two files with the same name in different folders are fine: identity is the whole path.
 ///
 /// The children may be of another type than the node (a section holding rows, for example):
@@ -61,11 +61,11 @@ public struct TreeChange: Equatable, Sendable {
         case unchanged
     }
 
-    /// The `primaryKeyValue` of the node.
-    public let key: String
+    /// The `id` of the node.
+    public let key: DiffID
 
-    /// The keys from the root to this node (included): `["src", "util", "b.swift"]`.
-    public let path: [String]
+    /// The ids from the root to this node (included): `["src", "util", "b.swift"]`.
+    public let path: [DiffID]
 
     public let kind: Kind
 
@@ -138,7 +138,7 @@ extension Array where Element: DiffableTree {
         treeDiff(new, algorithm: algorithm, parentPath: [])
     }
 
-    private func treeDiff(_ new: [Element], algorithm: DiffAlgorithm, parentPath: [String]) -> [TreeChange] {
+    private func treeDiff(_ new: [Element], algorithm: DiffAlgorithm, parentPath: [DiffID]) -> [TreeChange] {
         var deleted: [Int] = []
         var inserted = Set<Int>()
         var updated = Set<Int>()
@@ -158,7 +158,7 @@ extension Array where Element: DiffableTree {
         }
 
         var changes: [TreeChange] = deleted.sorted().map { index in
-            let key = self[index].primaryKeyValue
+            let key = self[index].diffID
             return TreeChange(
                 key: key,
                 path: parentPath + [key],
@@ -170,18 +170,18 @@ extension Array where Element: DiffableTree {
             )
         }
 
-        var survivors: [AnyHashable: [Int]] = [:]
+        var survivors: [DiffID: [Int]] = [:]
         let deletedSet = Set(deleted)
         for (index, node) in enumerated() where !deletedSet.contains(index) {
-            survivors[node.diffIdentity, default: []].append(index)
+            survivors[node.diffID, default: []].append(index)
         }
 
         for (index, node) in new.enumerated() {
-            let path = parentPath + [node.primaryKeyValue]
+            let path = parentPath + [node.diffID]
 
-            guard !inserted.contains(index), let oldIndex = survivors[node.diffIdentity]?.removeFirst() else {
+            guard !inserted.contains(index), let oldIndex = survivors[node.diffID]?.removeFirst() else {
                 changes.append(TreeChange(
-                    key: node.primaryKeyValue,
+                    key: node.diffID,
                     path: path,
                     kind: .insert,
                     index: index,
@@ -205,7 +205,7 @@ extension Array where Element: DiffableTree {
             }
 
             changes.append(TreeChange(
-                key: node.primaryKeyValue,
+                key: node.diffID,
                 path: path,
                 kind: kind,
                 index: index,

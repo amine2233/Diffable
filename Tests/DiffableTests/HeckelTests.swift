@@ -76,8 +76,8 @@ struct HeckelTests {
     func duplicates(pair: (String, String)) {
         let old = items(pair.0)
         let new = items(pair.1)
-        var diff = Diff()
-        let outcome = replay(diff.process(old: old, new: new), old: old, new: new)
+        var heckel = Heckel()
+        let outcome = replay(heckel.process(old: old, new: new), old: old, new: new)
         #expect(outcome.problems.isEmpty, "\(outcome.problems)")
     }
 
@@ -97,7 +97,7 @@ struct HeckelTests {
         )
     ])
     func longestIncreasingSubsequence(values: [Int], expectedLength: Int) {
-        let positions = Diff.longestIncreasingSubsequence(values)
+        let positions = Heckel.longestIncreasingSubsequence(values)
         let picked = positions.sorted().map { values[$0] }
 
         #expect(positions.count == expectedLength)

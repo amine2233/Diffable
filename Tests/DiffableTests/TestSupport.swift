@@ -4,9 +4,6 @@ import Testing
 struct TestItem: Diffable {
     let id: String
     var value = 0
-    var primaryKeyValue: String {
-        id
-    }
 }
 
 func items(_ ids: String, value: Int = 0) -> [TestItem] {

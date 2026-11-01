@@ -5,7 +5,7 @@ struct Node: DiffableTree {
     var size = 0
     var children: [Node] = []
 
-    var primaryKeyValue: String {
+    var id: String {
         name
     }
 
@@ -37,7 +37,7 @@ func flatten(_ nodes: [Node], prefix: [String] = []) -> [[String]: Int] {
 }
 
 func flatten(_ changes: [TreeChange]) -> [(path: [String], kind: TreeChange.Kind)] {
-    changes.flatMap { change in [(change.path, change.kind)] + flatten(change.children) }
+    changes.flatMap { change in [(change.path.map(\.description), change.kind)] + flatten(change.children) }
 }
 
 func randomTree(depth: Int, using rng: inout SeededGenerator) -> [Node] {

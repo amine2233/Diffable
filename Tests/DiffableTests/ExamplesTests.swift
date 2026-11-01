@@ -24,7 +24,7 @@ struct ExamplesTests {
         struct Line: Diffable {
             let sku: String
             var quantity: Int
-            var primaryKeyValue: String {
+            var id: String {
                 sku
             }
         }
@@ -76,12 +76,8 @@ struct ExamplesTests {
 
     @Test("type erasure: Article 1 and Video 1 live in the same list")
     func typeErasureExample() {
-        struct Article: Diffable { let id: Int; var primaryKeyValue: String {
-            String(id)
-        } }
-        struct Video: Diffable { let id: Int; var primaryKeyValue: String {
-            String(id)
-        } }
+        struct Article: Diffable { let id: Int }
+        struct Video: Diffable { let id: Int }
 
         let feed: [AnyDiffable] = [AnyDiffable(Article(id: 1)), AnyDiffable(Video(id: 1))]
         let refreshed: [AnyDiffable] = [AnyDiffable(Video(id: 1)), AnyDiffable(Article(id: 1))]

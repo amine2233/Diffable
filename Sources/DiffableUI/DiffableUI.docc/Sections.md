@@ -10,7 +10,6 @@ A section is a `DiffableTree` whose children are its items. Its `==` compares th
 struct Row: DiffableTree {
     let id: Int
     var text: String
-    var primaryKeyValue: String { String(id) }
     var children: [Row] { [] }
 }
 
@@ -19,7 +18,7 @@ struct Section: DiffableTree {
     var header = 0
     var children: [Row] = []
 
-    var primaryKeyValue: String { title }
+    var id: String { title }
 
     static func == (lhs: Section, rhs: Section) -> Bool { lhs.title == rhs.title && lhs.header == rhs.header }
     func hash(into hasher: inout Hasher) { hasher.combine(title); hasher.combine(header) }

@@ -14,7 +14,7 @@ struct Item: DiffableTree {
     var size = 0
     var children: [Item] = []
 
-    var primaryKeyValue: String { name }
+    var id: String { name }
 
     static func == (lhs: Item, rhs: Item) -> Bool { lhs.name == rhs.name && lhs.size == rhs.size }
     func hash(into hasher: inout Hasher) { hasher.combine(name); hasher.combine(size) }
@@ -94,6 +94,6 @@ func updatedPaths(_ changes: [TreeChange]) -> [[String]] {
 - Identity is the whole path, so `README.md` in two folders never collide.
 - An inserted or deleted folder is **one** entry. Its files are not listed.
 - A node moved to another parent is a delete plus an insert. Moves are only reported among siblings.
-- Siblings must have unique `primaryKeyValue`s.
+- Siblings must have unique `id`s.
 - The comparison recurses once per level. Keep trees under about 150 levels deep.
 - The ``DiffAlgorithm`` is used at every level. With `.myers` there is never a `movedFrom`.
