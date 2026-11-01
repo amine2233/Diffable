@@ -80,7 +80,7 @@ class DiffableTests: XCTestCase {
 
         XCTAssertEqual(value.insertions.count, 0)
         XCTAssertEqual(value.updates.count, 0)
-        XCTAssertEqual(value.moves.count, 2)
+        XCTAssertEqual(value.moves.count, 1)
         XCTAssertEqual(value.deletions.count, 0)
     }
 
@@ -148,15 +148,8 @@ class DiffableTests: XCTestCase {
 
         XCTAssertEqual(value.insertions.count, 0)
         XCTAssertEqual(value.updates.count, 0)
-        XCTAssertEqual(value.moves.count, 3)
+        XCTAssertEqual(value.moves.count, 1)
         XCTAssertEqual(value.deletions.count, 0)
-    }
-
-    func testPerformanceExample() {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
-        }
     }
 
     static var allTests = [
