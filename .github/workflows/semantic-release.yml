@@ -23,5 +23,7 @@ jobs:
       pull-requests: write
     uses: amine2233/ci-shared/.github/workflows/semantic-release.yml@1.0
     with:
+      # executor needs libxml2.so.2, which ubuntu-latest (Ubuntu 26.04) no longer ships.
+      runner: ubuntu-24.04
       release-args: ${{ inputs.dry_run && '--dry-run --write-change-log' || '--write-change-log' }}
     secrets: inherit
