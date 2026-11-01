@@ -1,28 +1,43 @@
 #if canImport(AppKit) && !targetEnvironment(macCatalyst)
 import AppKit
-import Testing
 import Diffable
+import Testing
 @testable import DiffableUI
 
 private let algorithms: [DiffAlgorithm] = [.heckel, .myers]
 
 @MainActor
-@Suite("NSMenu") struct NSMenuDiffTests {
-
+@Suite("NSMenu")
+struct NSMenuDiffTests {
     @Test("menu items follow the models", arguments: algorithms)
     func followsModels(algorithm: DiffAlgorithm) {
         var generator = Seeded(seed: 51)
-        for _ in 0..<300 {
+        for _ in 0 ..< 300 {
             let old = randomRows(maxCount: 8, using: &generator)
             let new = mutated(old, using: &generator)
             let menu = NSMenu()
-            old.forEach { menu.addItem(NSMenuItem(title: "\($0.id):\($0.value)", action: nil, keyEquivalent: "")) }
+            old.forEach { menu.addItem(NSMenuItem(
+                title: "\($0.id):\($0.value)",
+                action: nil,
+                keyEquivalent: ""
+            )) }
 
-            menu.applyDiff(from: old, to: new, algorithm: algorithm,
-                           makeItem: { NSMenuItem(title: "\($0.id):\($0.value)", action: nil, keyEquivalent: "") },
-                           update: { item, row in item.title = "\(row.id):\(row.value)" })
+            menu.applyDiff(
+                from: old,
+                to: new,
+                algorithm: algorithm,
+                makeItem: { NSMenuItem(
+                    title: "\($0.id):\($0.value)",
+                    action: nil,
+                    keyEquivalent: ""
+                ) },
+                update: { item, row in item.title = "\(row.id):\(row.value)" }
+            )
 
-            #expect(menu.items.map(\.title) == new.map { "\($0.id):\($0.value)" }, "\(old.map(\.id)) → \(new.map(\.id))")
+            #expect(
+                menu.items.map(\.title) == new.map { "\($0.id):\($0.value)" },
+                "\(old.map(\.id)) → \(new.map(\.id))"
+            )
         }
     }
 
@@ -33,15 +48,20 @@ private let algorithms: [DiffAlgorithm] = [.heckel, .myers]
         old.forEach { menu.addItem(NSMenuItem(title: $0.id, action: nil, keyEquivalent: "")) }
         let kept = menu.items[1]
 
-        menu.applyDiff(from: old, to: rows("xbc"), makeItem: { NSMenuItem(title: $0.id, action: nil, keyEquivalent: "") }, update: { _, _ in })
+        menu.applyDiff(
+            from: old,
+            to: rows("xbc"),
+            makeItem: { NSMenuItem(title: $0.id, action: nil, keyEquivalent: "") },
+            update: { _, _ in }
+        )
 
         #expect(menu.items[1] === kept)
     }
 }
 
 @MainActor
-@Suite("NSStackView") struct NSStackViewDiffTests {
-
+@Suite("NSStackView")
+struct NSStackViewDiffTests {
     @Test("arranged views follow the models", arguments: algorithms)
     func followsModels(algorithm: DiffAlgorithm) {
         var generator = Seeded(seed: 52)
@@ -50,7 +70,7 @@ private let algorithms: [DiffAlgorithm] = [.heckel, .myers]
             view.identifier = NSUserInterfaceItemIdentifier("\(row.id):\(row.value)")
             return view
         }
-        for _ in 0..<300 {
+        for _ in 0 ..< 300 {
             let old = randomRows(maxCount: 8, using: &generator)
             let new = mutated(old, using: &generator)
             let stack = NSStackView()
@@ -60,7 +80,8 @@ private let algorithms: [DiffAlgorithm] = [.heckel, .myers]
                 view.identifier = NSUserInterfaceItemIdentifier("\(row.id):\(row.value)")
             }
 
-            #expect(stack.arrangedSubviews.compactMap { $0.identifier?.rawValue } == new.map { "\($0.id):\($0.value)" })
+            #expect(stack.arrangedSubviews.compactMap { $0.identifier?.rawValue } == new
+                .map { "\($0.id):\($0.value)" })
             #expect(stack.subviews.count == new.count)
         }
     }
@@ -84,12 +105,14 @@ private let algorithms: [DiffAlgorithm] = [.heckel, .myers]
 
 private final class RowSource: NSObject, NSTableViewDataSource {
     var rows: [Row] = []
-    func numberOfRows(in tableView: NSTableView) -> Int { rows.count }
+    func numberOfRows(in tableView: NSTableView) -> Int {
+        rows.count
+    }
 }
 
 @MainActor
-@Suite("NSTableView") struct NSTableViewDiffTests {
-
+@Suite("NSTableView")
+struct NSTableViewDiffTests {
     private func makeTable(_ source: RowSource) -> NSTableView {
         let table = NSTableView(frame: NSRect(x: 0, y: 0, width: 200, height: 400))
         table.addTableColumn(NSTableColumn(identifier: NSUserInterfaceItemIdentifier("c")))
@@ -104,11 +127,19 @@ private final class RowSource: NSObject, NSTableViewDataSource {
         let source = RowSource()
         let table = makeTable(source)
 
-        for _ in 0..<300 {
+        for _ in 0 ..< 300 {
             let old = source.rows
-            let new = mutated(old.isEmpty ? randomRows(maxCount: 8, using: &generator) : old, using: &generator)
+            let new = mutated(
+                old.isEmpty ? randomRows(maxCount: 8, using: &generator) : old,
+                using: &generator
+            )
 
-            table.applyDiff(from: old, to: new, algorithm: algorithm, animations: NSTableView.DiffAnimations(insert: [], remove: [])) {
+            table.applyDiff(
+                from: old,
+                to: new,
+                algorithm: algorithm,
+                animations: NSTableView.DiffAnimations(insert: [], remove: [])
+            ) {
                 source.rows = new
             }
 
@@ -130,10 +161,17 @@ private final class RowSource: NSObject, NSTableViewDataSource {
 private final class PathBox: NSObject {
     let path: TreePath
 
-    init(_ path: TreePath) { self.path = path }
+    init(_ path: TreePath) {
+        self.path = path
+    }
 
-    override func isEqual(_ object: Any?) -> Bool { (object as? PathBox)?.path == path }
-    override var hash: Int { path.hashValue }
+    override func isEqual(_ object: Any?) -> Bool {
+        (object as? PathBox)?.path == path
+    }
+
+    override var hash: Int {
+        path.hashValue
+    }
 }
 
 private struct Entry: DiffableTree {
@@ -141,9 +179,17 @@ private struct Entry: DiffableTree {
     var size = 0
     var children: [Entry] = []
 
-    var primaryKeyValue: String { name }
-    static func == (lhs: Entry, rhs: Entry) -> Bool { lhs.name == rhs.name && lhs.size == rhs.size }
-    func hash(into hasher: inout Hasher) { hasher.combine(name); hasher.combine(size) }
+    var primaryKeyValue: String {
+        name
+    }
+
+    static func == (lhs: Entry, rhs: Entry) -> Bool {
+        lhs.name == rhs.name && lhs.size == rhs.size
+    }
+
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(name); hasher.combine(size)
+    }
 }
 
 private final class OutlineSource: NSObject, NSOutlineViewDataSource {
@@ -151,6 +197,7 @@ private final class OutlineSource: NSObject, NSOutlineViewDataSource {
 
     private func children(of item: Any?) -> [Entry] {
         guard let box = item as? PathBox else { return roots }
+
         var level = roots
         var found: Entry?
         for component in box.path.components {
@@ -160,18 +207,37 @@ private final class OutlineSource: NSObject, NSOutlineViewDataSource {
         return found?.children ?? []
     }
 
-    func outlineView(_ outlineView: NSOutlineView, numberOfChildrenOfItem item: Any?) -> Int { children(of: item).count }
-    func outlineView(_ outlineView: NSOutlineView, isItemExpandable item: Any) -> Bool { !children(of: item).isEmpty }
+    func outlineView(
+        _ outlineView: NSOutlineView,
+        numberOfChildrenOfItem item: Any?
+    ) -> Int {
+        children(of: item).count
+    }
+
+    func outlineView(
+        _ outlineView: NSOutlineView,
+        isItemExpandable item: Any
+    ) -> Bool {
+        !children(of: item).isEmpty
+    }
+
     func outlineView(_ outlineView: NSOutlineView, child index: Int, ofItem item: Any?) -> Any {
         let parent = (item as? PathBox)?.path.components ?? []
         return PathBox(TreePath(parent + [children(of: item)[index].name]))
     }
-    func outlineView(_ outlineView: NSOutlineView, objectValueFor tableColumn: NSTableColumn?, byItem item: Any?) -> Any? { nil }
+
+    func outlineView(
+        _ outlineView: NSOutlineView,
+        objectValueFor tableColumn: NSTableColumn?,
+        byItem item: Any?
+    ) -> Any? {
+        nil
+    }
 }
 
 @MainActor
-@Suite("NSOutlineView") struct NSOutlineViewDiffTests {
-
+@Suite("NSOutlineView")
+struct NSOutlineViewDiffTests {
     private func makeOutline(_ source: OutlineSource) -> NSOutlineView {
         let outline = NSOutlineView(frame: NSRect(x: 0, y: 0, width: 200, height: 400))
         let column = NSTableColumn(identifier: NSUserInterfaceItemIdentifier("c"))
@@ -196,13 +262,22 @@ private final class OutlineSource: NSObject, NSOutlineViewDataSource {
         let source = OutlineSource()
         let outline = makeOutline(source)
 
-        for _ in 0..<200 {
+        for _ in 0 ..< 200 {
             let old = source.roots
-            let ids = (old.isEmpty ? randomRows(maxCount: 6, using: &generator) : mutated(old.map { Row(id: $0.name, value: $0.size) }, using: &generator))
+            let ids = (old.isEmpty ? randomRows(maxCount: 6, using: &generator) : mutated(
+                old.map { Row(id: $0.name, value: $0.size) },
+                using: &generator
+            ))
             let new = ids.map { Entry(name: $0.id, size: $0.value) }
 
-            outline.applyDiff(from: old, to: new, algorithm: algorithm, animations: NSTableView.DiffAnimations(insert: [], remove: []),
-                              item: { PathBox($0) }, updateData: { source.roots = new })
+            outline.applyDiff(
+                from: old,
+                to: new,
+                algorithm: algorithm,
+                animations: NSTableView.DiffAnimations(insert: [], remove: []),
+                item: { PathBox($0) },
+                updateData: { source.roots = new }
+            )
 
             #expect(outline.numberOfRows == new.count, "\(old.map(\.name)) → \(new.map(\.name))")
         }
@@ -211,16 +286,27 @@ private final class OutlineSource: NSObject, NSOutlineViewDataSource {
     @Test("a child inserted and another removed inside an expanded folder")
     func nestedChanges() {
         let source = OutlineSource()
-        source.roots = [Entry(name: "src", children: [Entry(name: "a"), Entry(name: "b")]), Entry(name: "docs")]
+        source.roots = [
+            Entry(name: "src", children: [Entry(name: "a"), Entry(name: "b")]),
+            Entry(name: "docs")
+        ]
         let outline = makeOutline(source)
         outline.expandItem(PathBox(TreePath(["src"])))
         #expect(outline.numberOfRows == 4)
 
         let old = source.roots
-        let new = [Entry(name: "src", children: [Entry(name: "b"), Entry(name: "c"), Entry(name: "d")]), Entry(name: "docs")]
+        let new = [
+            Entry(name: "src", children: [Entry(name: "b"), Entry(name: "c"), Entry(name: "d")]),
+            Entry(name: "docs")
+        ]
 
-        outline.applyDiff(from: old, to: new, animations: NSTableView.DiffAnimations(insert: [], remove: []),
-                          item: { PathBox($0) }, updateData: { source.roots = new })
+        outline.applyDiff(
+            from: old,
+            to: new,
+            animations: NSTableView.DiffAnimations(insert: [], remove: []),
+            item: { PathBox($0) },
+            updateData: { source.roots = new }
+        )
 
         #expect(outline.numberOfRows == visibleRows(new, parent: [], outline: outline))
         #expect(outline.numberOfRows == 5)
@@ -229,19 +315,30 @@ private final class OutlineSource: NSObject, NSOutlineViewDataSource {
 
 private final class ItemSource: NSObject, NSCollectionViewDataSource {
     var rows: [Row] = []
-    func collectionView(_ collectionView: NSCollectionView, numberOfItemsInSection section: Int) -> Int { rows.count }
-    func collectionView(_ collectionView: NSCollectionView, itemForRepresentedObjectAt indexPath: IndexPath) -> NSCollectionViewItem {
+    func collectionView(
+        _ collectionView: NSCollectionView,
+        numberOfItemsInSection section: Int
+    ) -> Int {
+        rows.count
+    }
+
+    func collectionView(
+        _ collectionView: NSCollectionView,
+        itemForRepresentedObjectAt indexPath: IndexPath
+    ) -> NSCollectionViewItem {
         collectionView.makeItem(withIdentifier: NSUserInterfaceItemIdentifier("cell"), for: indexPath)
     }
 }
 
 private final class CellItem: NSCollectionViewItem {
-    override func loadView() { view = NSView(frame: NSRect(x: 0, y: 0, width: 40, height: 40)) }
+    override func loadView() {
+        view = NSView(frame: NSRect(x: 0, y: 0, width: 40, height: 40))
+    }
 }
 
 @MainActor
-@Suite("NSCollectionView") struct NSCollectionViewDiffTests {
-
+@Suite("NSCollectionView")
+struct NSCollectionViewDiffTests {
     @Test("the item count stays consistent through a diff")
     func consistentItemCount() async {
         let source = ItemSource()
@@ -256,7 +353,12 @@ private final class CellItem: NSCollectionViewItem {
 
         let new = rows("bcxd")
         await withCheckedContinuation { continuation in
-            collection.applyDiff(from: source.rows, to: new, updateData: { source.rows = new }, completion: { continuation.resume() })
+            collection.applyDiff(
+                from: source.rows,
+                to: new,
+                updateData: { source.rows = new },
+                completion: { continuation.resume() }
+            )
         }
 
         #expect(collection.numberOfItems(inSection: 0) == 4)

@@ -4,8 +4,8 @@ import UIKit
 #else
 import AppKit
 #endif
-import Testing
 import Diffable
+import Testing
 @testable import DiffableUI
 
 private struct Folder: DiffableTree {
@@ -13,17 +13,29 @@ private struct Folder: DiffableTree {
     var size = 0
     var children: [Folder] = []
 
-    var primaryKeyValue: String { name }
-    static func == (lhs: Folder, rhs: Folder) -> Bool { lhs.name == rhs.name && lhs.size == rhs.size }
-    func hash(into hasher: inout Hasher) { hasher.combine(name); hasher.combine(size) }
+    var primaryKeyValue: String {
+        name
+    }
+
+    static func == (lhs: Folder, rhs: Folder) -> Bool {
+        lhs.name == rhs.name && lhs.size == rhs.size
+    }
+
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(name); hasher.combine(size)
+    }
 }
 
-@Suite("Snapshots") struct SnapshotTests {
-
+@Suite("Snapshots")
+struct SnapshotTests {
     @Test("a sectioned snapshot has one section per section and unique item ids")
     func sectionedSnapshot() {
         guard #available(iOS 13.0, tvOS 13.0, macOS 10.15.1, *) else { return }
-        let sections = [Group(title: "Inbox", children: rows("12")), Group(title: "Sent", children: rows("12"))]
+
+        let sections = [
+            Group(title: "Inbox", children: rows("12")),
+            Group(title: "Sent", children: rows("12"))
+        ]
 
         let snapshot = NSDiffableDataSourceSnapshot<String, SnapshotItemID>(sections: sections)
 
@@ -36,6 +48,7 @@ private struct Folder: DiffableTree {
     @Test("the snapshot of an edit still describes the new data")
     func editedSnapshot() {
         guard #available(iOS 13.0, tvOS 13.0, macOS 10.15.1, *) else { return }
+
         let old = [Group(title: "Inbox", children: rows("12"))]
         let new = [Group(title: "Inbox", header: 1, children: rows("12", value: 1))]
 
@@ -48,18 +61,27 @@ private struct Folder: DiffableTree {
     @Test("updatedPaths lists the nodes whose own content changed")
     func updatedPaths() {
         let old = [Folder(name: "root", children: [Folder(name: "a", size: 1), Folder(name: "b")])]
-        let new = [Folder(name: "root", children: [Folder(name: "a", size: 2), Folder(name: "b"), Folder(name: "c")])]
+        let new = [Folder(
+            name: "root",
+            children: [Folder(name: "a", size: 2), Folder(name: "b"), Folder(name: "c")]
+        )]
 
         #expect(old.updatedPaths(to: new) == [TreePath(["root", "a"])])
     }
 
-    #if canImport(UIKit)
+#if canImport(UIKit)
     @available(iOS 14.0, tvOS 14.0, *)
     @Test("an outline snapshot nests children under their parent and expands what is asked")
     func outlineSnapshot() {
-        let roots = [Folder(name: "root", children: [Folder(name: "src", children: [Folder(name: "a")]), Folder(name: "docs")])]
+        let roots = [Folder(
+            name: "root",
+            children: [Folder(name: "src", children: [Folder(name: "a")]), Folder(name: "docs")]
+        )]
 
-        let snapshot = NSDiffableDataSourceSectionSnapshot<TreePath>(roots: roots, expanded: [TreePath(["root"])])
+        let snapshot = NSDiffableDataSourceSectionSnapshot<TreePath>(
+            roots: roots,
+            expanded: [TreePath(["root"])]
+        )
 
         #expect(snapshot.items.count == 4)
         #expect(snapshot.rootItems == [TreePath(["root"])])
@@ -68,7 +90,7 @@ private struct Folder: DiffableTree {
         #expect(!snapshot.isExpanded(TreePath(["root", "src"])))
         #expect(snapshot.visibleItems.count == 3)
     }
-    #endif
+#endif
 }
 
 private struct Group: DiffableTree {
@@ -76,8 +98,16 @@ private struct Group: DiffableTree {
     var header = 0
     var children: [Row] = []
 
-    var primaryKeyValue: String { title }
-    static func == (lhs: Group, rhs: Group) -> Bool { lhs.title == rhs.title && lhs.header == rhs.header }
-    func hash(into hasher: inout Hasher) { hasher.combine(title); hasher.combine(header) }
+    var primaryKeyValue: String {
+        title
+    }
+
+    static func == (lhs: Group, rhs: Group) -> Bool {
+        lhs.title == rhs.title && lhs.header == rhs.header
+    }
+
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(title); hasher.combine(header)
+    }
 }
 #endif

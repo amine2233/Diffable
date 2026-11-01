@@ -1,9 +1,11 @@
-import Testing
 import Diffable
+import Testing
 @testable import DiffableUI
 
 extension Row: DiffableTree {
-    var children: [Row] { [] }
+    var children: [Row] {
+        []
+    }
 }
 
 private struct Section: DiffableTree {
@@ -11,17 +13,25 @@ private struct Section: DiffableTree {
     var header = 0
     var children: [Row] = []
 
-    var primaryKeyValue: String { title }
-    static func == (lhs: Section, rhs: Section) -> Bool { lhs.title == rhs.title && lhs.header == rhs.header }
-    func hash(into hasher: inout Hasher) { hasher.combine(title); hasher.combine(header) }
+    var primaryKeyValue: String {
+        title
+    }
+
+    static func == (lhs: Section, rhs: Section) -> Bool {
+        lhs.title == rhs.title && lhs.header == rhs.header
+    }
+
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(title); hasher.combine(header)
+    }
 }
 
 private func section(_ title: String, _ ids: String, header: Int = 0) -> Section {
     Section(title: title, header: header, children: rows(ids))
 }
 
-@Suite("SectionedChanges") struct SectionedChangesTests {
-
+@Suite("SectionedChanges")
+struct SectionedChangesTests {
     @Test("item insert and delete in a stable section")
     func stableSection() {
         let old = [section("A", "abc"), section("B", "xy")]
@@ -136,7 +146,7 @@ private func section(_ title: String, _ ids: String, header: Int = 0) -> Section
     @Test("random sections: the changes are consistent with the data")
     func randomConsistency() {
         var generator = Seeded(seed: 41)
-        for _ in 0..<1_500 {
+        for _ in 0 ..< 1_500 {
             let old = randomSections(using: &generator)
             let new = mutatedSections(old, using: &generator)
 
@@ -154,14 +164,18 @@ private func section(_ title: String, _ ids: String, header: Int = 0) -> Section
         #expect(old.count - deleted.count == new.count - inserted.count, "\(context)")
 
         for (newIndex, section) in new.enumerated() where !inserted.contains(newIndex) {
-            guard let oldIndex = old.firstIndex(where: { $0.title == section.title }), !deleted.contains(oldIndex) else {
+            guard let oldIndex = old.firstIndex(where: { $0.title == section.title }),
+                  !deleted.contains(oldIndex) else {
                 Issue.record("kept section \(section.title) has no old counterpart: \(context)")
                 continue
             }
+
             let removed = removedItems(changes, oldSection: oldIndex)
             let added = addedItems(changes, newSection: newIndex)
-            let survivors = old[oldIndex].children.map(\.id).enumerated().filter { !removed.contains($0.offset) }.map(\.element)
-            let fixed = section.children.map(\.id).enumerated().filter { !added.contains($0.offset) }.map(\.element)
+            let survivors = old[oldIndex].children.map(\.id).enumerated()
+                .filter { !removed.contains($0.offset) }.map(\.element)
+            let fixed = section.children.map(\.id).enumerated().filter { !added.contains($0.offset) }
+                .map(\.element)
 
             #expect(survivors == fixed, "section \(section.title): \(context)")
         }
@@ -169,9 +183,13 @@ private func section(_ title: String, _ ids: String, header: Int = 0) -> Section
         let movedTargets = Set(changes.sectionMoves.map(\.to))
         let unmovedOldIndexes = new.enumerated().compactMap { entry -> Int? in
             guard !inserted.contains(entry.offset), !movedTargets.contains(entry.offset) else { return nil }
+
             return old.firstIndex(where: { $0.title == entry.element.title })
         }
-        #expect(unmovedOldIndexes == unmovedOldIndexes.sorted(), "unmoved sections keep their order: \(context)")
+        #expect(
+            unmovedOldIndexes == unmovedOldIndexes.sorted(),
+            "unmoved sections keep their order: \(context)"
+        )
     }
 
     private func removedItems(_ changes: SectionedChanges, oldSection: Int) -> Set<Int> {
@@ -191,21 +209,27 @@ private func section(_ title: String, _ ids: String, header: Int = 0) -> Section
     }
 
     private func randomSections(using rng: inout Seeded) -> [Section] {
-        let titles = ["A", "B", "C", "D"].shuffled(using: &rng).prefix(Int.random(in: 0...4, using: &rng))
+        let titles = ["A", "B", "C", "D"].shuffled(using: &rng).prefix(Int.random(in: 0 ... 4, using: &rng))
         return titles.map { Section(title: $0, header: 0, children: randomRows(maxCount: 5, using: &rng)) }
     }
 
     private func mutatedSections(_ old: [Section], using rng: inout Seeded) -> [Section] {
-        var result = old.filter { _ in Int.random(in: 0..<5, using: &rng) != 0 }
+        var result = old.filter { _ in Int.random(in: 0 ..< 5, using: &rng) != 0 }
         result = result.map { section in
             var copy = section
-            if Int.random(in: 0..<4, using: &rng) == 0 { copy.header += 1 }
-            if Int.random(in: 0..<2, using: &rng) == 0 { copy.children = mutated(section.children, using: &rng) }
+            if Int.random(in: 0 ..< 4, using: &rng) == 0 { copy.header += 1 }
+            if Int.random(in: 0 ..< 2, using: &rng) == 0 { copy.children = mutated(
+                section.children,
+                using: &rng
+            ) }
             return copy
         }
         if Bool.random(using: &rng) { result.shuffle(using: &rng) }
-        if Int.random(in: 0..<3, using: &rng) == 0, !result.contains(where: { $0.title == "Z" }) {
-            result.insert(Section(title: "Z", header: 0, children: randomRows(maxCount: 3, using: &rng)), at: Int.random(in: 0...result.count, using: &rng))
+        if Int.random(in: 0 ..< 3, using: &rng) == 0, !result.contains(where: { $0.title == "Z" }) {
+            result.insert(
+                Section(title: "Z", header: 0, children: randomRows(maxCount: 3, using: &rng)),
+                at: Int.random(in: 0 ... result.count, using: &rng)
+            )
         }
         return result
     }

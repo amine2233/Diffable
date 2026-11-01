@@ -1,10 +1,3 @@
-//
-//  Diffable.swift
-//  Diffable
-//
-//  Created by Amine Bensalah on 05/12/2019.
-//
-
 import Foundation
 
 /// An element that can be compared by the diff algorithms.
@@ -27,7 +20,6 @@ import Foundation
 /// - `primaryKeyValue` must be stable and unique among siblings (a database id, a file name...).
 /// - `==` must compare the *content* you want to detect changes on.
 public protocol Diffable: Hashable {
-
     /// The stable identity of the element, unique inside one array of siblings.
     var primaryKeyValue: String { get }
 
@@ -39,8 +31,7 @@ public protocol Diffable: Hashable {
 }
 
 extension Diffable {
-
     public var diffIdentity: AnyHashable {
-        return primaryKeyValue
+        primaryKeyValue
     }
 }

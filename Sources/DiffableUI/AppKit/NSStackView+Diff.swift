@@ -1,8 +1,3 @@
-//
-//  NSStackView+Diff.swift
-//  DiffableUI
-//
-
 #if canImport(AppKit) && !targetEnvironment(macCatalyst)
 
 #if SWIFT_PACKAGE
@@ -11,7 +6,6 @@ import Diffable
 import AppKit
 
 extension NSStackView {
-
     /// Keeps the arranged subviews in sync with a list of models: unchanged views are kept,
     /// new ones are created, removed ones are dropped, reordered ones are moved.
     ///
@@ -30,8 +24,13 @@ extension NSStackView {
     ///   - new: The models to show.
     ///   - makeView: Creates the view of a new model.
     ///   - update: Refreshes an existing view whose model changed.
-    public func applyDiff<Element: Diffable, View: NSView>(from old: [Element], to new: [Element], algorithm: DiffAlgorithm = .heckel, makeView: (Element) -> View, update: (View, Element) -> Void) {
-
+    public func applyDiff<Element: Diffable, View: NSView>(
+        from old: [Element],
+        to new: [Element],
+        algorithm: DiffAlgorithm = .heckel,
+        makeView: (Element) -> View,
+        update: (View, Element) -> Void
+    ) {
         let changes = old.listChanges(to: new, algorithm: algorithm)
 
         SequentialPlan(changes: changes, oldCount: old.count, newCount: new.count).perform(remove: { index in

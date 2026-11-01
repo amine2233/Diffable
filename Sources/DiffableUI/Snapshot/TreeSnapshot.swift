@@ -1,8 +1,3 @@
-//
-//  TreeSnapshot.swift
-//  DiffableUI
-//
-
 #if (canImport(UIKit) || canImport(AppKit)) && !os(watchOS)
 
 #if SWIFT_PACKAGE
@@ -18,7 +13,6 @@ import AppKit
 #if canImport(UIKit)
 @available(iOS 14.0, tvOS 14.0, *)
 extension NSDiffableDataSourceSectionSnapshot where ItemIdentifierType == TreePath {
-
     /// An expandable outline snapshot of a tree, for a collection view with an outline layout.
     ///
     /// ```
@@ -38,7 +32,11 @@ extension NSDiffableDataSourceSectionSnapshot where ItemIdentifierType == TreePa
         expand(items.filter { expanded.contains($0) })
     }
 
-    private static func append<Node: DiffableTree>(_ nodes: [Node], parent: TreePath?, to snapshot: inout NSDiffableDataSourceSectionSnapshot<TreePath>) {
+    private static func append<Node: DiffableTree>(
+        _ nodes: [Node],
+        parent: TreePath?,
+        to snapshot: inout NSDiffableDataSourceSectionSnapshot<TreePath>
+    ) {
         let paths = nodes.map { TreePath((parent?.components ?? []) + [$0.primaryKeyValue]) }
         snapshot.append(paths, to: parent)
         for (node, path) in zip(nodes, paths) {
@@ -49,14 +47,13 @@ extension NSDiffableDataSourceSectionSnapshot where ItemIdentifierType == TreePa
 #endif
 
 extension Array where Element: DiffableTree {
-
     /// The paths of the nodes whose own content changed between `self` and `new`.
     ///
     /// Feed them to `reconfigureItems` / `reloadItems`: a diffable data source compares identifiers
     /// only, so edited nodes would otherwise not be redrawn.
     public func updatedPaths(to new: [Element], algorithm: DiffAlgorithm = .heckel) -> [TreePath] {
         func collect(_ changes: [TreeChange]) -> [TreePath] {
-            return changes.flatMap { change -> [TreePath] in
+            changes.flatMap { change -> [TreePath] in
                 (change.kind == .update ? [TreePath(change.path)] : []) + collect(change.children)
             }
         }

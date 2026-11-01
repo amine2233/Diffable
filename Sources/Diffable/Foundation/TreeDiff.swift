@@ -1,8 +1,3 @@
-//
-//  TreeDiff.swift
-//  Diffable
-//
-
 import Foundation
 
 /// A node of a tree (a folder with files and sub folders, for example).
@@ -42,17 +37,17 @@ public protocol DiffableTree: Diffable {
 ///
 /// ```
 ///  old                       new                         treeDiff result
-///  src/                      src/                        = src                 (unchanged, has changes below)
-///  ├── a.swift               ├── a.swift                   = util              (unchanged, has changes below)
+///  src/                      src/                        = src                 (unchanged, has changes
+/// below)
+///  ├── a.swift               ├── a.swift                   = util              (unchanged, has changes
+/// below)
 ///  └── util/                 └── util/                       ~ b.swift         (update)
 ///      └── b.swift (v1)          ├── b.swift (v2)            + c.swift         (insert)
 ///  docs/                         └── c.swift               - docs              (delete, ONE entry:
 ///  └── index.md                                                                 its files are not repeated)
 /// ```
 public struct TreeChange: Equatable {
-
     public enum Kind: Equatable {
-
         /// The node exists only in the new tree. Its descendants are not listed.
         case insert
 
@@ -91,7 +86,6 @@ public struct TreeChange: Equatable {
 }
 
 extension TreeChange: CustomStringConvertible {
-
     /// A readable outline of the change tree.
     ///
     /// ```
@@ -103,16 +97,15 @@ extension TreeChange: CustomStringConvertible {
     /// ```
     /// `+` insert, `-` delete, `~` update, `=` unchanged container. A moved node adds `(moved from n)`.
     public var description: String {
-        return outline(depth: 0).joined(separator: "\n")
+        outline(depth: 0).joined(separator: "\n")
     }
 
     private func outline(depth: Int) -> [String] {
-        let marker: String
-        switch kind {
-        case .insert: marker = "+"
-        case .delete: marker = "-"
-        case .update: marker = "~"
-        case .unchanged: marker = "="
+        let marker = switch kind {
+        case .insert: "+"
+        case .delete: "-"
+        case .update: "~"
+        case .unchanged: "="
         }
         let moved = movedFrom.map { " (moved from \($0))" } ?? ""
         let line = String(repeating: "  ", count: depth) + "\(marker) \(key)\(moved)"
@@ -121,7 +114,6 @@ extension TreeChange: CustomStringConvertible {
 }
 
 extension Array where Element: DiffableTree {
-
     /// Diffs two lists of sibling trees (for example the content of a root folder) recursively.
     ///
     /// ```
@@ -129,7 +121,8 @@ extension Array where Element: DiffableTree {
     ///               |
     ///               +-- node in both?  yes -> level 1: diff(old.children, new.children)
     ///               |                                      |
-    ///               |                                      +-- ... and so on, path grows: [src] -> [src, util] ...
+    ///               |                                      +-- ... and so on, path grows: [src] -> [src,
+    /// util] ...
     ///               +-- only in old -> .delete  (whole subtree, one entry)
     ///               +-- only in new -> .insert  (whole subtree, one entry)
     /// ```
@@ -139,13 +132,13 @@ extension Array where Element: DiffableTree {
     /// - Parameters:
     ///   - new: The new siblings.
     ///   - algorithm: The algorithm used at **every** level. `.myers` never reports `movedFrom`.
-    /// - Returns: The change tree, deletions first, then the new siblings in order. Empty when nothing changed.
+    /// - Returns: The change tree, deletions first, then the new siblings in order. Empty when nothing
+    /// changed.
     public func treeDiff(_ new: [Element], algorithm: DiffAlgorithm = .heckel) -> [TreeChange] {
-        return treeDiff(new, algorithm: algorithm, parentPath: [])
+        treeDiff(new, algorithm: algorithm, parentPath: [])
     }
 
     private func treeDiff(_ new: [Element], algorithm: DiffAlgorithm, parentPath: [String]) -> [TreeChange] {
-
         var deleted: [Int] = []
         var inserted = Set<Int>()
         var updated = Set<Int>()
@@ -153,20 +146,28 @@ extension Array where Element: DiffableTree {
 
         for step in algorithm.process(old: self, new: new) {
             switch step {
-            case .delete(let index, _):
+            case let .delete(index, _):
                 deleted.append(index)
-            case .insert(let index, _):
+            case let .insert(index, _):
                 inserted.insert(index)
-            case .update(let index, _):
+            case let .update(index, _):
                 updated.insert(index)
-            case .move(let from, let to, _):
+            case let .move(from, to, _):
                 movedFrom[to] = from
             }
         }
 
         var changes: [TreeChange] = deleted.sorted().map { index in
             let key = self[index].primaryKeyValue
-            return TreeChange(key: key, path: parentPath + [key], kind: .delete, index: index, movedFrom: nil, oldIndex: index, children: [])
+            return TreeChange(
+                key: key,
+                path: parentPath + [key],
+                kind: .delete,
+                index: index,
+                movedFrom: nil,
+                oldIndex: index,
+                children: []
+            )
         }
 
         var survivors: [AnyHashable: [Int]] = [:]
@@ -179,11 +180,23 @@ extension Array where Element: DiffableTree {
             let path = parentPath + [node.primaryKeyValue]
 
             guard !inserted.contains(index), let oldIndex = survivors[node.diffIdentity]?.removeFirst() else {
-                changes.append(TreeChange(key: node.primaryKeyValue, path: path, kind: .insert, index: index, movedFrom: nil, oldIndex: nil, children: []))
+                changes.append(TreeChange(
+                    key: node.primaryKeyValue,
+                    path: path,
+                    kind: .insert,
+                    index: index,
+                    movedFrom: nil,
+                    oldIndex: nil,
+                    children: []
+                ))
                 continue
             }
 
-            let childChanges = self[oldIndex].children.treeDiff(node.children, algorithm: algorithm, parentPath: path)
+            let childChanges = self[oldIndex].children.treeDiff(
+                node.children,
+                algorithm: algorithm,
+                parentPath: path
+            )
             let kind: TreeChange.Kind = updated.contains(index) ? .update : .unchanged
             let moved = movedFrom[index]
 
@@ -191,7 +204,15 @@ extension Array where Element: DiffableTree {
                 continue
             }
 
-            changes.append(TreeChange(key: node.primaryKeyValue, path: path, kind: kind, index: index, movedFrom: moved, oldIndex: oldIndex, children: childChanges))
+            changes.append(TreeChange(
+                key: node.primaryKeyValue,
+                path: path,
+                kind: kind,
+                index: index,
+                movedFrom: moved,
+                oldIndex: oldIndex,
+                children: childChanges
+            ))
         }
 
         return changes
@@ -199,7 +220,6 @@ extension Array where Element: DiffableTree {
 }
 
 extension DiffableTree {
-
     /// Diffs this root against another root.
     ///
     /// ```
@@ -210,6 +230,6 @@ extension DiffableTree {
     /// - Returns: Usually one `TreeChange` for the root with its descendants' changes as `children`;
     ///   empty when the trees are identical.
     public func treeDiff(to new: Self, algorithm: DiffAlgorithm = .heckel) -> [TreeChange] {
-        return [self].treeDiff([new], algorithm: algorithm)
+        [self].treeDiff([new], algorithm: algorithm)
     }
 }

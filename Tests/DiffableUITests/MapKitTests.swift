@@ -1,7 +1,7 @@
 #if canImport(MapKit) && !os(watchOS)
+import Diffable
 import MapKit
 import Testing
-import Diffable
 @testable import DiffableUI
 
 private final class Pin: NSObject, DiffableAnnotation {
@@ -12,22 +12,27 @@ private final class Pin: NSObject, DiffableAnnotation {
     init(_ id: String, title: String = "", latitude: Double = 0) {
         self.id = id
         self.title = title
-        coordinate = CLLocationCoordinate2D(latitude: latitude, longitude: 0)
+        self.coordinate = CLLocationCoordinate2D(latitude: latitude, longitude: 0)
     }
 
-    var primaryKeyValue: String { id }
+    var primaryKeyValue: String {
+        id
+    }
 
     override func isEqual(_ object: Any?) -> Bool {
         guard let other = object as? Pin else { return false }
+
         return other.id == id && other.title == title && other.coordinate.latitude == coordinate.latitude
     }
 
-    override var hash: Int { id.hashValue ^ (title ?? "").hashValue }
+    override var hash: Int {
+        id.hashValue ^ (title ?? "").hashValue
+    }
 }
 
 @MainActor
-@Suite("MKMapView") struct MapKitDiffTests {
-
+@Suite("MKMapView")
+struct MapKitDiffTests {
     private func ids(_ map: MKMapView) -> [String] {
         map.annotations.compactMap { ($0 as? Pin)?.id }.sorted()
     }
@@ -62,7 +67,10 @@ private final class Pin: NSObject, DiffableAnnotation {
         let first = Pin("a", title: "old")
         var shown = map.syncAnnotations(from: [], to: [first])
 
-        shown = map.syncAnnotations(from: shown, to: [Pin("a", title: "new")]) { onMap, new in onMap.title = new.title }
+        shown = map
+            .syncAnnotations(from: shown, to: [Pin("a", title: "new")]) { onMap, new in
+                onMap.title = new.title
+            }
 
         #expect(shown.first === first)
         #expect(first.title == "new")
@@ -86,10 +94,13 @@ private final class Pin: NSObject, DiffableAnnotation {
         var generator = Seeded(seed: 61)
         let map = MKMapView(frame: .zero)
         var shown: [Pin] = []
-        for _ in 0..<150 {
+        for _ in 0 ..< 150 {
             let target = randomRows(maxCount: 8, using: &generator).map { Pin($0.id, title: "\($0.value)") }
 
-            shown = map.syncAnnotations(from: shown, to: target, algorithm: algorithm) { onMap, new in onMap.title = new.title }
+            shown = map
+                .syncAnnotations(from: shown, to: target, algorithm: algorithm) { onMap, new in
+                    onMap.title = new.title
+                }
 
             #expect(ids(map) == target.map(\.id).sorted())
             #expect(shown.map(\.id) == target.map(\.id))

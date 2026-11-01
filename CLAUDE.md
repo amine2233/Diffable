@@ -9,13 +9,20 @@ Diffable is a small Swift package with two library products, `Diffable` (algorit
 ## Commands
 
 ```bash
-swift build -v
-swift test -v
-swift test --filter DiffableTests/<testName>   # single test
-swiftlint                                      # config in .swiftlint.yml
+mise run test                         # swift test (macOS + Linux in CI)
+mise run test-coverage                # macOS only
+mise run format                       # executor format .
+mise run check_code                   # lint Sources
+mise run check_documentation          # lint doc comments
+mise run check_commit_title           # latest commit title vs conventional commits
+mise run build_documentations         # DocC into ./public (use --serve to preview)
+mise run release --dry-run            # semantic-release preview
+
+swift build
+swift test --filter <TypeOrFunctionName>   # single test
 ```
 
-CI (`.github/workflows/`) runs `swift build` / `swift test` on macOS and SwiftLint on push.
+CI (`.github/workflows/ci.yml`) is a thin caller of `amine2233/ci-shared`: it runs the mise tasks above on macOS and Linux for PRs and pushes to `main`. `page.yml` publishes DocC after a green CI, `semantic-release.yml` is a manual release (dry run by default). PR titles must be conventional commits.
 
 ## Architecture
 
@@ -29,6 +36,5 @@ CI (`.github/workflows/`) runs `swift build` / `swift test` on macOS and SwiftLi
 
 - Each source file carries ASCII-diagram docs of its algorithm; keep them in sync when changing behavior.
 - Old tests are XCTest (`DiffableTests.swift`, `XCTestManifests.swift`; `LinuxMain.swift` was removed); new tests use Swift Testing. `TestSupport.swift` has `replay(...)`, an oracle that applies diff steps to the old array and checks it rebuilds the new one; `RandomizedTests` / `TreeRandomizedTests` run it over seeded random inputs (reproducible, change the seed to explore).
-- `swiftlint lint Sources` reports many pre-existing style warnings (line length etc.).
 - UIKit-only code cannot run on the macOS host: after touching `Sources/DiffableUI/UIKit` or `Snapshot`, typecheck against the iOS/tvOS SDK (`xcrun --sdk iphonesimulator swiftc -typecheck -target arm64-apple-ios12.0-simulator -D SWIFT_PACKAGE -I <dir with Diffable.swiftmodule> $(find Sources/DiffableUI -name '*.swift')`). AppKit and MapKit adapters are tested on the host with real views (`AppKitViewTests`, `MapKitTests`).
 - `swift test --filter` matches type/function names (e.g. `NSTableViewDiffTests`), not the display names.

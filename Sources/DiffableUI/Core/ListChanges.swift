@@ -1,8 +1,3 @@
-//
-//  ListChanges.swift
-//  DiffableUI
-//
-
 #if SWIFT_PACKAGE
 import Diffable
 #endif
@@ -27,13 +22,17 @@ import Foundation
 /// Views whose batch API is *simultaneous* (UIKit, `NSCollectionView`) take the indexes as they are.
 /// Views whose API is *sequential* (`NSTableView`, `NSMenu`, stack views) go through `SequentialPlan`.
 public struct ListChanges {
-
     public var updates: [Int]
     public var insertions: [Int]
     public var deletions: [Int]
     public var moves: [(from: Int, to: Int)]
 
-    public init(updates: [Int] = [], insertions: [Int] = [], deletions: [Int] = [], moves: [(from: Int, to: Int)] = []) {
+    public init(
+        updates: [Int] = [],
+        insertions: [Int] = [],
+        deletions: [Int] = [],
+        moves: [(from: Int, to: Int)] = []
+    ) {
         self.updates = updates
         self.insertions = insertions
         self.deletions = deletions
@@ -41,10 +40,12 @@ public struct ListChanges {
     }
 
     public init(_ changes: (updates: [Int], insertions: [Int], deletions: [Int], moves: [(Int, Int)])) {
-        self.init(updates: changes.updates,
-                  insertions: changes.insertions,
-                  deletions: changes.deletions,
-                  moves: changes.moves.map { (from: $0.0, to: $0.1) })
+        self.init(
+            updates: changes.updates,
+            insertions: changes.insertions,
+            deletions: changes.deletions,
+            moves: changes.moves.map { (from: $0.0, to: $0.1) }
+        )
     }
 
     /// The changes of one level of siblings of a `treeDiff` result.
@@ -75,19 +76,29 @@ public struct ListChanges {
     }
 
     public var isEmpty: Bool {
-        return updates.isEmpty && insertions.isEmpty && deletions.isEmpty && moves.isEmpty
+        updates.isEmpty && insertions.isEmpty && deletions.isEmpty && moves.isEmpty
     }
 
-    public var deletionIndexes: IndexSet { return IndexSet(deletions) }
-    public var insertionIndexes: IndexSet { return IndexSet(insertions) }
-    public var updateIndexes: IndexSet { return IndexSet(updates) }
+    public var deletionIndexes: IndexSet {
+        IndexSet(deletions)
+    }
+
+    public var insertionIndexes: IndexSet {
+        IndexSet(insertions)
+    }
+
+    public var updateIndexes: IndexSet {
+        IndexSet(updates)
+    }
 }
 
 extension Array where Element: Diffable {
-
     /// Diffs this list against `new` and returns the result as `ListChanges`.
     public func listChanges(to new: [Element], algorithm: DiffAlgorithm = .heckel) -> ListChanges {
-        let changes: (updates: [Int], insertions: [Int], deletions: [Int], moves: [(Int, Int)]) = diff(new, algorithm: algorithm)
+        let changes: (updates: [Int], insertions: [Int], deletions: [Int], moves: [(Int, Int)]) = diff(
+            new,
+            algorithm: algorithm
+        )
         return ListChanges(changes)
     }
 }

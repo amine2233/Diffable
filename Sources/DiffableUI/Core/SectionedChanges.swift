@@ -1,8 +1,3 @@
-//
-//  SectionedChanges.swift
-//  DiffableUI
-//
-
 #if SWIFT_PACKAGE
 import Diffable
 #endif
@@ -48,7 +43,6 @@ public struct ItemPosition: Hashable {
 ///
 /// Only two levels are read: changes below the items are ignored.
 public struct SectionedChanges {
-
     public var sectionDeletions: [Int] = []
     public var sectionInsertions: [Int] = []
     public var sectionUpdates: [Int] = []
@@ -74,7 +68,8 @@ public struct SectionedChanges {
     }
 
     public var isEmpty: Bool {
-        return sectionDeletions.isEmpty && sectionInsertions.isEmpty && sectionUpdates.isEmpty && sectionMoves.isEmpty
+        sectionDeletions.isEmpty && sectionInsertions.isEmpty && sectionUpdates.isEmpty && sectionMoves
+            .isEmpty
             && itemDeletions.isEmpty && itemInsertions.isEmpty && itemUpdates.isEmpty && itemMoves.isEmpty
     }
 
@@ -82,12 +77,13 @@ public struct SectionedChanges {
         guard let oldSection = section.oldIndex else {
             return
         }
+
         let newSection = section.index
         let itemsChanged = section.children.contains { $0.kind != .unchanged || $0.movedFrom != nil }
         let updated = section.kind == .update
         let moved = section.movedFrom != nil
 
-        if (updated || moved) && (itemsChanged || (updated && moved)) {
+        if updated || moved, itemsChanged || (updated && moved) {
             sectionDeletions.append(oldSection)
             sectionInsertions.append(newSection)
             return
@@ -113,16 +109,18 @@ public struct SectionedChanges {
                 break
             }
             if let from = item.movedFrom {
-                itemMoves.append((from: ItemPosition(section: oldSection, item: from), to: ItemPosition(section: newSection, item: item.index)))
+                itemMoves.append((
+                    from: ItemPosition(section: oldSection, item: from),
+                    to: ItemPosition(section: newSection, item: item.index)
+                ))
             }
         }
     }
 }
 
 extension Array where Element: DiffableTree {
-
     /// Diffs two lists of sections (nodes whose `children` are the items).
     public func sectionedChanges(to new: [Element], algorithm: DiffAlgorithm = .heckel) -> SectionedChanges {
-        return SectionedChanges(treeDiff(new, algorithm: algorithm))
+        SectionedChanges(treeDiff(new, algorithm: algorithm))
     }
 }

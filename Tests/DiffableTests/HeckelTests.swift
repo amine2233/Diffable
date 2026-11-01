@@ -1,8 +1,8 @@
 import Testing
 @testable import Diffable
 
-@Suite("Heckel") struct HeckelTests {
-
+@Suite("Heckel")
+struct HeckelTests {
     @Test("moving one item to the end is ONE move, not one per shifted item")
     func singleMove() {
         let result = items("abcd").diff(items("bcda"))
@@ -32,7 +32,7 @@ import Testing
     func permutationsAreMinimal() {
         var generator = SeededGenerator(seed: 7)
         let base = ["a", "b", "c", "d", "e", "f"]
-        for _ in 0..<300 {
+        for _ in 0 ..< 300 {
             let shuffled = base.shuffled(using: &generator)
             let old = base.map { TestItem(id: $0) }
             let new = shuffled.map { TestItem(id: $0) }
@@ -69,7 +69,10 @@ import Testing
         #expect(result.deletions.isEmpty)
     }
 
-    @Test("duplicates are never anchors but still diff coherently", arguments: [("aab", "aba"), ("aaa", "aa"), ("abab", "baba")])
+    @Test(
+        "duplicates are never anchors but still diff coherently",
+        arguments: [("aab", "aba"), ("aaa", "aa"), ("abab", "baba")]
+    )
     func duplicates(pair: (String, String)) {
         let old = items(pair.0)
         let new = items(pair.1)
@@ -86,7 +89,11 @@ import Testing
     }
 
     @Test("LIS positions: empty, single, increasing, decreasing, mixed", arguments: [
-        ([Int](), 0), ([5], 1), ([1, 2, 3, 4], 4), ([4, 3, 2, 1], 1), ([1, 2, 3, 0], 3), ([3, 1, 2, 5, 4], 3), ([2, 2, 2], 1)
+        ([Int](), 0), ([5], 1), ([1, 2, 3, 4], 4), ([4, 3, 2, 1], 1), ([1, 2, 3, 0], 3), ([3, 1, 2, 5, 4], 3),
+        (
+            [2, 2, 2],
+            1
+        )
     ])
     func longestIncreasingSubsequence(values: [Int], expectedLength: Int) {
         let positions = Diff.longestIncreasingSubsequence(values)

@@ -1,8 +1,3 @@
-//
-//  NSTableView+Diff.swift
-//  DiffableUI
-//
-
 #if canImport(AppKit) && !targetEnvironment(macCatalyst)
 
 #if SWIFT_PACKAGE
@@ -11,7 +6,6 @@ import Diffable
 import AppKit
 
 extension NSTableView {
-
     /// The animation used for each kind of row change.
     public struct DiffAnimations {
         public var insert: AnimationOptions
@@ -44,8 +38,13 @@ extension NSTableView {
     ///   - oldCount: Number of rows before.
     ///   - newCount: Number of rows after.
     ///   - updateData: Mutates the data source.
-    public func apply(_ changes: ListChanges, oldCount: Int, newCount: Int, animations: DiffAnimations = .default, updateData: () -> Void) {
-
+    public func apply(
+        _ changes: ListChanges,
+        oldCount: Int,
+        newCount: Int,
+        animations: DiffAnimations = .default,
+        updateData: () -> Void
+    ) {
         updateData()
 
         beginUpdates()
@@ -59,13 +58,28 @@ extension NSTableView {
         endUpdates()
 
         if !changes.updates.isEmpty {
-            reloadData(forRowIndexes: changes.updateIndexes, columnIndexes: IndexSet(0..<tableColumns.count))
+            reloadData(
+                forRowIndexes: changes.updateIndexes,
+                columnIndexes: IndexSet(0 ..< tableColumns.count)
+            )
         }
     }
 
     /// Diffs `old` against `new` and animates the difference.
-    public func applyDiff<Element: Diffable>(from old: [Element], to new: [Element], algorithm: DiffAlgorithm = .heckel, animations: DiffAnimations = .default, updateData: () -> Void) {
-        apply(old.listChanges(to: new, algorithm: algorithm), oldCount: old.count, newCount: new.count, animations: animations, updateData: updateData)
+    public func applyDiff<Element: Diffable>(
+        from old: [Element],
+        to new: [Element],
+        algorithm: DiffAlgorithm = .heckel,
+        animations: DiffAnimations = .default,
+        updateData: () -> Void
+    ) {
+        apply(
+            old.listChanges(to: new, algorithm: algorithm),
+            oldCount: old.count,
+            newCount: new.count,
+            animations: animations,
+            updateData: updateData
+        )
     }
 }
 

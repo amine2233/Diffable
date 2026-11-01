@@ -1,8 +1,8 @@
 import Testing
 @testable import Diffable
 
-@Suite("Both algorithms") struct AlgorithmTests {
-
+@Suite("Both algorithms")
+struct AlgorithmTests {
     @Test("replaying the steps on old rebuilds new", arguments: algorithms, edgeCases)
     func replayRebuildsNew(algorithm: DiffAlgorithm, edit: EditCase) {
         let old = items(edit.old)
@@ -33,7 +33,8 @@ import Testing
     @Test("empty to empty", arguments: algorithms)
     func emptyToEmpty(algorithm: DiffAlgorithm) {
         let result = [TestItem]().diff([], algorithm: algorithm)
-        #expect(result.insertions.isEmpty && result.deletions.isEmpty && result.updates.isEmpty && result.moves.isEmpty)
+        #expect(result.insertions.isEmpty && result.deletions.isEmpty && result.updates.isEmpty && result
+            .moves.isEmpty)
     }
 
     @Test("deletions are OLD indexes, insertions are NEW indexes", arguments: algorithms)
@@ -48,12 +49,13 @@ import Testing
         let result = items(edit.old).diff(items(edit.new), algorithm: algorithm)
         #expect(result.deletions.allSatisfy { $0 >= 0 && $0 < edit.old.count })
         #expect((result.insertions + result.updates).allSatisfy { $0 >= 0 && $0 < edit.new.count })
-        #expect(result.moves.allSatisfy { $0.0 >= 0 && $0.0 < edit.old.count && $0.1 >= 0 && $0.1 < edit.new.count })
+        #expect(result.moves
+            .allSatisfy { $0.0 >= 0 && $0.0 < edit.old.count && $0.1 >= 0 && $0.1 < edit.new.count })
     }
 
     @Test("a large array with a few edits is handled", arguments: algorithms)
     func largeArray(algorithm: DiffAlgorithm) {
-        let old = (0..<10_000).map { TestItem(id: String($0)) }
+        let old = (0 ..< 10_000).map { TestItem(id: String($0)) }
         var new = old
         new.remove(at: 9_000)
         new.remove(at: 5_000)

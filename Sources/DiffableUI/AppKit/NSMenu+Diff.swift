@@ -1,8 +1,3 @@
-//
-//  NSMenu+Diff.swift
-//  DiffableUI
-//
-
 #if canImport(AppKit) && !targetEnvironment(macCatalyst)
 
 #if SWIFT_PACKAGE
@@ -11,7 +6,6 @@ import Diffable
 import AppKit
 
 extension NSMenu {
-
     /// Keeps the menu items in sync with a list of models without rebuilding the menu, so open
     /// submenus, key equivalents and item state of untouched items survive.
     ///
@@ -29,8 +23,13 @@ extension NSMenu {
     ///   - new: The models of the new menu.
     ///   - makeItem: Creates the item of a new model.
     ///   - update: Refreshes an existing item whose model changed.
-    public func applyDiff<Element: Diffable>(from old: [Element], to new: [Element], algorithm: DiffAlgorithm = .heckel, makeItem: (Element) -> NSMenuItem, update: (NSMenuItem, Element) -> Void) {
-
+    public func applyDiff<Element: Diffable>(
+        from old: [Element],
+        to new: [Element],
+        algorithm: DiffAlgorithm = .heckel,
+        makeItem: (Element) -> NSMenuItem,
+        update: (NSMenuItem, Element) -> Void
+    ) {
         let changes = old.listChanges(to: new, algorithm: algorithm)
 
         SequentialPlan(changes: changes, oldCount: old.count, newCount: new.count).perform(remove: { index in

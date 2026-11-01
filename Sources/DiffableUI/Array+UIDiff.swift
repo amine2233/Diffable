@@ -1,11 +1,3 @@
-//
-//  Array+UIDiff.swift
-//  DiffableUI
-//
-//  Created by Amine Bensalah on 05/12/2019.
-//
-
-
 #if SWIFT_PACKAGE
 import Diffable
 #endif
@@ -18,7 +10,6 @@ import UIKit
 
 #if !os(Linux)
 extension Array where Element: Diffable {
-
     /// Calculate the changes between current and the `new` array as `IndexPath`s.
     ///
     /// ```
@@ -31,15 +22,26 @@ extension Array where Element: Diffable {
     ///
     /// - Parameters:
     ///   - new: a collection to compare the calee to
-    ///   - section: The section in which this diff should be applied to, this is used to create indexPath's. Default is 0
+    ///   - section: The section in which this diff should be applied to, this is used to create indexPath's.
+    /// Default is 0
     ///   - algorithm: `.heckel` (default) or `.myers`
     /// - Returns: A tuple containing the changes.
-    public func diff(_ new: [Element], forSection section: Int = 0, algorithm: DiffAlgorithm = .heckel) -> (updates: [IndexPath], insertions: [IndexPath], deletions: [IndexPath], moves: [(IndexPath, IndexPath)]) {
-
-        let changes: (updates: [Int], insertions: [Int], deletions: [Int], moves: [(Int, Int)]) = diff(new, algorithm: algorithm)
+    public func diff(
+        _ new: [Element],
+        forSection section: Int = 0,
+        algorithm: DiffAlgorithm = .heckel
+    )
+        -> (updates: [IndexPath], insertions: [IndexPath], deletions: [IndexPath], moves: [(
+            IndexPath,
+            IndexPath
+        )]) {
+        let changes: (updates: [Int], insertions: [Int], deletions: [Int], moves: [(Int, Int)]) = diff(
+            new,
+            algorithm: algorithm
+        )
 
         func indexPath(_ item: Int) -> IndexPath {
-            return IndexPath(item: item, section: section)
+            IndexPath(item: item, section: section)
         }
 
         let updates = changes.updates.map(indexPath)
