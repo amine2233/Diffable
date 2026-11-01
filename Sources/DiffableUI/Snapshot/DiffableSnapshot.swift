@@ -34,7 +34,7 @@ public struct SnapshotItemID: Hashable {
     }
 }
 
-@available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
+@available(iOS 13.0, tvOS 13.0, macOS 10.15.1, *)
 extension NSDiffableDataSourceSnapshot where SectionIdentifierType == String, ItemIdentifierType == SnapshotItemID {
 
     /// A snapshot of `sections` (a section is a `DiffableTree`, its children are the items).

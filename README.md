@@ -136,7 +136,7 @@ compute the diff (Heckel by default, `algorithm: .myers` to switch) and apply it
 | `NSStackView` | macOS | `applyDiff(from:to:makeView:update:)` |
 | `NSMenu` | macOS | `applyDiff(from:to:makeItem:update:)` |
 | `MKMapView` | iOS, macOS, tvOS | `syncAnnotations(from:to:update:)`, pins that did not change do not flicker |
-| `NSDiffableDataSourceSnapshot` | iOS 13, macOS 10.15 | `init(sections:)` and `init(from:to:)` which marks edited items for refresh |
+| `NSDiffableDataSourceSnapshot` | iOS 13, macOS 10.15.1 | `init(sections:)` and `init(from:to:)` which marks edited items for refresh |
 | `NSDiffableDataSourceSectionSnapshot` | iOS 14 | `init(roots:expanded:)`: an expandable outline of a tree |
 
 ```swift
@@ -154,6 +154,21 @@ outlineView.applyDiff(from: oldRoots, to: newRoots, item: { Box($0) }) { roots =
 ```
 
 Your data source must hold the **new** data once `updateData` has run.
+
+### Diffable data sources and old deployment targets
+
+`DiffableUI` itself builds down to macOS 10.13 / iOS 12. Only the snapshot bridge names
+`NSDiffableDataSourceSnapshot`, which exists from iOS 13 and **macOS 10.15.1**, so an app that targets
+macOS 10.15 guards the call:
+
+```swift
+if #available(macOS 10.15.1, iOS 13.0, *) {
+    let snapshot = NSDiffableDataSourceSnapshot<String, SnapshotItemID>(from: oldSections, to: newSections)
+    dataSource.apply(snapshot)
+} else {
+    outlineOrTableView.applyDiff(from: old, to: new) { items = new }   // any other view works as before
+}
+```
 
 ### Why two batches
 
@@ -195,7 +210,7 @@ let feed: [AnyDiffable] = [AnyDiffable(article), AnyDiffable(video)]
 
 ## Requirements
 
-Swift 5.4+ (SwiftPM only). The Swift Testing suites need a recent Xcode toolchain. `UIMenu` is iOS only; the diffable data source bridges need iOS 13 / macOS 10.15.
+Swift 5.4+ (SwiftPM only). The Swift Testing suites need a recent Xcode toolchain. `UIMenu` is iOS only; the diffable data source bridges need iOS 13 / macOS 10.15.1.
 
 ## Tests
 

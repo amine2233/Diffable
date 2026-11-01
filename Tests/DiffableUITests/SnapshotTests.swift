@@ -20,9 +20,9 @@ private struct Folder: DiffableTree {
 
 @Suite("Snapshots") struct SnapshotTests {
 
-    @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
     @Test("a sectioned snapshot has one section per section and unique item ids")
     func sectionedSnapshot() {
+        guard #available(iOS 13.0, tvOS 13.0, macOS 10.15.1, *) else { return }
         let sections = [Group(title: "Inbox", children: rows("12")), Group(title: "Sent", children: rows("12"))]
 
         let snapshot = NSDiffableDataSourceSnapshot<String, SnapshotItemID>(sections: sections)
@@ -33,9 +33,9 @@ private struct Folder: DiffableTree {
         #expect(Set(snapshot.itemIdentifiers).count == 4)
     }
 
-    @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
     @Test("the snapshot of an edit still describes the new data")
     func editedSnapshot() {
+        guard #available(iOS 13.0, tvOS 13.0, macOS 10.15.1, *) else { return }
         let old = [Group(title: "Inbox", children: rows("12"))]
         let new = [Group(title: "Inbox", header: 1, children: rows("12", value: 1))]
 
