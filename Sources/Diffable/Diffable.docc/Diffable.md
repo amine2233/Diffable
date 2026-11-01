@@ -41,6 +41,12 @@ To animate the result in a `UICollectionView`, `NSTableView`, `NSOutlineView` an
 - ``AnyDiffable``
 - <doc:HeterogeneousLists>
 
+### Other collections
+
+- <doc:SetsDictionariesAndCollections>
+- ``SetChanges``
+- ``DictionaryChanges``
+
 ### Choosing how to compare
 
 - ``DiffAlgorithm``

@@ -138,7 +138,7 @@ extension Array where Element: DiffableTree {
         treeDiff(new, algorithm: algorithm, parentPath: [])
     }
 
-    private func treeDiff(_ new: [Element], algorithm: DiffAlgorithm, parentPath: [DiffID]) -> [TreeChange] {
+    fileprivate func treeDiff(_ new: [Element], algorithm: DiffAlgorithm, parentPath: [DiffID]) -> [TreeChange] {
         var deleted: [Int] = []
         var inserted = Set<Int>()
         var updated = Set<Int>()
@@ -231,5 +231,21 @@ extension DiffableTree {
     ///   empty when the trees are identical.
     public func treeDiff(to new: Self, algorithm: DiffAlgorithm = .heckel) -> [TreeChange] {
         [self].treeDiff([new], algorithm: algorithm)
+    }
+}
+
+extension RandomAccessCollection where Element: DiffableTree {
+    /// Diffs two collections of sibling trees. Same as `Array.treeDiff(_:algorithm:)`, for any
+    /// random-access collection (`ArraySlice`, `ContiguousArray`...).
+    ///
+    /// - Parameters:
+    ///   - new: The new siblings.
+    ///   - algorithm: The algorithm used at **every** level.
+    /// - Returns: The change tree. Indexes in it are offsets from the start of each sibling list.
+    public func treeDiff<New: RandomAccessCollection>(
+        _ new: New,
+        algorithm: DiffAlgorithm = .heckel
+    ) -> [TreeChange] where New.Element == Element {
+        Array(self).treeDiff(Array(new), algorithm: algorithm, parentPath: [])
     }
 }

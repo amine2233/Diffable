@@ -110,9 +110,15 @@ public struct ListChanges: Sendable {
     }
 }
 
-extension Array where Element: Diffable {
+extension RandomAccessCollection where Element: Diffable {
     /// Diffs this list against `new` and returns the result as `ListChanges`.
-    public func listChanges(to new: [Element], algorithm: DiffAlgorithm = .heckel) -> ListChanges {
+    ///
+    /// Works on any random-access collection (`Array`, `ArraySlice`, `ContiguousArray`...); indexes are
+    /// offsets from the start of each collection.
+    public func listChanges<New: RandomAccessCollection>(
+        to new: New,
+        algorithm: DiffAlgorithm = .heckel
+    ) -> ListChanges where New.Element == Element {
         let changes: (updates: [Int], insertions: [Int], deletions: [Int], moves: [(Int, Int)]) = diff(
             new,
             algorithm: algorithm

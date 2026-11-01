@@ -77,6 +77,22 @@ changes.moves       // []    (from OLD, to NEW)
  Myers:  deletions = [0], insertions = [3]     2 operations
 ```
 
+## Diff a Set, a Dictionary or any collection
+
+```swift
+// Any random-access collection: ArraySlice, ContiguousArray, a Range, your own type...
+let changes = ContiguousArray(old).diff(new[2...])          // indexes are offsets from the start
+
+// A Set: no order, so insertions / deletions (and updates for Diffable elements, paired by id)
+Set([1, 2, 3]).diff(Set([2, 3, 4]))                         // deletions {1}, insertions {4}
+
+// A Dictionary: keys are the identity, values the content (Value: Equatable)
+["a": 1, "c": 3].diff(["c": 30, "d": 4])                    // deletions [a: 1], updates [c: 3 -> 30], insertions [d: 4]
+```
+
+`SetChanges` and `DictionaryChanges` are `Sendable` when their elements are. See the DocC article
+*Sets, dictionaries and other collections*.
+
 ## Diff a tree (root, folders and files)
 
 Conform to `DiffableTree` and expose `children`.

@@ -127,9 +127,12 @@ public struct SectionedChanges: Sendable {
     }
 }
 
-extension Array where Element: DiffableTree {
-    /// Diffs two lists of sections (nodes whose `children` are the items).
-    public func sectionedChanges(to new: [Element], algorithm: DiffAlgorithm = .heckel) -> SectionedChanges {
+extension RandomAccessCollection where Element: DiffableTree {
+    /// Diffs two lists of sections (nodes whose `children` are the items), for any random-access collection.
+    public func sectionedChanges<New: RandomAccessCollection>(
+        to new: New,
+        algorithm: DiffAlgorithm = .heckel
+    ) -> SectionedChanges where New.Element == Element {
         SectionedChanges(treeDiff(new, algorithm: algorithm))
     }
 }

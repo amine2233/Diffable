@@ -40,6 +40,14 @@ extension Array where Element: Diffable {
         Index,
         Index
     )]) {
+        changes(to: new, algorithm: algorithm)
+    }
+
+    /// The mapping from algorithm steps to index lists, shared with the generic collection overloads.
+    func changes(
+        to new: [Element],
+        algorithm: DiffAlgorithm
+    ) -> (updates: [Index], insertions: [Index], deletions: [Index], moves: [(Index, Index)]) {
         let result = algorithm.process(old: self, new: new)
 
         var deletions: [Index] = []
