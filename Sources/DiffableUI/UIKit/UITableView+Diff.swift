@@ -5,9 +5,10 @@ import Diffable
 #endif
 import UIKit
 
+@MainActor
 extension UITableView {
     /// The row animation used for each kind of change.
-    public struct DiffAnimations {
+    public struct DiffAnimations: Sendable {
         /// The animation used when a row or section is inserted.
         public var insert: RowAnimation
         /// The animation used when a row or section is deleted.
@@ -50,8 +51,8 @@ extension UITableView {
         _ changes: ListChanges,
         section: Int = 0,
         animations: DiffAnimations = .automatic,
-        updateData: @escaping () -> Void,
-        completion: (() -> Void)? = nil
+        updateData: @escaping @MainActor () -> Void,
+        completion: (@MainActor () -> Void)? = nil
     ) {
         let paths = changes.indexPaths(section: section)
 
@@ -84,8 +85,8 @@ extension UITableView {
         section: Int = 0,
         algorithm: DiffAlgorithm = .heckel,
         animations: DiffAnimations = .automatic,
-        updateData: @escaping () -> Void,
-        completion: (() -> Void)? = nil
+        updateData: @escaping @MainActor () -> Void,
+        completion: (@MainActor () -> Void)? = nil
     ) {
         apply(
             old.listChanges(to: new, algorithm: algorithm),
@@ -101,8 +102,8 @@ extension UITableView {
     public func apply(
         _ changes: SectionedChanges,
         animations: DiffAnimations = .automatic,
-        updateData: @escaping () -> Void,
-        completion: (() -> Void)? = nil
+        updateData: @escaping @MainActor () -> Void,
+        completion: (@MainActor () -> Void)? = nil
     ) {
         performBatchUpdates({
             updateData()
@@ -140,8 +141,8 @@ extension UITableView {
         toSections new: [Section],
         algorithm: DiffAlgorithm = .heckel,
         animations: DiffAnimations = .automatic,
-        updateData: @escaping () -> Void,
-        completion: (() -> Void)? = nil
+        updateData: @escaping @MainActor () -> Void,
+        completion: (@MainActor () -> Void)? = nil
     ) {
         apply(
             old.sectionedChanges(to: new, algorithm: algorithm),

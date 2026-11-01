@@ -9,6 +9,7 @@ import MapKit
 /// (title, coordinate...).
 public protocol DiffableAnnotation: Diffable, MKAnnotation {}
 
+@MainActor
 extension MKMapView {
     /// Updates the annotations on the map with a diff instead of removing and re-adding everything,
     /// so pins that did not change do not flicker, lose their selection or restart their animation.
@@ -38,7 +39,7 @@ extension MKMapView {
         from old: [Annotation],
         to new: [Annotation],
         algorithm: DiffAlgorithm = .heckel,
-        update: ((_ onMap: Annotation, _ new: Annotation) -> Void)? = nil
+        update: (@MainActor (_ onMap: Annotation, _ new: Annotation) -> Void)? = nil
     ) -> [Annotation] {
         let changes = old.listChanges(to: new, algorithm: algorithm)
         let inserted = Set(changes.insertions)

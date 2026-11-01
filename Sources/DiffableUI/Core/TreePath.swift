@@ -10,7 +10,7 @@ import Foundation
 ///
 /// Two files with the same name in different folders have different paths, which makes it a safe
 /// item identifier for diffable data sources.
-public struct TreePath: Hashable, CustomStringConvertible {
+public struct TreePath: Hashable, CustomStringConvertible, Sendable {
     public let components: [String]
 
     public init(_ components: [String]) {

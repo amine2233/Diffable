@@ -4,7 +4,7 @@ import Diffable
 import Foundation
 
 /// A position in a sectioned list.
-public struct ItemPosition: Hashable {
+public struct ItemPosition: Hashable, Sendable {
     public let section: Int
     public let item: Int
 
@@ -42,7 +42,7 @@ public struct ItemPosition: Hashable {
 /// ```
 ///
 /// Only two levels are read: changes below the items are ignored.
-public struct SectionedChanges {
+public struct SectionedChanges: Sendable {
     /// The OLD indexes of the sections to delete.
     public var sectionDeletions: [Int] = []
     /// The NEW indexes of the sections to insert.

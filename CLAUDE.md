@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Overview
 
-Diffable is a small Swift package with two library products, `Diffable` (algorithms + tree diff, no UI) and `DiffableUI` (animated updates for UIKit/AppKit/MapKit views and diffable data sources; depends on `Diffable`; swift-tools 5.5). Computes updates/insertions/deletions/moves between two arrays (Heckel or Myers) or two trees. Distributed via SwiftPM only (the podspec was removed); `#if SWIFT_PACKAGE import Diffable` in DiffableUI is a leftover from compiling both into one module and is harmless.
+Diffable is a small Swift package with two library products, `Diffable` (algorithms + tree diff, no UI) and `DiffableUI` (animated updates for UIKit/AppKit/MapKit views and diffable data sources; depends on `Diffable`; swift-tools 6.0, Swift 6 language mode). Computes updates/insertions/deletions/moves between two arrays (Heckel or Myers) or two trees. Distributed via SwiftPM only (the podspec was removed); `#if SWIFT_PACKAGE import Diffable` in DiffableUI is a leftover from compiling both into one module and is harmless.
 
 ## Commands
 
@@ -40,3 +40,5 @@ CI (`.github/workflows/ci.yml`) is a thin caller of `amine2233/ci-shared`: it ru
 - `swift test --filter` matches type/function names (e.g. `NSTableViewDiffTests`), not the display names.
 - DocC catalogs live in `Sources/Diffable/Diffable.docc` and `Sources/DiffableUI/DiffableUI.docc` (tools-version 5.5 is what lets SwiftPM handle them). Build them with `xcodebuild docbuild -scheme Diffable -destination 'generic/platform=macOS'` (same for `DiffableUI`) and keep articles and `///` parameter lists complete: DocC warns about any undocumented parameter once one is documented.
 - With `mise.toml` in this folder, plain `swift` is mise's open-source Swift 6.3.1, which can fail against the installed Xcode SDK (`unknown argument '-target-arch-variant'`). Use `xcrun swift build` / `xcrun swift test` locally if that happens.
+- Swift 6 language mode (`swiftLanguageModes: [.v6]`). Concurrency rules: `Diffable` does NOT require `Sendable`; the pure value types (`DiffAlgorithm`, `TreeChange`, `ListChanges`, `SequentialPlan`, `SectionedChanges`, `ItemPosition`, `TreePath`, `SnapshotItemID`, both `DiffAnimations`) are `Sendable`; every view adapter extension in `UIKit/`, `AppKit/`, `MapKit/` is `@MainActor` with `@MainActor` closure parameters; `Core/` and the snapshot builders stay nonisolated. Never use `@unchecked Sendable` or `nonisolated(unsafe)` to silence an error.
+- Type-check UIKit code in Swift 6 mode too: the scratchpad recipe needs `-swift-version 6` on both `swiftc` calls (plain `swiftc` defaults to Swift 5 mode and hides errors).

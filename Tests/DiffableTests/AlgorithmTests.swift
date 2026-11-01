@@ -69,7 +69,7 @@ struct AlgorithmTests {
 
     @Test("a reused Diff gives the same answer twice")
     func heckelInstanceCanBeReused() {
-        let diff = Diff()
+        var diff = Diff()
         let first = diff.process(old: items("ab"), new: items("ba"))
         let second = diff.process(old: items("ab"), new: items("ba"))
         #expect(first.map(\.debugDescription) == second.map(\.debugDescription))

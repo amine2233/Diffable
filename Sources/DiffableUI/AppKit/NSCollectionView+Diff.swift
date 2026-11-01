@@ -5,6 +5,7 @@ import Diffable
 #endif
 import AppKit
 
+@MainActor
 extension NSCollectionView {
     /// Applies the changes of ONE section. Same two-batch order as `UICollectionView.apply`:
     ///
@@ -19,8 +20,8 @@ extension NSCollectionView {
     public func apply(
         _ changes: ListChanges,
         section: Int = 0,
-        updateData: @escaping () -> Void,
-        completion: (() -> Void)? = nil
+        updateData: @escaping @MainActor () -> Void,
+        completion: (@MainActor () -> Void)? = nil
     ) {
         let paths = changes.indexPaths(section: section)
 
@@ -51,8 +52,8 @@ extension NSCollectionView {
         to new: [Element],
         section: Int = 0,
         algorithm: DiffAlgorithm = .heckel,
-        updateData: @escaping () -> Void,
-        completion: (() -> Void)? = nil
+        updateData: @escaping @MainActor () -> Void,
+        completion: (@MainActor () -> Void)? = nil
     ) {
         apply(
             old.listChanges(to: new, algorithm: algorithm),
@@ -65,8 +66,8 @@ extension NSCollectionView {
     /// Applies the changes of several sections (see `SectionedChanges` for the moved-section rule).
     public func apply(
         _ changes: SectionedChanges,
-        updateData: @escaping () -> Void,
-        completion: (() -> Void)? = nil
+        updateData: @escaping @MainActor () -> Void,
+        completion: (@MainActor () -> Void)? = nil
     ) {
         performBatchUpdates({
             updateData()
@@ -102,8 +103,8 @@ extension NSCollectionView {
         fromSections old: [Section],
         toSections new: [Section],
         algorithm: DiffAlgorithm = .heckel,
-        updateData: @escaping () -> Void,
-        completion: (() -> Void)? = nil
+        updateData: @escaping @MainActor () -> Void,
+        completion: (@MainActor () -> Void)? = nil
     ) {
         apply(
             old.sectionedChanges(to: new, algorithm: algorithm),

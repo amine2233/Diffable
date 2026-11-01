@@ -170,6 +170,19 @@ if #available(macOS 10.15.1, iOS 13.0, *) {
 }
 ```
 
+### Concurrency
+
+Every view adapter is `@MainActor`, and so are the closures you pass to it (`updateData`, `completion`, `makeView`...).
+The diff values (`ListChanges`, `SectionedChanges`, `SequentialPlan`, `TreePath`, `TreeChange`, `DiffAlgorithm`) are `Sendable`
+and the algorithms keep no shared state, so a large diff can run in a detached task and only the apply step hops to the main actor:
+
+```swift
+let changes = await Task.detached { old.listChanges(to: new) }.value   // models must be Sendable here
+collectionView.apply(changes) { items = new }                           // main actor
+```
+
+`Diffable` itself does not require `Sendable`, so existing models keep working.
+
 ### Why two batches
 
 UIKit and `NSCollectionView` read deletions as OLD indexes and insertions as NEW ones, but a reload needs OLD
@@ -210,7 +223,7 @@ let feed: [AnyDiffable] = [AnyDiffable(article), AnyDiffable(video)]
 
 ## Requirements
 
-Swift 5.4+ (SwiftPM only). The Swift Testing suites need a recent Xcode toolchain. `UIMenu` is iOS only; the diffable data source bridges need iOS 13 / macOS 10.15.1.
+Swift 6.0+ / Xcode 16+ (SwiftPM only, built in the Swift 6 language mode). The Swift Testing suites need a recent Xcode toolchain. `UIMenu` is iOS only; the diffable data source bridges need iOS 13 / macOS 10.15.1.
 
 ## Documentation
 

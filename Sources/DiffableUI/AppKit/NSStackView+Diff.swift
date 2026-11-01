@@ -5,6 +5,7 @@ import Diffable
 #endif
 import AppKit
 
+@MainActor
 extension NSStackView {
     /// Keeps the arranged subviews in sync with a list of models: unchanged views are kept,
     /// new ones are created, removed ones are dropped, reordered ones are moved.
@@ -29,8 +30,8 @@ extension NSStackView {
         from old: [Element],
         to new: [Element],
         algorithm: DiffAlgorithm = .heckel,
-        makeView: (Element) -> View,
-        update: (View, Element) -> Void
+        makeView: @MainActor (Element) -> View,
+        update: @MainActor (View, Element) -> Void
     ) {
         let changes = old.listChanges(to: new, algorithm: algorithm)
 

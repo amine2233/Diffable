@@ -6,6 +6,7 @@ import Diffable
 import UIKit
 
 @available(iOS 13.0, *)
+@MainActor
 extension UIMenu {
     /// `UIMenu` is immutable, so a "diff" can only rebuild it. What this does is keep the
     /// `UIMenuElement` instances of the models that did not change, so the system keeps their state
@@ -30,7 +31,7 @@ extension UIMenu {
     public func replacingChildren<Element: Diffable>(
         from old: [Element],
         to new: [Element],
-        make: (Element) -> UIMenuElement
+        make: @MainActor (Element) -> UIMenuElement
     ) -> UIMenu {
         var reusable: [AnyHashable: (model: Element, element: UIMenuElement)] = [:]
         for (model, element) in zip(old, children) {

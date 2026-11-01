@@ -63,7 +63,7 @@ import Foundation
 ///
 /// - Complexity: O(n) time and memory for the passes, O(n log n) for the move detection.
 /// - Not guaranteed to produce the *shortest* script. See `Myers` for that.
-public class Diff {
+struct Diff {
     private var oldReferences: [Reference] = []
     private var newReferences: [Reference] = []
     private var table: [AnyHashable: Reference.Symbol] = [:]
@@ -126,7 +126,7 @@ public class Diff {
     ///   - old: The array to compare.
     ///   - new: The array to compare against.
     /// - Returns: A list of DiffStep operations to perform on the old array to get the new array.
-    func process<T: Diffable>(old: [T], new: [T]) -> [DiffStep<T>] {
+    mutating func process<T: Diffable>(old: [T], new: [T]) -> [DiffStep<T>] {
         setupContext(old: old, new: new)
 
         var steps: [DiffStep<T>] = []
@@ -206,7 +206,7 @@ public class Diff {
     /// - Parameters:
     ///   - old: The array to compare.
     ///   - new: The array to compare against.
-    private func setupContext<T: Diffable>(old: [T], new: [T]) {
+    private mutating func setupContext<T: Diffable>(old: [T], new: [T]) {
         table = [:]
 
         // First pass
@@ -242,7 +242,7 @@ public class Diff {
     ///   - updateLineReference: true if the oldLineReferenceIndexes should be updated
     ///   - counter: A function used to increase the counter for the reference symbol.
     /// - Returns: A list of symbol references for array `array`.
-    private func makeTableReferences<T: Diffable>(
+    private mutating func makeTableReferences<T: Diffable>(
         with array: [T],
         updateLineReference: Bool = false,
         counter: (Reference.Symbol) -> Void
@@ -276,7 +276,7 @@ public class Diff {
     ///
     /// Duplicated keys are never anchors in pass 3, so without this step `[a a a]` vs `[a a a]`
     /// would be reported as three deletions and three insertions.
-    private func linkCommonEnds<T: Diffable>(old: [T], new: [T]) {
+    private mutating func linkCommonEnds<T: Diffable>(old: [T], new: [T]) {
         func link(old oldIndex: Int, new newIndex: Int) {
             newReferences[newIndex] = .index(oldIndex)
             oldReferences[oldIndex] = .index(newIndex)
@@ -299,7 +299,7 @@ public class Diff {
     }
 
     /// Third pass: link the keys that occur exactly once in each array.
-    private func findUniqueEntries() {
+    private mutating func findUniqueEntries() {
         for (index, reference) in newReferences.enumerated() {
             guard case let .pointer(entry) = reference,
                   entry.isUnique,
@@ -387,7 +387,7 @@ public class Diff {
     /// ```
     ///
     /// - Parameter direction: The direction to walk, ascending or descending
-    private func expandUniqueEntries(direction: ReferenceWalker) {
+    private mutating func expandUniqueEntries(direction: ReferenceWalker) {
         var i = direction.start(references: newReferences)
 
         while direction.isValid(i: i, references: newReferences) {

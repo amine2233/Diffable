@@ -13,7 +13,7 @@ import Foundation
 ///   best for           UI lists, reordering           small edits on large lists,
 ///                                                     readable minimal diffs
 /// ```
-public enum DiffAlgorithm {
+public enum DiffAlgorithm: Sendable {
     /// Paul Heckel's linear algorithm. See `Diff`.
     case heckel
 
@@ -23,9 +23,10 @@ public enum DiffAlgorithm {
     func process<T: Diffable>(old: [T], new: [T]) -> [DiffStep<T>] {
         switch self {
         case .heckel:
-            Diff().process(old: old, new: new)
+            var diff = Diff()
+            return diff.process(old: old, new: new)
         case .myers:
-            Myers().process(old: old, new: new)
+            return Myers().process(old: old, new: new)
         }
     }
 }

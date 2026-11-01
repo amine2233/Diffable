@@ -19,7 +19,7 @@ import AppKit
 ///  section "Inbox"  / item "42"   SnapshotItemID(section: "Inbox",  item: "42")
 ///  section "Sent"   / item "42"   SnapshotItemID(section: "Sent",   item: "42")     different
 /// ```
-public struct SnapshotItemID: Hashable {
+public struct SnapshotItemID: Hashable, Sendable {
     public let section: String
     public let item: String
 
