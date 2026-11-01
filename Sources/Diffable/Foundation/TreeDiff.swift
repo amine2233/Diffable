@@ -21,8 +21,20 @@ import Foundation
 ///   the result say *which* descendant changed instead of flagging the whole folder as updated.
 /// - `primaryKeyValue` must be unique among the children of one parent (a file name for example).
 ///   Two files with the same name in different folders are fine: identity is the whole path.
+///
+/// The children may be of another type than the node (a section holding rows, for example):
+/// `Child` is inferred from your `children` property, so a folder with `children: [Folder]`
+/// needs no extra code. A leaf type simply returns an empty array of itself.
+///
+/// ```
+///  struct Folder: DiffableTree { var children: [Folder] }                 // Child = Folder
+///  struct Section: DiffableTree { var children: [Row] }                   // Child = Row
+///  struct Row: DiffableTree { var children: [Row] { [] } }                // leaf
+/// ```
 public protocol DiffableTree: Diffable {
-    var children: [Self] { get }
+    associatedtype Child: DiffableTree
+
+    var children: [Child] { get }
 }
 
 /// One changed node in a tree diff. The changes form a tree themselves: a node whose own content did not
@@ -67,6 +79,12 @@ public struct TreeChange: Equatable {
 
     /// When the node changed position among its siblings, the index it had in the OLD siblings.
     public let movedFrom: Int?
+
+    /// The index among the OLD siblings, for every node that exists in the old tree (`nil` for `.insert`).
+    ///
+    /// Needed by views that apply deletions and moves in the OLD index space while everything
+    /// else lives in the NEW one (see `index`).
+    public let oldIndex: Int?
 
     /// The changes found below this node.
     public let children: [TreeChange]
@@ -148,7 +166,7 @@ extension Array where Element: DiffableTree {
 
         var changes: [TreeChange] = deleted.sorted().map { index in
             let key = self[index].primaryKeyValue
-            return TreeChange(key: key, path: parentPath + [key], kind: .delete, index: index, movedFrom: nil, children: [])
+            return TreeChange(key: key, path: parentPath + [key], kind: .delete, index: index, movedFrom: nil, oldIndex: index, children: [])
         }
 
         var survivors: [AnyHashable: [Int]] = [:]
@@ -161,7 +179,7 @@ extension Array where Element: DiffableTree {
             let path = parentPath + [node.primaryKeyValue]
 
             guard !inserted.contains(index), let oldIndex = survivors[node.diffIdentity]?.removeFirst() else {
-                changes.append(TreeChange(key: node.primaryKeyValue, path: path, kind: .insert, index: index, movedFrom: nil, children: []))
+                changes.append(TreeChange(key: node.primaryKeyValue, path: path, kind: .insert, index: index, movedFrom: nil, oldIndex: nil, children: []))
                 continue
             }
 
@@ -173,7 +191,7 @@ extension Array where Element: DiffableTree {
                 continue
             }
 
-            changes.append(TreeChange(key: node.primaryKeyValue, path: path, kind: kind, index: index, movedFrom: moved, children: childChanges))
+            changes.append(TreeChange(key: node.primaryKeyValue, path: path, kind: kind, index: index, movedFrom: moved, oldIndex: oldIndex, children: childChanges))
         }
 
         return changes

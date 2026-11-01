@@ -6,11 +6,9 @@ Diff two arrays, or two trees such as a folder with sub folders and files, and g
 - **Heckel** (default): linear time, detects moves.
 - **Myers**: always the shortest edit script, no moves.
 - **Tree diff**: compares a root and its children recursively and reports the change as a tree with full paths.
-- **DiffableUI**: `IndexPath` results and a `UICollectionView` helper, in a separate product.
+- **DiffableUI**: animated updates for `UICollectionView`, `UITableView`, `NSCollectionView`, `NSTableView`, `NSOutlineView`, stack views, menus, `MKMapView` and diffable data sources, in a separate product.
 
 ## Installation
-
-### Swift Package Manager
 
 ```swift
 .package(url: "https://github.com/amine2233/Diffable.git", from: "1.0.0")
@@ -19,15 +17,8 @@ Diff two arrays, or two trees such as a folder with sub folders and files, and g
 ```swift
 .target(name: "App", dependencies: [
     .product(name: "Diffable", package: "Diffable"),
-    .product(name: "DiffableUI", package: "Diffable")   // optional, UIKit helpers
+    .product(name: "DiffableUI", package: "Diffable")   // optional, UIKit / AppKit / MapKit helpers
 ])
-```
-
-### CocoaPods
-
-```ruby
-pod 'Diffable'            # Core + UI
-pod 'Diffable/Core'       # algorithms and tree diff only
 ```
 
 ## Concepts
@@ -128,23 +119,70 @@ MyApp                            MyApp                         = MyApp
 - Siblings must have unique `primaryKeyValue`s.
 - Recursion is one stack frame set per level: keep trees well under ~150 levels deep.
 
-## UIKit
+## Views (DiffableUI)
+
+`import DiffableUI` adds one-line diff animations to the views below. All of them take `old` and `new` models,
+compute the diff (Heckel by default, `algorithm: .myers` to switch) and apply it with the calls the view expects.
+
+| View | Platform | API |
+|---|---|---|
+| `UICollectionView` | iOS, tvOS | `applyDiff(from:to:)`, `applyDiff(fromSections:toSections:)` |
+| `UITableView` | iOS, tvOS | same, plus `animations:` per change kind |
+| `UIStackView` | iOS, tvOS | `applyDiff(from:to:makeView:update:)` |
+| `UIMenu` | iOS | `replacingChildren(from:to:make:)` keeps the untouched `UIMenuElement`s |
+| `NSCollectionView` | macOS | `applyDiff(from:to:)`, `applyDiff(fromSections:toSections:)` |
+| `NSTableView` | macOS | `applyDiff(from:to:)` |
+| `NSOutlineView` | macOS | `applyDiff(from:to:item:updateData:)` for trees (folders and files) |
+| `NSStackView` | macOS | `applyDiff(from:to:makeView:update:)` |
+| `NSMenu` | macOS | `applyDiff(from:to:makeItem:update:)` |
+| `MKMapView` | iOS, macOS, tvOS | `syncAnnotations(from:to:update:)`, pins that did not change do not flicker |
+| `NSDiffableDataSourceSnapshot` | iOS 13, macOS 10.15 | `init(sections:)` and `init(from:to:)` which marks edited items for refresh |
+| `NSDiffableDataSourceSectionSnapshot` | iOS 14 | `init(roots:expanded:)`: an expandable outline of a tree |
 
 ```swift
 import DiffableUI
 
-let changes: (updates: [IndexPath], insertions: [IndexPath], deletions: [IndexPath], moves: [(IndexPath, IndexPath)])
-    = old.diff(new, forSection: 0)
+// One section
+collectionView.applyDiff(from: items, to: newItems) { items = newItems }
+tableView.applyDiff(from: rows, to: newRows, animations: .init(insert: .fade, delete: .left)) { rows = newRows }
 
-collectionView.apply({ dataSource = new },
-                     updates: changes.updates,
-                     insertions: changes.insertions,
-                     deletions: changes.deletions,
-                     moves: changes.moves)
+// Several sections: a section is a DiffableTree whose children are its items
+collectionView.applyDiff(fromSections: sections, toSections: newSections) { sections = newSections }
+
+// A tree in an outline view; `item` returns the object your data source uses for a path
+outlineView.applyDiff(from: oldRoots, to: newRoots, item: { Box($0) }) { roots = newRoots }
 ```
 
-Index spaces (same everywhere): **deletions** and the `from` of a move refer to the OLD array, everything else
-to the NEW array.
+Your data source must hold the **new** data once `updateData` has run.
+
+### Why two batches
+
+UIKit and `NSCollectionView` read deletions as OLD indexes and insertions as NEW ones, but a reload needs OLD
+indexes while our updates are NEW ones. So structure changes run in a first batch and reloads in a second one.
+`NSTableView`, `NSOutlineView`, `NSMenu` and the stack views are *sequential* (each call is relative to the
+previous one), so the changes first go through `SequentialPlan`.
+
+```
+SIMULTANEOUS (UIKit, NSCollectionView)        SEQUENTIAL (NSTableView, NSOutlineView, NSMenu, stacks)
+ batch 1: delete(old) insert(new) move(old->new)   remove(high -> low), then for each NEW index:
+ batch 2: reload(new)                               insert(i) or move(current -> i)
+```
+
+### Sections
+
+A moved or reloaded section cannot also have item edits in the same batch (UIKit and AppKit reject it), so
+`SectionedChanges` reports such a section as a delete plus an insert. An item moved to another section is a
+delete plus an insert as well.
+
+### Lower level
+
+```swift
+let changes = old.listChanges(to: new)                      // ListChanges: plain Int indexes
+let paths   = changes.indexPaths(section: 0)                // IndexPaths
+let plan    = SequentialPlan(changes: changes, oldCount: old.count, newCount: new.count)
+let tuple: (updates: [IndexPath], insertions: [IndexPath], deletions: [IndexPath], moves: [(IndexPath, IndexPath)])
+    = old.diff(new, forSection: 0)                          // original API, still available
+```
 
 ## Heterogeneous lists
 
@@ -157,7 +195,7 @@ let feed: [AnyDiffable] = [AnyDiffable(article), AnyDiffable(video)]
 
 ## Requirements
 
-Swift 5.4+, iOS 12, macOS 10.14, tvOS 12, watchOS 5 (podspec). The Swift Testing suites need a recent Xcode toolchain.
+Swift 5.4+ (SwiftPM only). The Swift Testing suites need a recent Xcode toolchain. `UIMenu` is iOS only; the diffable data source bridges need iOS 13 / macOS 10.15.
 
 ## Tests
 
