@@ -225,6 +225,20 @@ let feed: [AnyDiffable] = [AnyDiffable(article), AnyDiffable(video)]
 
 Swift 6.0+ / Xcode 16+ (SwiftPM only, built in the Swift 6 language mode). The Swift Testing suites need a recent Xcode toolchain. `UIMenu` is iOS only; the diffable data source bridges need iOS 13 / macOS 10.15.1.
 
+## Migrating from 1.x
+
+Version 2.0 is a major release. What you have to change:
+
+- **Swift 6.0 / Xcode 16 or later.** The package uses `swift-tools-version:6.0` and builds in the Swift 6 language mode. Older toolchains cannot resolve it.
+- **UI helpers moved to a new product.** In 1.x the `IndexPath` diff (`diff(_:forSection:)`) and the `UICollectionView` helper lived in `Diffable`. They are now in `DiffableUI`: add the product to your target and `import DiffableUI`.
+- **View adapters are `@MainActor`**, and so are the closures you pass to them (`updateData`, `completion`, `makeView`...). Calling them from a non-isolated context needs a main-actor hop. See [Concurrency](#concurrency).
+- **Swift Package Manager only.** The CocoaPods podspec was removed.
+- **Moves are minimal.** Moving one item now reports one move instead of one move per shifted item, so code that counted moves sees different numbers.
+- **`AnyDiffable` identity includes the wrapped type.** `Article(1)` and `Video(1)` are no longer matched as the same item.
+- **`Diff` is no longer public.** Use `array.diff(_:)` / `diff(_:algorithm:)`, or `DiffAlgorithm`.
+
+Nothing to do for the rest: `Diffable` gained `diffIdentity` with a default implementation, `DiffableTree` and `treeDiff` are new, and `Diffable` still does not require `Sendable`.
+
 ## Documentation
 
 DocC catalogs for both modules explain every part of the public API with examples: `Sources/Diffable/Diffable.docc` and `Sources/DiffableUI/DiffableUI.docc`. Build them with `mise run build_documentations`.
