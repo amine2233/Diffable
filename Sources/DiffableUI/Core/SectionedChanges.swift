@@ -43,14 +43,22 @@ public struct ItemPosition: Hashable {
 ///
 /// Only two levels are read: changes below the items are ignored.
 public struct SectionedChanges {
+    /// The OLD indexes of the sections to delete.
     public var sectionDeletions: [Int] = []
+    /// The NEW indexes of the sections to insert.
     public var sectionInsertions: [Int] = []
+    /// The NEW indexes of the sections to reload.
     public var sectionUpdates: [Int] = []
+    /// The section moves, from an OLD index to a NEW index.
     public var sectionMoves: [(from: Int, to: Int)] = []
 
+    /// The items to delete (OLD section, OLD item).
     public var itemDeletions: [ItemPosition] = []
+    /// The items to insert (NEW section, NEW item).
     public var itemInsertions: [ItemPosition] = []
+    /// The items to reload (NEW section, NEW item).
     public var itemUpdates: [ItemPosition] = []
+    /// The item moves inside a section, from an OLD position to a NEW position.
     public var itemMoves: [(from: ItemPosition, to: ItemPosition)] = []
 
     /// - Parameter sections: The result of `oldSections.treeDiff(newSections)`.
@@ -67,6 +75,7 @@ public struct SectionedChanges {
         }
     }
 
+    /// `true` when there is nothing to apply.
     public var isEmpty: Bool {
         sectionDeletions.isEmpty && sectionInsertions.isEmpty && sectionUpdates.isEmpty && sectionMoves
             .isEmpty

@@ -29,6 +29,7 @@ extension MKMapView {
     /// - Parameters:
     ///   - old: The annotations currently on the map, as returned by the previous call.
     ///   - new: The annotations that should be on the map.
+    ///   - algorithm: The algorithm used to compare `old` and `new`.
     ///   - update: Copies the new content (coordinate, title...) onto the annotation already on the map.
     /// - Returns: The annotations now on the map, in the order of `new`. Pass it as `old` next time:
     ///   for updated annotations it contains the instance already on the map, not the one from `new`.

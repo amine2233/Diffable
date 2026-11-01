@@ -23,10 +23,11 @@ extension NSOutlineView {
     /// - Parameters:
     ///   - old: The top-level nodes before.
     ///   - new: The top-level nodes after.
-    ///   - item: Returns the object the data source uses as the outline item for a node path, or `nil` for
-    /// the
-    ///     outline root. It is only called for parents that exist in BOTH trees, and must return the same
-    ///     object your `outlineView(_:child:ofItem:)` hands out for that path after `updateData`.
+    ///   - algorithm: The algorithm used to compare the siblings of every level.
+    ///   - animations: The animation of inserted and removed items.
+    ///   - item: Returns the object the data source uses as the outline item for a node path, or `nil`
+    ///     for the outline root. It is only called for parents that exist in BOTH trees, and must return
+    ///     the same object your `outlineView(_:child:ofItem:)` hands out for that path after `updateData`.
     ///   - updateData: Mutates the data source.
     public func applyDiff<Node: DiffableTree>(
         from old: [Node],

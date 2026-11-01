@@ -8,10 +8,19 @@ import UIKit
 extension UITableView {
     /// The row animation used for each kind of change.
     public struct DiffAnimations {
+        /// The animation used when a row or section is inserted.
         public var insert: RowAnimation
+        /// The animation used when a row or section is deleted.
         public var delete: RowAnimation
+        /// The animation used when a row or section is reloaded.
         public var reload: RowAnimation
 
+        /// Creates the animations.
+        ///
+        /// - Parameters:
+        ///   - insert: The animation of inserted rows and sections.
+        ///   - delete: The animation of deleted rows and sections.
+        ///   - reload: The animation of reloaded rows and sections.
         public init(
             insert: RowAnimation = .automatic,
             delete: RowAnimation = .automatic,
@@ -22,6 +31,7 @@ extension UITableView {
             self.reload = reload
         }
 
+        /// The system chooses the animation for every kind of change.
         public static let automatic = DiffAnimations()
     }
 

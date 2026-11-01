@@ -21,6 +21,7 @@ extension NSMenu {
     /// - Parameters:
     ///   - old: The models the current `items` were built from, in order.
     ///   - new: The models of the new menu.
+    ///   - algorithm: The algorithm used to compare `old` and `new`.
     ///   - makeItem: Creates the item of a new model.
     ///   - update: Refreshes an existing item whose model changed.
     public func applyDiff<Element: Diffable>(

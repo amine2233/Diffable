@@ -22,11 +22,22 @@ import Foundation
 /// Views whose batch API is *simultaneous* (UIKit, `NSCollectionView`) take the indexes as they are.
 /// Views whose API is *sequential* (`NSTableView`, `NSMenu`, stack views) go through `SequentialPlan`.
 public struct ListChanges {
+    /// The NEW indexes of the items whose content changed.
     public var updates: [Int]
+    /// The NEW indexes of the inserted items.
     public var insertions: [Int]
+    /// The OLD indexes of the deleted items.
     public var deletions: [Int]
+    /// The moves, from an OLD index to a NEW index.
     public var moves: [(from: Int, to: Int)]
 
+    /// Creates changes from the four lists.
+    ///
+    /// - Parameters:
+    ///   - updates: The NEW indexes of the items whose content changed.
+    ///   - insertions: The NEW indexes of the inserted items.
+    ///   - deletions: The OLD indexes of the deleted items.
+    ///   - moves: The moves, from an OLD index to a NEW index.
     public init(
         updates: [Int] = [],
         insertions: [Int] = [],
@@ -39,6 +50,9 @@ public struct ListChanges {
         self.moves = moves
     }
 
+    /// Creates changes from the tuple returned by `Array.diff(_:algorithm:)`.
+    ///
+    /// - Parameter changes: The updates, insertions, deletions and moves of a diff.
     public init(_ changes: (updates: [Int], insertions: [Int], deletions: [Int], moves: [(Int, Int)])) {
         self.init(
             updates: changes.updates,
@@ -75,18 +89,22 @@ public struct ListChanges {
         }
     }
 
+    /// `true` when there is nothing to apply.
     public var isEmpty: Bool {
         updates.isEmpty && insertions.isEmpty && deletions.isEmpty && moves.isEmpty
     }
 
+    /// The deletions as an index set (OLD indexes).
     public var deletionIndexes: IndexSet {
         IndexSet(deletions)
     }
 
+    /// The insertions as an index set (NEW indexes).
     public var insertionIndexes: IndexSet {
         IndexSet(insertions)
     }
 
+    /// The updates as an index set (NEW indexes).
     public var updateIndexes: IndexSet {
         IndexSet(updates)
     }

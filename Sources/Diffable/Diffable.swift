@@ -31,6 +31,7 @@ public protocol Diffable: Hashable {
 }
 
 extension Diffable {
+    /// The default identity: the `primaryKeyValue`.
     public var diffIdentity: AnyHashable {
         primaryKeyValue
     }
