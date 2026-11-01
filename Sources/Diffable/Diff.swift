@@ -1,5 +1,5 @@
 //
-//  Diffable.swift
+//  Diff.swift
 //  Diffable
 //
 //  Created by Amine Bensalah on 05/12/2019.
@@ -7,9 +7,73 @@
 
 import Foundation
 
+/// Paul Heckel's linear-time diff ("A technique for isolating differences between files", 1978).
+///
+/// Heckel identifies items by key (`Diffable.diffIdentity`) with a hash table, so it runs in O(n)
+/// and, unlike Myers, it natively detects **moves**.
+///
+/// ## The five passes
+///
+/// ```
+///  old: [ A  B  C  D ]          new: [ B  C  D  A ]
+///          0  1  2  3                   0  1  2  3
+///
+///  Pass 1  count every key of `new`          table: A(new 1) B(new 1) C(new 1) D(new 1)
+///  Pass 2  count every key of `old`          table: A(old 1) B(old 1) C(old 1) D(old 1)
+///
+///  Pass 2b items identical at the very start / end of both arrays are linked right away
+///          (this is what makes [a a a] vs [a a a] an empty diff despite the duplicates)
+///
+///  Pass 3  a key seen exactly ONCE on each side is the same item (an "anchor"):
+///
+///            old   A   B   C   D
+///                  |\   \   \   \
+///                  | \   \   \   \          every anchor links old[j] <-> new[i]
+///                  |  \---\---\---\--+
+///                  |       \   \   \ |
+///            new   B   C   D   A  <--+
+///
+///  Pass 4  walk new ascending: if new[i] <-> old[j] and the NEXT entries are the same
+///          key, link them too   (grows blocks of unchanged items towards the right)
+///  Pass 5  same, walking descending (grows blocks towards the left)
+///
+///  Result  new[i] linked to old[j]  -> unchanged / updated / moved
+///          old[j] never linked      -> DELETE
+///          new[i] never linked      -> INSERT
+/// ```
+///
+/// Keys that appear several times are *not* anchors (pass 3 requires exactly one occurrence per side);
+/// they only get linked when they sit next to an anchor (passes 4 and 5), otherwise they are
+/// reported as delete + insert.
+///
+/// ## Detecting moves (longest increasing subsequence)
+///
+/// Linked items form a list of old indexes read in `new` order. Items that already are in
+/// increasing order did not move; the others did. Keeping the *longest* increasing run unmoved
+/// reports the minimum number of moves:
+///
+/// ```
+///  old indexes in new order:   1  2  3  0          LIS = 1 2 3   ->   only item "0" moved
+///
+///  old: [ A  B  C  D ]   new: [ B  C  D  A ]       => 1 move  (A: 0 -> 3)
+///                                                      not 4 moves (one per shifted item)
+/// ```
+///
+/// ## Index spaces of the produced `DiffStep`s
+///
+/// ```
+///  delete(index)        index in the OLD array
+///  insert(index)        index in the NEW array
+///  update(index)        index in the NEW array
+///  move(from, to)       from in the OLD array, to in the NEW array
+/// ```
+///
+/// - Complexity: O(n) time and memory for the passes, O(n log n) for the move detection.
+/// - Not guaranteed to produce the *shortest* script. See `Myers` for that.
 public class Diff {
     private var oldReferences: [Reference] = []
     private var newReferences: [Reference] = []
+    private var table: [AnyHashable: Reference.Symbol] = [:]
 
     /// A reference to an entry in the array, can either be a pointer (a change) or an index (unchanged)
     enum Reference {
@@ -20,7 +84,7 @@ public class Diff {
         /// - index: An index reference. This is used to signify things which have not changed.
         case index(Int)
 
-        /// A reference symbol.
+        /// A reference symbol: one per distinct key.
         class Symbol {
 
             /// The count of the symbol in the old array
@@ -32,9 +96,9 @@ public class Diff {
             /// The reference indexes in the old array
             var oldLineReferenceIndexes: [Int] = []
 
-            /// true if the symbol is available in both of the arrays
-            var inBoth: Bool {
-                return !(oldCount == .zero || newCount == .zero)
+            /// true if the symbol occurs exactly once in each array (an anchor).
+            var isUnique: Bool {
+                return oldCount == .one && newCount == .one
             }
         }
     }
@@ -75,109 +139,85 @@ public class Diff {
 
         setupContext(old: old, new: new)
 
-        /// Final pass
-        ///
-        /// one entry for each index in the new array containing either:
-        /// > a pointer to table[line]
-        /// > the entry index in the old array
-
         var steps: [DiffStep<T>] = []
 
-        var deleteOffsets = Array(repeating: 0, count: old.count)
-        var offset = 0
-
-        for (index, item) in oldReferences.enumerated() {
-            deleteOffsets[index] = offset
-
-            if case .pointer(_) = item {
+        for (index, reference) in oldReferences.enumerated() {
+            if case .pointer = reference {
                 steps.append(.delete(index: index, value: old[index]))
-                offset += 1
             }
         }
 
-        offset = 0
+        var matches: [(oldIndex: Int, newIndex: Int)] = []
 
-        for (index, item) in newReferences.enumerated() {
-            switch item {
-            case .pointer(_):
+        for (index, reference) in newReferences.enumerated() {
+            switch reference {
+            case .pointer:
                 steps.append(.insert(index: index, value: new[index]))
-                offset += 1
             case .index(let oldIndex):
+                matches.append((oldIndex: oldIndex, newIndex: index))
                 if old[oldIndex] != new[index] {
                     steps.append(.update(index: index, value: new[index]))
                 }
-
-                let deleteOffset = deleteOffsets[oldIndex]
-
-                if (oldIndex - deleteOffset + offset) != index {
-                    steps.append(.move(from: oldIndex, to: index, value: new[index]))
-                }
             }
+        }
+
+        let unmoved = Diff.longestIncreasingSubsequence(matches.map { $0.oldIndex })
+
+        for (position, match) in matches.enumerated() where !unmoved.contains(position) {
+            steps.append(.move(from: match.oldIndex, to: match.newIndex, value: new[match.newIndex]))
         }
 
         return steps
     }
 
-    /// Setup the context for the diffing operation
+    /// Positions (not values) of one longest strictly increasing subsequence of `values`.
     ///
-    /// This goes through the 5 passes of Paul Heckel's Diff Algorithm
+    /// Patience sorting with binary search, O(n log n).
     ///
-    /// ## First Pass
-    ///
-    /// a. Each entry of array `new` is read in sequence
-    /// b. An entry for each is created in the table, if it doesn't already exist
-    /// c. `newCount` for the table entry is incremented
-    /// d. `new[i]` is set to point to the table entry of index i
-    ///
-    /// ## Second Pass
-    ///
-    /// a. Each entry of array `old` is read in sequence
-    /// b. An entry for each is created in the table, if it doesn't already exist
-    /// c. `oldCount` for the table entry is incremented
-    /// d. Add a reference index for the position of the entry in old
-    /// e. `old[i]` is set to point to the table entry of index i
-    ///
-    /// ## Third Pass
-    ///
-    /// a. We use Observation 1:
-    /// > If a entry occurs only once in each array, then it must be the same entry, although it may have been moved.
-    /// > We use this observation to locate unaltered entries that we subsequently exclude from further treatment.
-    ///
-    /// b. Using this, we only process the entries where `oldCount` == `newCount` == 1.
-    ///
-    /// c. As the entries between `old` and `new` "must be the same entry, although it may have been moved", we alter the table pointers to the number of the entry in the other array.
-    ///
-    /// d. We also locate unique virtual entries
-    ///  - immediately before the first and
-    ///  - immediately after the last
-    ///
-    /// ## Fourth Pass
-    ///
-    /// a. We use Observation 2:
-    /// > If a entry has been found to be unaltered, and the entries immediately adjacent to it in both arrays are identical, then these entries must be the same entry.
-    /// > This information can be used to find blocks of unchanged entries.
-    ///
-    /// b. Using this, we process each entry in ascending order.
-    ///
-    /// c. If
-    ///
-    ///  - new[i] points to old[j], and
-    ///  - new[i + 1] and old[j + 1] contain identical table entry pointers
-    /// **then**
-    ///  - old[j + 1] is set to entry i + 1, and
-    ///  - old[i + 1] is set to entry j + 1
-    ///
-    /// ## Fifth Pass
-    ///
-    /// Similar to fourth pass, except:
-    ///
-    /// It processes each entry in descending order
-    /// It uses j - 1 and i - 1 instead of j + 1 and i + 1
+    /// ```
+    ///  values:  1  2  3  0
+    ///  tails:   [1] -> [1,2] -> [1,2,3] -> [0,2,3]      length 3, positions {0,1,2}
+    /// ```
+    static func longestIncreasingSubsequence(_ values: [Int]) -> Set<Int> {
+        var tails: [Int] = []
+        var previous = [Int?](repeating: nil, count: values.count)
+
+        for (position, value) in values.enumerated() {
+            var low = 0
+            var high = tails.count
+            while low < high {
+                let middle = (low + high) / 2
+                if values[tails[middle]] < value {
+                    low = middle + 1
+                } else {
+                    high = middle
+                }
+            }
+            previous[position] = low > 0 ? tails[low - 1] : nil
+            if low == tails.count {
+                tails.append(position)
+            } else {
+                tails[low] = position
+            }
+        }
+
+        var result = Set<Int>()
+        var current = tails.last
+        while let position = current {
+            result.insert(position)
+            current = previous[position]
+        }
+        return result
+    }
+
+    /// Setup the context for the diffing operation by running Heckel's five passes (see the type documentation).
     ///
     /// - Parameters:
     ///   - old: The array to compare.
     ///   - new: The array to compare against.
     private func setupContext<T: Diffable>(old: [T], new: [T]) {
+
+        table = [:]
 
         /// First pass
         newReferences = makeTableReferences(with: new, counter: { $0.newCount.next() })
@@ -185,14 +225,11 @@ public class Diff {
         /// Second pass
         oldReferences = makeTableReferences(with: old, updateLineReference: true, counter: { $0.oldCount.next() })
 
-        /// If a line occurs only once in each file, then it must be the same line, although it may have been moved.
-        /// We use this observation to locate unaltered lines that we subsequently exclude from further treatment.
+        /// Common prefix and suffix
+        linkCommonEnds(old: old, new: new)
 
         /// Third pass
-        findUniqueVirtualEntries()
-
-        /// If a line has been found to be unaltered, and the lines immediately adjacent to it in both files are identical,
-        /// then these lines must be the same line. This information can be used to find blocks of unchanged lines.
+        findUniqueEntries()
 
         /// Fourth pass
         expandUniqueEntries(direction: .ascending)
@@ -200,8 +237,6 @@ public class Diff {
         /// Fifth pass
         expandUniqueEntries(direction: .descending)
     }
-
-    private var table: [String: Reference.Symbol] = [:]
 
     /// Generate table entries for the array, if updateLineReference is true the oldLineReferenceIndexes are also populated.
     ///
@@ -217,9 +252,10 @@ public class Diff {
         var entries: [Reference] = []
 
         for (index, item) in array.enumerated() {
-            let entry = table[item.primaryKeyValue] ?? Reference.Symbol()
+            let key = item.diffIdentity
+            let entry = table[key] ?? Reference.Symbol()
 
-            table[item.primaryKeyValue] = entry
+            table[key] = entry
 
             counter(entry)
 
@@ -233,18 +269,48 @@ public class Diff {
         return entries
     }
 
-    /// Third pass
-    private func findUniqueVirtualEntries() {
+    /// Links the items that are identical at the start and at the end of both arrays.
+    ///
+    /// ```
+    ///  old: [ a  a  a  x ]        prefix  a a a  -> linked one to one
+    ///  new: [ a  a  a  y ]        suffix  (none)
+    /// ```
+    ///
+    /// Duplicated keys are never anchors in pass 3, so without this step `[a a a]` vs `[a a a]`
+    /// would be reported as three deletions and three insertions.
+    private func linkCommonEnds<T: Diffable>(old: [T], new: [T]) {
 
-        for (index, item) in newReferences.enumerated() {
-            if case .pointer(let entry) = item, entry.inBoth {
-                guard entry.oldLineReferenceIndexes.count > 0 else {
-                    continue
-                }
-                let oldIndex = entry.oldLineReferenceIndexes.removeFirst()
-                newReferences[index]    = .index(oldIndex)
-                oldReferences[oldIndex] = .index(index)
+        func link(old oldIndex: Int, new newIndex: Int) {
+            newReferences[newIndex] = .index(oldIndex)
+            oldReferences[oldIndex] = .index(newIndex)
+        }
+
+        var prefix = 0
+        while prefix < old.count, prefix < new.count, old[prefix].diffIdentity == new[prefix].diffIdentity {
+            link(old: prefix, new: prefix)
+            prefix += 1
+        }
+
+        var oldIndex = old.count - 1
+        var newIndex = new.count - 1
+        while oldIndex >= prefix, newIndex >= prefix, old[oldIndex].diffIdentity == new[newIndex].diffIdentity {
+            link(old: oldIndex, new: newIndex)
+            oldIndex -= 1
+            newIndex -= 1
+        }
+    }
+
+    /// Third pass: link the keys that occur exactly once in each array.
+    private func findUniqueEntries() {
+
+        for (index, reference) in newReferences.enumerated() {
+            guard case .pointer(let entry) = reference,
+                  entry.isUnique,
+                  let oldIndex = entry.oldLineReferenceIndexes.first else {
+                continue
             }
+            newReferences[index] = .index(oldIndex)
+            oldReferences[oldIndex] = .index(index)
         }
     }
 
@@ -264,7 +330,7 @@ public class Diff {
         func start(references: [Reference]) -> Int {
             switch self {
             case .ascending:
-                return 1
+                return 0
             case .descending:
                 return references.count - 1
             }
@@ -313,6 +379,14 @@ public class Diff {
 
     /// Fourth & Fifth pass
     ///
+    /// ```
+    ///  ascending                       descending
+    ///
+    ///  new[i] <-> old[j]               new[i] <-> old[j]
+    ///  new[i+1] ?= old[j+1]            new[i-1] ?= old[j-1]
+    ///  same symbol => link them        same symbol => link them
+    /// ```
+    ///
     /// - Parameter direction: The direction to walk, ascending or descending
     private func expandUniqueEntries(direction: ReferenceWalker) {
 
@@ -331,6 +405,8 @@ public class Diff {
 }
 
 /// A description of a step to apply to an array to be able to transform one into the other.
+///
+/// See `Diff` for the index space of each case.
 enum DiffStep<T: Diffable>: CustomDebugStringConvertible {
 
     /// - insert: A insertation step.
@@ -347,15 +423,14 @@ enum DiffStep<T: Diffable>: CustomDebugStringConvertible {
 
     public var debugDescription: String {
         switch self {
-        case .insert(let idx,let value):
+        case .insert(let idx, let value):
             return "+\(idx)@\(value)"
-        case .delete(let idx,let value):
+        case .delete(let idx, let value):
             return "-\(idx)@\(value)"
         case .move(let from, let to, let value):
             return "\(from)>\(to)@\(value)"
-        case .update(let idx,let value):
+        case .update(let idx, let value):
             return "!\(idx)@\(value)"
         }
     }
 }
-

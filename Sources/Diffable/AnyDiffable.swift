@@ -41,12 +41,30 @@ public struct AnyDiffable: Diffable {
     ///
     public init<D: Diffable>(_ base: D) {
         self.base = base
+        baseType = ObjectIdentifier(D.self)
         _primaryKeyValue = { base.primaryKeyValue }
     }
 
     /// The primaryKeyValue value
     public var primaryKeyValue: String {
         return _primaryKeyValue()
+    }
+
+    /// The identity used by the algorithms: the wrapped type AND its key.
+    ///
+    /// ```
+    ///  Article(42)  -> (Article, "42")
+    ///  Video(42)    -> (Video,   "42")     different identities, never matched together
+    /// ```
+    public var diffIdentity: AnyHashable {
+        return TypedKey(type: baseType, key: primaryKeyValue)
+    }
+
+    private let baseType: ObjectIdentifier
+
+    private struct TypedKey: Hashable {
+        let type: ObjectIdentifier
+        let key: String
     }
 }
 
