@@ -13,7 +13,7 @@ private struct Folder: DiffableTree {
     var size = 0
     var children: [Folder] = []
 
-    var primaryKeyValue: String {
+    var id: String {
         name
     }
 
@@ -37,7 +37,7 @@ struct SnapshotTests {
             Group(title: "Sent", children: rows("12"))
         ]
 
-        let snapshot = NSDiffableDataSourceSnapshot<String, SnapshotItemID>(sections: sections)
+        let snapshot = NSDiffableDataSourceSnapshot<DiffID, SnapshotItemID>(sections: sections)
 
         #expect(snapshot.sectionIdentifiers == ["Inbox", "Sent"])
         #expect(snapshot.numberOfItems == 4)
@@ -52,7 +52,7 @@ struct SnapshotTests {
         let old = [Group(title: "Inbox", children: rows("12"))]
         let new = [Group(title: "Inbox", header: 1, children: rows("12", value: 1))]
 
-        let snapshot = NSDiffableDataSourceSnapshot<String, SnapshotItemID>(from: old, to: new)
+        let snapshot = NSDiffableDataSourceSnapshot<DiffID, SnapshotItemID>(from: old, to: new)
 
         #expect(snapshot.sectionIdentifiers == ["Inbox"])
         #expect(snapshot.numberOfItems == 2)
@@ -98,7 +98,7 @@ private struct Group: DiffableTree {
     var header = 0
     var children: [Row] = []
 
-    var primaryKeyValue: String {
+    var id: String {
         title
     }
 

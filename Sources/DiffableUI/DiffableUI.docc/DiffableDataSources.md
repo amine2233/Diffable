@@ -4,10 +4,10 @@ Build `NSDiffableDataSourceSnapshot` values from your sections and refresh the i
 
 ## A snapshot of sections
 
-A section is a `DiffableTree` whose children are its items (see <doc:Sections>). The snapshot uses the section's `primaryKeyValue` as the section identifier, and a ``SnapshotItemID`` as the item identifier:
+A section is a `DiffableTree` whose children are its items (see <doc:Sections>). The snapshot uses the section's `id` as the section identifier, wrapped in a `DiffID`, and a ``SnapshotItemID`` as the item identifier:
 
 ```swift
-let snapshot = NSDiffableDataSourceSnapshot<String, SnapshotItemID>(sections: sections)
+let snapshot = NSDiffableDataSourceSnapshot<DiffID, SnapshotItemID>(sections: sections)
 dataSource.apply(snapshot)
 ```
 
@@ -23,7 +23,7 @@ Diffable data sources need item identifiers that are unique across all sections,
 A diffable data source only compares identifiers, so an item whose identity is unchanged but whose content changed would never be redrawn. Build the new snapshot from the old and the new sections and it marks those items for you:
 
 ```swift
-let snapshot = NSDiffableDataSourceSnapshot<String, SnapshotItemID>(from: sections, to: newSections)
+let snapshot = NSDiffableDataSourceSnapshot<DiffID, SnapshotItemID>(from: sections, to: newSections)
 dataSource.apply(snapshot)
 self.sections = newSections
 ```
@@ -42,7 +42,7 @@ self.sections = newSections
 
 ```swift
 if #available(macOS 10.15.1, iOS 13.0, *) {
-    let snapshot = NSDiffableDataSourceSnapshot<String, SnapshotItemID>(from: old, to: new)
+    let snapshot = NSDiffableDataSourceSnapshot<DiffID, SnapshotItemID>(from: old, to: new)
     dataSource.apply(snapshot)
 } else {
     tableView.applyDiff(from: oldRows, to: newRows) { rows = newRows }

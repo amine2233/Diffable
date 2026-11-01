@@ -67,11 +67,11 @@ struct AlgorithmTests {
         #expect(outcome.deletionCount == 2 && outcome.insertionCount == 1)
     }
 
-    @Test("a reused Diff gives the same answer twice")
+    @Test("a reused Heckel gives the same answer twice")
     func heckelInstanceCanBeReused() {
-        var diff = Diff()
-        let first = diff.process(old: items("ab"), new: items("ba"))
-        let second = diff.process(old: items("ab"), new: items("ba"))
+        var heckel = Heckel()
+        let first = heckel.process(old: items("ab"), new: items("ba"))
+        let second = heckel.process(old: items("ab"), new: items("ba"))
         #expect(first.map(\.debugDescription) == second.map(\.debugDescription))
     }
 

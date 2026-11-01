@@ -10,7 +10,7 @@ Two things drive every diff, and they come from two different places:
               IDENTITY                            CONTENT
         "is it the same item?"             "did the item change?"
         ----------------------             ----------------------
-        primaryKeyValue                    Hashable (== / hash)
+        Identifiable.id                    Hashable (== / hash)
 
   old: [ A(id 1, "x") ]                same identity, other content  ==>  UPDATE
   new: [ A(id 1, "y") ]
@@ -19,7 +19,7 @@ Two things drive every diff, and they come from two different places:
   new: [ A(id 2) ]                     identity only in new  ==>  INSERT
 ```
 
-- ``Diffable/Diffable/primaryKeyValue`` must be stable and unique among siblings: a database id, a SKU, a file name.
+- `id` (from `Identifiable`) must be stable and unique among siblings: a database id, a UUID, a SKU, a file name. Any `Hashable` and `Sendable` type works.
 - `==` decides whether an item with the same identity changed. Compare the properties you want to detect changes on.
 
 ## Conform to Diffable
@@ -31,11 +31,11 @@ struct Product: Diffable {
     let sku: String
     var quantity: Int
 
-    var primaryKeyValue: String { sku }
+    var id: String { sku }
 }
 ```
 
-`Diffable` refines `Hashable`, so a struct of `Hashable` properties needs nothing else.
+`Diffable` refines `Hashable` and `Identifiable`, so a struct of `Hashable` properties with an `id` needs nothing else. A model that already is `Identifiable` (for SwiftUI, for example) only has to add `Diffable`.
 
 ## Compare two arrays
 

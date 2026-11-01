@@ -20,17 +20,17 @@ import AppKit
 ///  section "Sent"   / item "42"   SnapshotItemID(section: "Sent",   item: "42")     different
 /// ```
 public struct SnapshotItemID: Hashable, Sendable {
-    public let section: String
-    public let item: String
+    public let section: DiffID
+    public let item: DiffID
 
-    public init(section: String, item: String) {
+    public init(section: DiffID, item: DiffID) {
         self.section = section
         self.item = item
     }
 }
 
-@available(iOS 13.0, tvOS 13.0, macOS 10.15.1, *)
-extension NSDiffableDataSourceSnapshot where SectionIdentifierType == String,
+@available(macOS 10.15.1, *)
+extension NSDiffableDataSourceSnapshot where SectionIdentifierType == DiffID,
     ItemIdentifierType == SnapshotItemID {
     /// A snapshot of `sections` (a section is a `DiffableTree`, its children are the items).
     ///
@@ -42,10 +42,10 @@ extension NSDiffableDataSourceSnapshot where SectionIdentifierType == String,
     public init<Section: DiffableTree>(sections: [Section]) {
         self.init()
         for section in sections {
-            let key = section.primaryKeyValue
+            let key = section.diffID
             appendSections([key])
             appendItems(
-                section.children.map { SnapshotItemID(section: key, item: $0.primaryKeyValue) },
+                section.children.map { SnapshotItemID(section: key, item: $0.diffID) },
                 toSection: key
             )
         }
@@ -69,7 +69,7 @@ extension NSDiffableDataSourceSnapshot where SectionIdentifierType == String,
     ) {
         self.init(sections: new)
 
-        var sectionsToReload: [String] = []
+        var sectionsToReload: [DiffID] = []
         var itemsToRefresh: [SnapshotItemID] = []
         for section in old.treeDiff(new, algorithm: algorithm)
             where section.kind != .delete && section.kind != .insert {

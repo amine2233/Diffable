@@ -5,7 +5,6 @@ import Diffable
 #endif
 import UIKit
 
-@available(iOS 13.0, *)
 @MainActor
 extension UIMenu {
     /// `UIMenu` is immutable, so a "diff" can only rebuild it. What this does is keep the
@@ -35,11 +34,11 @@ extension UIMenu {
     ) -> UIMenu {
         var reusable: [AnyHashable: (model: Element, element: UIMenuElement)] = [:]
         for (model, element) in zip(old, children) {
-            reusable[model.diffIdentity] = (model: model, element: element)
+            reusable[AnyHashable(model.id)] = (model: model, element: element)
         }
 
         let newChildren = new.map { model -> UIMenuElement in
-            if let match = reusable[model.diffIdentity], match.model == model {
+            if let match = reusable[AnyHashable(model.id)], match.model == model {
                 return match.element
             }
             return make(model)

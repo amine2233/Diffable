@@ -1,90 +1,88 @@
-import XCTest
+import Testing
 @testable import Diffable
 
-extension Int: Diffable {
-    public var primaryKeyValue: String {
-        "\(self)"
+extension Int: @retroactive Identifiable {
+    public var id: Int {
+        self
     }
 }
 
-class DiffableTests: XCTestCase {
-    override func setUp() {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
-    }
+extension Int: Diffable {}
 
-    override func tearDown() {
-        // Put teardown code here. This method is called after the invocation of each test method in the
-        // class.
-    }
+@Suite("Diffs of type-erased lists")
+struct DiffableTests {
 
+    @Test("new entry difference")
     func testNewEntryDifference() {
         let actualArray: [AnyDiffable] = []
         let newArray = [AnyDiffable(1)]
 
         let value = actualArray.diff(newArray)
 
-        XCTAssertEqual(value.insertions.count, 1)
-        XCTAssertEqual(value.updates.count, 0)
-        XCTAssertEqual(value.moves.count, 0)
-        XCTAssertEqual(value.deletions.count, 0)
+        #expect(value.insertions.count == 1)
+        #expect(value.updates.count == 0)
+        #expect(value.moves.count == 0)
+        #expect(value.deletions.count == 0)
     }
 
+    @Test("no difference")
     func testNoDifference() {
         let actualArray = [AnyDiffable(1), AnyDiffable(2)]
         let newArray = [AnyDiffable(1), AnyDiffable(2)]
 
         let value = actualArray.diff(newArray)
 
-        XCTAssertEqual(value.insertions.count, 0)
-        XCTAssertEqual(value.updates.count, 0)
-        XCTAssertEqual(value.moves.count, 0)
-        XCTAssertEqual(value.deletions.count, 0)
+        #expect(value.insertions.count == 0)
+        #expect(value.updates.count == 0)
+        #expect(value.moves.count == 0)
+        #expect(value.deletions.count == 0)
     }
 
+    @Test("add new element difference")
     func testAddNewElementDifference() {
         let actualArray = [AnyDiffable(1), AnyDiffable(2)]
         let newArray = [AnyDiffable(1), AnyDiffable(2), AnyDiffable(2)]
 
         let value = actualArray.diff(newArray)
 
-        XCTAssertEqual(value.insertions.count, 1)
-        XCTAssertEqual(value.updates.count, 0)
-        XCTAssertEqual(value.moves.count, 0)
-        XCTAssertEqual(value.deletions.count, 0)
+        #expect(value.insertions.count == 1)
+        #expect(value.updates.count == 0)
+        #expect(value.moves.count == 0)
+        #expect(value.deletions.count == 0)
     }
 
+    @Test("remove new element difference")
     func testRemoveNewElementDifference() {
         let actualArray = [AnyDiffable(1), AnyDiffable(2)]
         let newArray = [AnyDiffable(1)]
 
         let value = actualArray.diff(newArray)
 
-        XCTAssertEqual(value.insertions.count, 0)
-        XCTAssertEqual(value.updates.count, 0)
-        XCTAssertEqual(value.moves.count, 0)
-        XCTAssertEqual(value.deletions.count, 1)
+        #expect(value.insertions.count == 0)
+        #expect(value.updates.count == 0)
+        #expect(value.moves.count == 0)
+        #expect(value.deletions.count == 1)
     }
 
+    @Test("move element difference")
     func testMoveElementDifference() {
         let actualArray = [AnyDiffable(1), AnyDiffable(2)]
         let newArray = [AnyDiffable(2), AnyDiffable(1)]
 
         let value = actualArray.diff(newArray)
 
-        XCTAssertEqual(value.insertions.count, 0)
-        XCTAssertEqual(value.updates.count, 0)
-        XCTAssertEqual(value.moves.count, 1)
-        XCTAssertEqual(value.deletions.count, 0)
+        #expect(value.insertions.count == 0)
+        #expect(value.updates.count == 0)
+        #expect(value.moves.count == 1)
+        #expect(value.deletions.count == 0)
     }
 
+    @Test("update element difference")
     func testUpdateElementDifference() {
         struct Car: Diffable {
             var id: String
             var name: String
 
-            var primaryKeyValue: String {
-                id
-            }
         }
 
         let actualArray = [AnyDiffable(Car(id: "1", name: "Audi")), AnyDiffable(Car(id: "2", name: "BMW"))]
@@ -92,24 +90,26 @@ class DiffableTests: XCTestCase {
 
         let value = actualArray.diff(newArray)
 
-        XCTAssertEqual(value.insertions.count, 0)
-        XCTAssertEqual(value.updates.count, 1)
-        XCTAssertEqual(value.moves.count, 0)
-        XCTAssertEqual(value.deletions.count, 0)
+        #expect(value.insertions.count == 0)
+        #expect(value.updates.count == 1)
+        #expect(value.moves.count == 0)
+        #expect(value.deletions.count == 0)
     }
 
+    @Test("many entry difference")
     func testManyEntryDifference() {
         let actualArray: [AnyDiffable] = []
         let newArray = [AnyDiffable(1), AnyDiffable(2), AnyDiffable(3)]
 
         let value = actualArray.diff(newArray)
 
-        XCTAssertEqual(value.insertions.count, 3)
-        XCTAssertEqual(value.updates.count, 0)
-        XCTAssertEqual(value.moves.count, 0)
-        XCTAssertEqual(value.deletions.count, 0)
+        #expect(value.insertions.count == 3)
+        #expect(value.updates.count == 0)
+        #expect(value.moves.count == 0)
+        #expect(value.deletions.count == 0)
     }
 
+    @Test("many entries difference")
     func testManyEntriesDifference() {
         let actualArray: [AnyDiffable] = [AnyDiffable(1), AnyDiffable(2), AnyDiffable(3), AnyDiffable(6)]
         let newArray = [
@@ -123,20 +123,18 @@ class DiffableTests: XCTestCase {
 
         let value = actualArray.diff(newArray)
 
-        XCTAssertEqual(value.insertions.count, 2)
-        XCTAssertEqual(value.updates.count, 0)
-        XCTAssertEqual(value.moves.count, 0)
-        XCTAssertEqual(value.deletions.count, 0)
+        #expect(value.insertions.count == 2)
+        #expect(value.updates.count == 0)
+        #expect(value.moves.count == 0)
+        #expect(value.deletions.count == 0)
     }
 
+    @Test("many move elements difference")
     func testManyMoveElementsDifference() {
         struct Car: Diffable {
             var id: String
             var name: String
 
-            var primaryKeyValue: String {
-                id
-            }
         }
 
         let actualArray = [
@@ -148,9 +146,9 @@ class DiffableTests: XCTestCase {
 
         let value = actualArray.diff(newArray)
 
-        XCTAssertEqual(value.insertions.count, 0)
-        XCTAssertEqual(value.updates.count, 0)
-        XCTAssertEqual(value.moves.count, 1)
-        XCTAssertEqual(value.deletions.count, 0)
+        #expect(value.insertions.count == 0)
+        #expect(value.updates.count == 0)
+        #expect(value.moves.count == 1)
+        #expect(value.deletions.count == 0)
     }
 }

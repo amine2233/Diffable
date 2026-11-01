@@ -1,12 +1,8 @@
 import Testing
 @testable import Diffable
 
-private struct Article: Diffable { let id: Int; var title = ""; var primaryKeyValue: String {
-    String(id)
-} }
-private struct Video: Diffable { let id: Int; var primaryKeyValue: String {
-    String(id)
-} }
+private struct Article: Diffable { let id: Int; var title = "" }
+private struct Video: Diffable { let id: Int }
 
 @Suite("AnyDiffable")
 struct AnyDiffableTests {
@@ -28,13 +24,13 @@ struct AnyDiffableTests {
         let first = AnyDiffable(Article(id: 1, title: "a"))
         let second = AnyDiffable(Article(id: 1, title: "b"))
         #expect(first != second)
-        #expect(first.diffIdentity == second.diffIdentity)
+        #expect(first.id == second.id)
     }
 
     @Test("the identity contains the wrapped type")
     func identityContainsType() {
-        #expect(AnyDiffable(Article(id: 1)).diffIdentity != AnyDiffable(Video(id: 1)).diffIdentity)
-        #expect(AnyDiffable(Article(id: 1)).primaryKeyValue == AnyDiffable(Video(id: 1)).primaryKeyValue)
+        #expect(AnyDiffable(Article(id: 1)).id != AnyDiffable(Video(id: 1)).id)
+        #expect(AnyDiffable(Article(id: 1)).id == AnyDiffable(Article(id: 1)).id)
     }
 
     @Test("a heterogeneous list: same key, other type is delete + insert, never an update")

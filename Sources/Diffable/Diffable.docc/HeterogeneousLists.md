@@ -7,8 +7,8 @@ Put articles, videos and ads in the same array with ``AnyDiffable``.
 ``AnyDiffable`` wraps any ``Diffable/Diffable`` type, so one array can hold values of different types:
 
 ```swift
-struct Article: Diffable { let id: Int; var title: String; var primaryKeyValue: String { String(id) } }
-struct Video: Diffable { let id: Int; var primaryKeyValue: String { String(id) } }
+struct Article: Diffable { let id: Int; var title: String }
+struct Video: Diffable { let id: Int }
 
 let feed: [AnyDiffable] = [
     AnyDiffable(Article(id: 1, title: "Hello")),
@@ -18,7 +18,7 @@ let feed: [AnyDiffable] = [
 
 ## The type is part of the identity
 
-`Article` 1 and `Video` 1 have the same `primaryKeyValue`, but they are not the same item. ``AnyDiffable/diffIdentity`` combines the wrapped type and the key, so they are never confused:
+`Article` 1 and `Video` 1 have the same `id`, but they are not the same item. The ``AnyDiffable`` id combines the wrapped type and the wrapped id (as a ``DiffID``), so they are never confused:
 
 ```swift
 let old: [AnyDiffable] = [AnyDiffable(Article(id: 1, title: "a"))]

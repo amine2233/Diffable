@@ -4,15 +4,13 @@ Update the pins of a map without removing and re-adding all of them.
 
 ## Make an annotation diffable
 
-``DiffableAnnotation`` combines `Diffable` and `MKAnnotation`. The `primaryKeyValue` is the identity of the place, and `==` compares what you want to detect changes on:
+``DiffableAnnotation`` combines `Diffable` and `MKAnnotation`. The `id` is the identity of the place, and `==` compares what you want to detect changes on:
 
 ```swift
 final class Pin: NSObject, DiffableAnnotation {
     let id: String
     var title: String?
     dynamic var coordinate: CLLocationCoordinate2D
-
-    var primaryKeyValue: String { id }
 
     init(id: String, title: String, coordinate: CLLocationCoordinate2D) {
         self.id = id

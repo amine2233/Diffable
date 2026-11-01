@@ -22,7 +22,6 @@ The core algorithms are synchronous and keep no shared state, so a large diff ca
 struct Message: Diffable, Sendable {
     let id: Int
     var text: String
-    var primaryKeyValue: String { String(id) }
 }
 
 @MainActor

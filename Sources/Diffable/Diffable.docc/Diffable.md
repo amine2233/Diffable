@@ -12,7 +12,7 @@ import Diffable
 struct Product: Diffable {
     let sku: String
     var quantity: Int
-    var primaryKeyValue: String { sku }
+    var id: String { sku }
 }
 
 let changes = before.diff(after)
@@ -37,6 +37,7 @@ To animate the result in a `UICollectionView`, `NSTableView`, `NSOutlineView` an
 ### Describing your data
 
 - ``Diffable/Diffable``
+- ``DiffID``
 - ``AnyDiffable``
 - <doc:HeterogeneousLists>
 

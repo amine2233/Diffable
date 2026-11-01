@@ -46,7 +46,6 @@ extension UITableView {
     ///  insertRows(insertions) [new idx]
     ///  moveRow(from old, to new)
     /// ```
-    @available(iOS 11.0, tvOS 11.0, *)
     public func apply(
         _ changes: ListChanges,
         section: Int = 0,
@@ -78,7 +77,6 @@ extension UITableView {
     }
 
     /// Diffs `old` against `new` and animates the difference in one section.
-    @available(iOS 11.0, tvOS 11.0, *)
     public func applyDiff<Element: Diffable>(
         from old: [Element],
         to new: [Element],
@@ -98,7 +96,6 @@ extension UITableView {
     }
 
     /// Applies the changes of several sections, with the same two-batch order as `UICollectionView`.
-    @available(iOS 11.0, tvOS 11.0, *)
     public func apply(
         _ changes: SectionedChanges,
         animations: DiffAnimations = .automatic,
@@ -135,7 +132,6 @@ extension UITableView {
     }
 
     /// Diffs two lists of sections (a section is a `DiffableTree` whose children are its rows).
-    @available(iOS 11.0, tvOS 11.0, *)
     public func applyDiff<Section: DiffableTree>(
         fromSections old: [Section],
         toSections new: [Section],

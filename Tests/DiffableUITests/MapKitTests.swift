@@ -15,9 +15,6 @@ private final class Pin: NSObject, DiffableAnnotation {
         self.coordinate = CLLocationCoordinate2D(latitude: latitude, longitude: 0)
     }
 
-    var primaryKeyValue: String {
-        id
-    }
 
     override func isEqual(_ object: Any?) -> Bool {
         guard let other = object as? Pin else { return false }

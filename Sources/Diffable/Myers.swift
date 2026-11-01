@@ -50,11 +50,11 @@ import Foundation
 ///
 /// - Complexity: O((N+M)·D) time, O(D·(N+M)) memory, where D is the number of edits.
 ///   Great when the arrays are similar, heavy when they are completely different and huge.
-/// - Items are matched by `Diffable.diffIdentity`; with duplicate keys it matches them in order.
+/// - Items are matched by `Diffable.id`; with duplicate keys it matches them in order.
 struct Myers {
     func process<T: Diffable>(old: [T], new: [T]) -> [DiffStep<T>] {
-        let oldKeys = old.map { $0.diffIdentity }
-        let newKeys = new.map { $0.diffIdentity }
+        let oldKeys = old.map { AnyHashable($0.id) }
+        let newKeys = new.map { AnyHashable($0.id) }
         let oldCount = oldKeys.count
         let newCount = newKeys.count
 

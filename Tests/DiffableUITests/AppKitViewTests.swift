@@ -179,7 +179,7 @@ private struct Entry: DiffableTree {
     var size = 0
     var children: [Entry] = []
 
-    var primaryKeyValue: String {
+    var id: String {
         name
     }
 
@@ -201,7 +201,7 @@ private final class OutlineSource: NSObject, NSOutlineViewDataSource {
         var level = roots
         var found: Entry?
         for component in box.path.components {
-            found = level.first { $0.name == component }
+            found = level.first { $0.name == component.description }
             level = found?.children ?? []
         }
         return found?.children ?? []
@@ -223,7 +223,7 @@ private final class OutlineSource: NSObject, NSOutlineViewDataSource {
 
     func outlineView(_ outlineView: NSOutlineView, child index: Int, ofItem item: Any?) -> Any {
         let parent = (item as? PathBox)?.path.components ?? []
-        return PathBox(TreePath(parent + [children(of: item)[index].name]))
+        return PathBox(TreePath(parent + [DiffID(children(of: item)[index].name)]))
     }
 
     func outlineView(
@@ -248,9 +248,9 @@ struct NSOutlineViewDiffTests {
         return outline
     }
 
-    private func visibleRows(_ nodes: [Entry], parent: [String], outline: NSOutlineView) -> Int {
+    private func visibleRows(_ nodes: [Entry], parent: [DiffID], outline: NSOutlineView) -> Int {
         nodes.reduce(0) { total, node in
-            let path = parent + [node.name]
+            let path = parent + [DiffID(node.name)]
             let expanded = outline.isItemExpanded(PathBox(TreePath(path)))
             return total + 1 + (expanded ? visibleRows(node.children, parent: path, outline: outline) : 0)
         }
