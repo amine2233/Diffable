@@ -27,8 +27,8 @@ import Foundation
 /// and checks it always rebuilds the new list.
 ///
 /// Updates are not part of the plan: they do not change positions.
-public struct SequentialPlan: Equatable {
-    public enum Operation: Equatable {
+public struct SequentialPlan: Equatable, Sendable {
+    public enum Operation: Equatable, Sendable {
         case remove(Int)
         case insert(Int)
         case move(from: Int, to: Int)

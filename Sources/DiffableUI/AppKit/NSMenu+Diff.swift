@@ -5,6 +5,7 @@ import Diffable
 #endif
 import AppKit
 
+@MainActor
 extension NSMenu {
     /// Keeps the menu items in sync with a list of models without rebuilding the menu, so open
     /// submenus, key equivalents and item state of untouched items survive.
@@ -28,8 +29,8 @@ extension NSMenu {
         from old: [Element],
         to new: [Element],
         algorithm: DiffAlgorithm = .heckel,
-        makeItem: (Element) -> NSMenuItem,
-        update: (NSMenuItem, Element) -> Void
+        makeItem: @MainActor (Element) -> NSMenuItem,
+        update: @MainActor (NSMenuItem, Element) -> Void
     ) {
         let changes = old.listChanges(to: new, algorithm: algorithm)
 

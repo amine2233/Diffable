@@ -5,6 +5,7 @@ import Diffable
 #endif
 import AppKit
 
+@MainActor
 extension NSOutlineView {
     /// Animates the difference between two trees (folders, files...) in an outline view.
     ///
@@ -34,8 +35,8 @@ extension NSOutlineView {
         to new: [Node],
         algorithm: DiffAlgorithm = .heckel,
         animations: NSTableView.DiffAnimations = .default,
-        item: (TreePath) -> Any?,
-        updateData: () -> Void
+        item: @MainActor (TreePath) -> Any?,
+        updateData: @MainActor () -> Void
     ) {
         let changes = old.treeDiff(new, algorithm: algorithm)
 
@@ -52,7 +53,7 @@ extension NSOutlineView {
         changes: [TreeChange],
         parent: Any?,
         animations: NSTableView.DiffAnimations,
-        item: (TreePath) -> Any?
+        item: @MainActor (TreePath) -> Any?
     ) {
         let list = ListChanges(siblings: changes)
 

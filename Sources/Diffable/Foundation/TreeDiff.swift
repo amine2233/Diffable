@@ -46,8 +46,8 @@ public protocol DiffableTree: Diffable {
 ///  docs/                         └── c.swift               - docs              (delete, ONE entry:
 ///  └── index.md                                                                 its files are not repeated)
 /// ```
-public struct TreeChange: Equatable {
-    public enum Kind: Equatable {
+public struct TreeChange: Equatable, Sendable {
+    public enum Kind: Equatable, Sendable {
         /// The node exists only in the new tree. Its descendants are not listed.
         case insert
 

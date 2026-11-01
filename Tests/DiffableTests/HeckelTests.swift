@@ -76,7 +76,8 @@ struct HeckelTests {
     func duplicates(pair: (String, String)) {
         let old = items(pair.0)
         let new = items(pair.1)
-        let outcome = replay(Diff().process(old: old, new: new), old: old, new: new)
+        var diff = Diff()
+        let outcome = replay(diff.process(old: old, new: new), old: old, new: new)
         #expect(outcome.problems.isEmpty, "\(outcome.problems)")
     }
 

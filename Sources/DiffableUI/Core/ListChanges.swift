@@ -21,7 +21,7 @@ import Foundation
 ///
 /// Views whose batch API is *simultaneous* (UIKit, `NSCollectionView`) take the indexes as they are.
 /// Views whose API is *sequential* (`NSTableView`, `NSMenu`, stack views) go through `SequentialPlan`.
-public struct ListChanges {
+public struct ListChanges: Sendable {
     /// The NEW indexes of the items whose content changed.
     public var updates: [Int]
     /// The NEW indexes of the inserted items.

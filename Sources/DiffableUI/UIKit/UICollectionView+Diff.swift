@@ -6,6 +6,7 @@ import Diffable
 import UIKit
 
 #if !os(watchOS)
+@MainActor
 extension UICollectionView {
     /// Applies index paths computed by `Array.diff(_:forSection:algorithm:)`.
     ///
@@ -32,12 +33,12 @@ extension UICollectionView {
     ///   - moves: From old-array, to new-array index paths.
     ///   - completion: Called once both batches finished.
     public func apply(
-        _ block: @escaping () -> Void,
+        _ block: @escaping @MainActor () -> Void,
         updates: [IndexPath],
         insertions: [IndexPath],
         deletions: [IndexPath],
         moves: [(from: IndexPath, to: IndexPath)],
-        completion: (() -> Void)? = nil
+        completion: (@MainActor () -> Void)? = nil
     ) {
         performBatchUpdates({
             block()
@@ -66,8 +67,8 @@ extension UICollectionView {
     public func apply(
         _ changes: ListChanges,
         section: Int = 0,
-        updateData: @escaping () -> Void,
-        completion: (() -> Void)? = nil
+        updateData: @escaping @MainActor () -> Void,
+        completion: (@MainActor () -> Void)? = nil
     ) {
         let paths = changes.indexPaths(section: section)
         apply(
@@ -90,8 +91,8 @@ extension UICollectionView {
         to new: [Element],
         section: Int = 0,
         algorithm: DiffAlgorithm = .heckel,
-        updateData: @escaping () -> Void,
-        completion: (() -> Void)? = nil
+        updateData: @escaping @MainActor () -> Void,
+        completion: (@MainActor () -> Void)? = nil
     ) {
         apply(
             old.listChanges(to: new, algorithm: algorithm),
@@ -114,8 +115,8 @@ extension UICollectionView {
     /// ```
     public func apply(
         _ changes: SectionedChanges,
-        updateData: @escaping () -> Void,
-        completion: (() -> Void)? = nil
+        updateData: @escaping @MainActor () -> Void,
+        completion: (@MainActor () -> Void)? = nil
     ) {
         performBatchUpdates({
             updateData()
@@ -151,8 +152,8 @@ extension UICollectionView {
         fromSections old: [Section],
         toSections new: [Section],
         algorithm: DiffAlgorithm = .heckel,
-        updateData: @escaping () -> Void,
-        completion: (() -> Void)? = nil
+        updateData: @escaping @MainActor () -> Void,
+        completion: (@MainActor () -> Void)? = nil
     ) {
         apply(
             old.sectionedChanges(to: new, algorithm: algorithm),

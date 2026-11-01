@@ -14,7 +14,7 @@ collectionView.applyDiff(from: items, to: newItems) {
 }
 ```
 
-Your data source must hold the **new** data once the `updateData` closure has run.
+Your data source must hold the **new** data once the `updateData` closure has run. View adapters run on the main actor, while the diff values (``ListChanges`` and friends) are `Sendable` and can be computed anywhere: see <doc:Concurrency>.
 
 | View | Platform | Entry point |
 |---|---|---|
@@ -38,6 +38,7 @@ Your data source must hold the **new** data once the `updateData` closure has ru
 - <doc:GettingStarted>
 - <doc:Sections>
 - <doc:SequentialViews>
+- <doc:Concurrency>
 
 ### Trees and outlines
 

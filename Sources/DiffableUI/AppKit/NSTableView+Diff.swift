@@ -5,9 +5,10 @@ import Diffable
 #endif
 import AppKit
 
+@MainActor
 extension NSTableView {
     /// The animation used for each kind of row change.
-    public struct DiffAnimations {
+    public struct DiffAnimations: Sendable {
         /// The animation used when a row is inserted.
         public var insert: AnimationOptions
         /// The animation used when a row is removed.
@@ -52,7 +53,7 @@ extension NSTableView {
         oldCount: Int,
         newCount: Int,
         animations: DiffAnimations = .default,
-        updateData: () -> Void
+        updateData: @MainActor () -> Void
     ) {
         updateData()
 
@@ -80,7 +81,7 @@ extension NSTableView {
         to new: [Element],
         algorithm: DiffAlgorithm = .heckel,
         animations: DiffAnimations = .default,
-        updateData: () -> Void
+        updateData: @MainActor () -> Void
     ) {
         apply(
             old.listChanges(to: new, algorithm: algorithm),
