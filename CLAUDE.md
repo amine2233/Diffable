@@ -4,18 +4,25 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Overview
 
-Diffable is a small Swift package with two library products, `Diffable` (algorithms + tree diff, no UI) and `DiffableUI` (animated updates for UIKit/AppKit/MapKit views and diffable data sources; depends on `Diffable`; swift-tools 5.4). Computes updates/insertions/deletions/moves between two arrays (Heckel or Myers) or two trees. Distributed via SwiftPM only (the podspec was removed); `#if SWIFT_PACKAGE import Diffable` in DiffableUI is a leftover from compiling both into one module and is harmless.
+Diffable is a small Swift package with two library products, `Diffable` (algorithms + tree diff, no UI) and `DiffableUI` (animated updates for UIKit/AppKit/MapKit views and diffable data sources; depends on `Diffable`; swift-tools 5.5). Computes updates/insertions/deletions/moves between two arrays (Heckel or Myers) or two trees. Distributed via SwiftPM only (the podspec was removed); `#if SWIFT_PACKAGE import Diffable` in DiffableUI is a leftover from compiling both into one module and is harmless.
 
 ## Commands
 
 ```bash
-swift build -v
-swift test -v
-swift test --filter DiffableTests/<testName>   # single test
-swiftlint                                      # config in .swiftlint.yml
+mise run test                         # swift test (macOS + Linux in CI)
+mise run test-coverage                # macOS only
+mise run format                       # executor format .
+mise run check_code                   # lint Sources
+mise run check_documentation          # lint doc comments
+mise run check_commit_title           # latest commit title vs conventional commits
+mise run build_documentations         # DocC into ./public (use --serve to preview)
+mise run release --dry-run            # semantic-release preview
+
+swift build
+swift test --filter <TypeOrFunctionName>   # single test
 ```
 
-CI (`.github/workflows/`) runs `swift build` / `swift test` on macOS and SwiftLint on push.
+CI (`.github/workflows/ci.yml`) is a thin caller of `amine2233/ci-shared`: it runs the mise tasks above on macOS and Linux for PRs and pushes to `main`. `page.yml` publishes DocC after a green CI, `semantic-release.yml` is a manual release (dry run by default). PR titles must be conventional commits.
 
 ## Architecture
 
@@ -28,7 +35,8 @@ CI (`.github/workflows/`) runs `swift build` / `swift test` on macOS and SwiftLi
 ## Notes
 
 - Each source file carries ASCII-diagram docs of its algorithm; keep them in sync when changing behavior.
-- Old tests are XCTest (`DiffableTests.swift`, `XCTestManifests.swift`; `LinuxMain.swift` was removed); new tests use Swift Testing. `TestSupport.swift` has `replay(...)`, an oracle that applies diff steps to the old array and checks it rebuilds the new one; `RandomizedTests` / `TreeRandomizedTests` run it over seeded random inputs (reproducible, change the seed to explore).
-- `swiftlint lint Sources` reports many pre-existing style warnings (line length etc.).
+- Old tests are XCTest (`DiffableTests.swift`; no `LinuxMain.swift` / `XCTestManifests.swift`: that manifest makes the combined XCTest + Swift Testing run hang on Linux); new tests use Swift Testing. `TestSupport.swift` has `replay(...)`, an oracle that applies diff steps to the old array and checks it rebuilds the new one; `RandomizedTests` / `TreeRandomizedTests` run it over seeded random inputs (reproducible, change the seed to explore).
 - UIKit-only code cannot run on the macOS host: after touching `Sources/DiffableUI/UIKit` or `Snapshot`, typecheck against the iOS/tvOS SDK (`xcrun --sdk iphonesimulator swiftc -typecheck -target arm64-apple-ios12.0-simulator -D SWIFT_PACKAGE -I <dir with Diffable.swiftmodule> $(find Sources/DiffableUI -name '*.swift')`). AppKit and MapKit adapters are tested on the host with real views (`AppKitViewTests`, `MapKitTests`).
 - `swift test --filter` matches type/function names (e.g. `NSTableViewDiffTests`), not the display names.
+- DocC catalogs live in `Sources/Diffable/Diffable.docc` and `Sources/DiffableUI/DiffableUI.docc` (tools-version 5.5 is what lets SwiftPM handle them). Build them with `xcodebuild docbuild -scheme Diffable -destination 'generic/platform=macOS'` (same for `DiffableUI`) and keep articles and `///` parameter lists complete: DocC warns about any undocumented parameter once one is documented.
+- With `mise.toml` in this folder, plain `swift` is mise's open-source Swift 6.3.1, which can fail against the installed Xcode SDK (`unknown argument '-target-arch-variant'`). Use `xcrun swift build` / `xcrun swift test` locally if that happens.

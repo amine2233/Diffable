@@ -1,8 +1,8 @@
 import Testing
 @testable import Diffable
 
-@Suite("Tree diff") struct TreeDiffTests {
-
+@Suite("Tree diff")
+struct TreeDiffTests {
     @Test("identical trees have no change", arguments: algorithms)
     func identicalTrees(algorithm: DiffAlgorithm) {
         let root = folder("root", file("a"), folder("src", file("b"), folder("deep", file("c"))))
@@ -104,7 +104,10 @@ import Testing
 
         let flat = flatten(old.treeDiff(to: new, algorithm: .myers))
 
-        #expect(flat.filter { $0.kind != .unchanged }.map(\.kind).sorted { "\($0)" < "\($1)" } == [.delete, .insert])
+        #expect(flat.filter { $0.kind != .unchanged }.map(\.kind).sorted { "\($0)" < "\($1)" } == [
+            .delete,
+            .insert
+        ])
     }
 
     @Test("a folder whose own content AND children changed is an update with children", arguments: algorithms)
@@ -152,11 +155,16 @@ import Testing
     func deepTree(algorithm: DiffAlgorithm) {
         func chain(depth: Int, leaf: Int) -> Node {
             var node = file("leaf", size: leaf)
-            for level in 0..<depth { node = Node(name: "d\(level)", children: [node]) }
+            for level in 0 ..< depth {
+                node = Node(name: "d\(level)", children: [node])
+            }
             return node
         }
 
-        let changes = chain(depth: 100, leaf: 1).treeDiff(to: chain(depth: 100, leaf: 2), algorithm: algorithm)
+        let changes = chain(depth: 100, leaf: 1).treeDiff(
+            to: chain(depth: 100, leaf: 2),
+            algorithm: algorithm
+        )
 
         let flat = flatten(changes)
         #expect(flat.count == 101)
@@ -166,13 +174,16 @@ import Testing
 
     @Test("a wide folder (5000 files, 3 edits)", arguments: algorithms)
     func wideFolder(algorithm: DiffAlgorithm) {
-        let files = (0..<5_000).map { file("f\($0)") }
+        let files = (0 ..< 5_000).map { file("f\($0)") }
         var edited = files
         edited[10].size = 9
         edited.remove(at: 2_000)
         edited.append(file("extra"))
 
-        let kinds = Node(name: "root", children: files).treeDiff(to: Node(name: "root", children: edited), algorithm: algorithm)[0].children.map(\.kind)
+        let kinds = Node(name: "root", children: files).treeDiff(
+            to: Node(name: "root", children: edited),
+            algorithm: algorithm
+        )[0].children.map(\.kind)
 
         #expect(kinds.sorted { "\($0)" < "\($1)" } == [.delete, .insert, .update])
     }
@@ -217,42 +228,46 @@ import Testing
 
     @Test("the outline shows moves")
     func outlineShowsMoves() {
-        let text = folder("r", file("a"), file("b")).treeDiff(to: folder("r", file("b"), file("a"))).map(\.description).joined(separator: "\n")
+        let text = folder("r", file("a"), file("b")).treeDiff(to: folder("r", file("b"), file("a")))
+            .map(\.description).joined(separator: "\n")
         #expect(text.contains("(moved from"))
     }
 }
 
-@Suite("Tree diff randomized") struct TreeRandomizedTests {
-
+@Suite("Tree diff randomized")
+struct TreeRandomizedTests {
     @Test("the reported changes match a path-based oracle", arguments: algorithms)
     func matchesOracle(algorithm: DiffAlgorithm) {
         var generator = SeededGenerator(seed: 21)
-        for _ in 0..<1_500 {
+        for _ in 0 ..< 1_500 {
             let old = randomTree(depth: 3, using: &generator)
             let new = mutateTree(old, depth: 3, shuffle: algorithm == .heckel, using: &generator)
 
             let oldPaths = flatten(old)
             let newPaths = flatten(new)
             var expected = Set<String>()
-            for (path, size) in oldPaths where newPaths[path] == nil && (path.count == 1 || newPaths[Array(path.dropLast())] != nil) {
+            for (path, size) in oldPaths
+                where newPaths[path] == nil && (path.count == 1 || newPaths[Array(path.dropLast())] != nil) {
                 expected.insert("delete \(path)")
                 _ = size
             }
-            for path in newPaths.keys where oldPaths[path] == nil && (path.count == 1 || oldPaths[Array(path.dropLast())] != nil) {
+            for path in newPaths.keys
+                where oldPaths[path] == nil && (path.count == 1 || oldPaths[Array(path.dropLast())] != nil) {
                 expected.insert("insert \(path)")
             }
             for (path, size) in newPaths where oldPaths[path] != nil && oldPaths[path] != size {
                 expected.insert("update \(path)")
             }
 
-            let actual = Set(flatten(old.treeDiff(new, algorithm: algorithm)).compactMap { change -> String? in
-                switch change.kind {
-                case .insert: return "insert \(change.path)"
-                case .delete: return "delete \(change.path)"
-                case .update: return "update \(change.path)"
-                case .unchanged: return nil
-                }
-            })
+            let actual = Set(flatten(old.treeDiff(new, algorithm: algorithm))
+                .compactMap { change -> String? in
+                    switch change.kind {
+                    case .insert: return "insert \(change.path)"
+                    case .delete: return "delete \(change.path)"
+                    case .update: return "update \(change.path)"
+                    case .unchanged: return nil
+                    }
+                })
 
             #expect(actual == expected, "\(algorithm)")
         }
@@ -261,7 +276,7 @@ import Testing
     @Test("a tree diffed with itself is empty", arguments: algorithms)
     func selfDiff(algorithm: DiffAlgorithm) {
         var generator = SeededGenerator(seed: 22)
-        for _ in 0..<300 {
+        for _ in 0 ..< 300 {
             let tree = randomTree(depth: 3, using: &generator)
             #expect(tree.treeDiff(tree, algorithm: algorithm).isEmpty)
         }

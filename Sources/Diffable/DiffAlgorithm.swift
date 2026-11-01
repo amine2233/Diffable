@@ -1,8 +1,3 @@
-//
-//  DiffAlgorithm.swift
-//  Diffable
-//
-
 import Foundation
 
 /// The algorithm used to compare two arrays of siblings.
@@ -19,7 +14,6 @@ import Foundation
 ///                                                     readable minimal diffs
 /// ```
 public enum DiffAlgorithm {
-
     /// Paul Heckel's linear algorithm. See `Diff`.
     case heckel
 
@@ -29,9 +23,9 @@ public enum DiffAlgorithm {
     func process<T: Diffable>(old: [T], new: [T]) -> [DiffStep<T>] {
         switch self {
         case .heckel:
-            return Diff().process(old: old, new: new)
+            Diff().process(old: old, new: new)
         case .myers:
-            return Myers().process(old: old, new: new)
+            Myers().process(old: old, new: new)
         }
     }
 }

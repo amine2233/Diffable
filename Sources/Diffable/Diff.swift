@@ -1,10 +1,3 @@
-//
-//  Diff.swift
-//  Diffable
-//
-//  Created by Amine Bensalah on 05/12/2019.
-//
-
 import Foundation
 
 /// Paul Heckel's linear-time diff ("A technique for isolating differences between files", 1978).
@@ -77,7 +70,6 @@ public class Diff {
 
     /// A reference to an entry in the array, can either be a pointer (a change) or an index (unchanged)
     enum Reference {
-
         /// - pointer: A pointer to a symbol in the list of entries. This is used to identify changes.
         case pointer(Symbol)
 
@@ -86,7 +78,6 @@ public class Diff {
 
         /// A reference symbol: one per distinct key.
         class Symbol {
-
             /// The count of the symbol in the old array
             var oldCount: Count = .zero
 
@@ -98,7 +89,7 @@ public class Diff {
 
             /// true if the symbol occurs exactly once in each array (an anchor).
             var isUnique: Bool {
-                return oldCount == .one && newCount == .one
+                oldCount == .one && newCount == .one
             }
         }
     }
@@ -136,7 +127,6 @@ public class Diff {
     ///   - new: The array to compare against.
     /// - Returns: A list of DiffStep operations to perform on the old array to get the new array.
     func process<T: Diffable>(old: [T], new: [T]) -> [DiffStep<T>] {
-
         setupContext(old: old, new: new)
 
         var steps: [DiffStep<T>] = []
@@ -153,7 +143,7 @@ public class Diff {
             switch reference {
             case .pointer:
                 steps.append(.insert(index: index, value: new[index]))
-            case .index(let oldIndex):
+            case let .index(oldIndex):
                 matches.append((oldIndex: oldIndex, newIndex: index))
                 if old[oldIndex] != new[index] {
                     steps.append(.update(index: index, value: new[index]))
@@ -210,35 +200,40 @@ public class Diff {
         return result
     }
 
-    /// Setup the context for the diffing operation by running Heckel's five passes (see the type documentation).
+    /// Setup the context for the diffing operation by running Heckel's five passes (see the type
+    /// documentation).
     ///
     /// - Parameters:
     ///   - old: The array to compare.
     ///   - new: The array to compare against.
     private func setupContext<T: Diffable>(old: [T], new: [T]) {
-
         table = [:]
 
-        /// First pass
+        // First pass
         newReferences = makeTableReferences(with: new, counter: { $0.newCount.next() })
 
-        /// Second pass
-        oldReferences = makeTableReferences(with: old, updateLineReference: true, counter: { $0.oldCount.next() })
+        // Second pass
+        oldReferences = makeTableReferences(
+            with: old,
+            updateLineReference: true,
+            counter: { $0.oldCount.next() }
+        )
 
-        /// Common prefix and suffix
+        // Common prefix and suffix
         linkCommonEnds(old: old, new: new)
 
-        /// Third pass
+        // Third pass
         findUniqueEntries()
 
-        /// Fourth pass
+        // Fourth pass
         expandUniqueEntries(direction: .ascending)
 
-        /// Fifth pass
+        // Fifth pass
         expandUniqueEntries(direction: .descending)
     }
 
-    /// Generate table entries for the array, if updateLineReference is true the oldLineReferenceIndexes are also populated.
+    /// Generate table entries for the array, if updateLineReference is true the oldLineReferenceIndexes are
+    /// also populated.
     ///
     /// First & Second pass
     ///
@@ -247,8 +242,11 @@ public class Diff {
     ///   - updateLineReference: true if the oldLineReferenceIndexes should be updated
     ///   - counter: A function used to increase the counter for the reference symbol.
     /// - Returns: A list of symbol references for array `array`.
-    private func makeTableReferences<T: Diffable>(with array: [T], updateLineReference: Bool = false, counter: (Reference.Symbol) -> Void) -> [Reference] {
-
+    private func makeTableReferences<T: Diffable>(
+        with array: [T],
+        updateLineReference: Bool = false,
+        counter: (Reference.Symbol) -> Void
+    ) -> [Reference] {
         var entries: [Reference] = []
 
         for (index, item) in array.enumerated() {
@@ -279,7 +277,6 @@ public class Diff {
     /// Duplicated keys are never anchors in pass 3, so without this step `[a a a]` vs `[a a a]`
     /// would be reported as three deletions and three insertions.
     private func linkCommonEnds<T: Diffable>(old: [T], new: [T]) {
-
         func link(old oldIndex: Int, new newIndex: Int) {
             newReferences[newIndex] = .index(oldIndex)
             oldReferences[oldIndex] = .index(newIndex)
@@ -293,7 +290,8 @@ public class Diff {
 
         var oldIndex = old.count - 1
         var newIndex = new.count - 1
-        while oldIndex >= prefix, newIndex >= prefix, old[oldIndex].diffIdentity == new[newIndex].diffIdentity {
+        while oldIndex >= prefix, newIndex >= prefix,
+              old[oldIndex].diffIdentity == new[newIndex].diffIdentity {
             link(old: oldIndex, new: newIndex)
             oldIndex -= 1
             newIndex -= 1
@@ -302,13 +300,13 @@ public class Diff {
 
     /// Third pass: link the keys that occur exactly once in each array.
     private func findUniqueEntries() {
-
         for (index, reference) in newReferences.enumerated() {
-            guard case .pointer(let entry) = reference,
+            guard case let .pointer(entry) = reference,
                   entry.isUnique,
                   let oldIndex = entry.oldLineReferenceIndexes.first else {
                 continue
             }
+
             newReferences[index] = .index(oldIndex)
             oldReferences[oldIndex] = .index(index)
         }
@@ -316,7 +314,6 @@ public class Diff {
 
     /// An enumeration to specify the direction of the traversal of references.
     enum ReferenceWalker {
-
         /// - ascending: Walk the references in ascending order.
         case ascending
 
@@ -330,9 +327,9 @@ public class Diff {
         func start(references: [Reference]) -> Int {
             switch self {
             case .ascending:
-                return 0
+                0
             case .descending:
-                return references.count - 1
+                references.count - 1
             }
         }
 
@@ -340,9 +337,9 @@ public class Diff {
         var step: Int {
             switch self {
             case .ascending:
-                return 1
+                1
             case .descending:
-                return -1
+                -1
             }
         }
 
@@ -350,14 +347,15 @@ public class Diff {
         ///
         /// - Parameters:
         ///   - i: the index to validate
-        ///   - references: The array of references, the count of these determines if the traversal is still valid.
+        ///   - references: The array of references, the count of these determines if the traversal is still
+        /// valid.
         /// - Returns: true if the traversal is still valid.
         func isValid(i: Int, references: [Reference]) -> Bool {
             switch self {
             case .ascending:
-                return i < references.count - 1
+                i < references.count - 1
             case .descending:
-                return i > 0
+                i > 0
             }
         }
 
@@ -365,14 +363,15 @@ public class Diff {
         ///
         /// - Parameters:
         ///   - i: the index to validate
-        ///   - references: The array of references, the count of these determines if the traversal is still valid.
+        ///   - references: The array of references, the count of these determines if the traversal is still
+        /// valid.
         /// - Returns: true if the index is in range.
         func inRange(i: Int, references: [Reference]) -> Bool {
             switch self {
             case .ascending:
-                return i + step < references.count
+                i + step < references.count
             case .descending:
-                return i + step >= 0
+                i + step >= 0
             }
         }
     }
@@ -389,12 +388,12 @@ public class Diff {
     ///
     /// - Parameter direction: The direction to walk, ascending or descending
     private func expandUniqueEntries(direction: ReferenceWalker) {
-
         var i = direction.start(references: newReferences)
 
         while direction.isValid(i: i, references: newReferences) {
-            if case .index(let j) = newReferences[i], direction.inRange(i: j, references: oldReferences) {
-                if case .pointer(let new) = newReferences[i + direction.step], case .pointer(let old) = oldReferences[j + direction.step], new === old {
+            if case let .index(j) = newReferences[i], direction.inRange(i: j, references: oldReferences) {
+                if case let .pointer(new) = newReferences[i + direction.step],
+                   case let .pointer(old) = oldReferences[j + direction.step], new === old {
                     newReferences[i + direction.step] = .index(j + direction.step)
                     oldReferences[j + direction.step] = .index(i + direction.step)
                 }
@@ -408,7 +407,6 @@ public class Diff {
 ///
 /// See `Diff` for the index space of each case.
 enum DiffStep<T: Diffable>: CustomDebugStringConvertible {
-
     /// - insert: A insertation step.
     case insert(index: Int, value: T)
 
@@ -421,16 +419,16 @@ enum DiffStep<T: Diffable>: CustomDebugStringConvertible {
     /// update: A update step.
     case update(index: Int, value: T)
 
-    public var debugDescription: String {
+    var debugDescription: String {
         switch self {
-        case .insert(let idx, let value):
-            return "+\(idx)@\(value)"
-        case .delete(let idx, let value):
-            return "-\(idx)@\(value)"
-        case .move(let from, let to, let value):
-            return "\(from)>\(to)@\(value)"
-        case .update(let idx, let value):
-            return "!\(idx)@\(value)"
+        case let .insert(idx, value):
+            "+\(idx)@\(value)"
+        case let .delete(idx, value):
+            "-\(idx)@\(value)"
+        case let .move(from, to, value):
+            "\(from)>\(to)@\(value)"
+        case let .update(idx, value):
+            "!\(idx)@\(value)"
         }
     }
 }

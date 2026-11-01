@@ -1,21 +1,17 @@
-//
-//  Array+Diff.swift
-//  Diffable
-//
-//  Created by Amine Bensalah on 05/12/2019.
-//
-
 import Foundation
 
 extension Array where Element: Diffable {
-
     /// Calculate the changes between current and the `new` array, with Heckel's algorithm.
     ///
     /// - Parameters:
     ///   - new: a collection to compare the calee to
     /// - Returns: A tuple containing the changes. See `diff(_:algorithm:)`.
-    public func diff(_ new: [Element]) -> (updates: [Index], insertions: [Index], deletions: [Index], moves: [(Index, Index)]) {
-        return diff(new, algorithm: .heckel)
+    public func diff(_ new: [Element])
+        -> (updates: [Index], insertions: [Index], deletions: [Index], moves: [(
+            Index,
+            Index
+        )]) {
+        diff(new, algorithm: .heckel)
     }
 
     /// Calculate the changes between current and the `new` array.
@@ -37,8 +33,13 @@ extension Array where Element: Diffable {
     ///   - new: a collection to compare the calee to
     ///   - algorithm: `.heckel` (moves, linear) or `.myers` (shortest script, no moves)
     /// - Returns: A tuple containing the changes.
-    public func diff(_ new: [Element], algorithm: DiffAlgorithm) -> (updates: [Index], insertions: [Index], deletions: [Index], moves: [(Index, Index)]) {
-
+    public func diff(
+        _ new: [Element],
+        algorithm: DiffAlgorithm
+    ) -> (updates: [Index], insertions: [Index], deletions: [Index], moves: [(
+        Index,
+        Index
+    )]) {
         let result = algorithm.process(old: self, new: new)
 
         var deletions: [Index] = []
@@ -48,11 +49,11 @@ extension Array where Element: Diffable {
 
         for step in result {
             switch step {
-            case .delete(let index, _):
+            case let .delete(index, _):
                 deletions.append(index)
-            case .insert(let index, _):
+            case let .insert(index, _):
                 insertions.append(index)
-            case .update(let index, _):
+            case let .update(index, _):
                 updates.append(index)
             case let .move(from, to, _):
                 moves.append((from: from, to: to))

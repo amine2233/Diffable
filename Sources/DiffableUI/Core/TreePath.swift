@@ -1,8 +1,3 @@
-//
-//  TreePath.swift
-//  DiffableUI
-//
-
 import Foundation
 
 /// The identity of a node in a tree: the keys from the root to the node.
@@ -16,7 +11,6 @@ import Foundation
 /// Two files with the same name in different folders have different paths, which makes it a safe
 /// item identifier for diffable data sources.
 public struct TreePath: Hashable, CustomStringConvertible {
-
     public let components: [String]
 
     public init(_ components: [String]) {
@@ -24,10 +18,10 @@ public struct TreePath: Hashable, CustomStringConvertible {
     }
 
     public var parent: TreePath? {
-        return components.count > 1 ? TreePath(Array(components.dropLast())) : nil
+        components.count > 1 ? TreePath(Array(components.dropLast())) : nil
     }
 
     public var description: String {
-        return components.joined(separator: "/")
+        components.joined(separator: "/")
     }
 }

@@ -1,5 +1,5 @@
-import Testing
 import Diffable
+import Testing
 @testable import DiffableUI
 
 private struct Node: DiffableTree {
@@ -7,13 +7,21 @@ private struct Node: DiffableTree {
     var size = 0
     var children: [Node] = []
 
-    var primaryKeyValue: String { name }
-    static func == (lhs: Node, rhs: Node) -> Bool { lhs.name == rhs.name && lhs.size == rhs.size }
-    func hash(into hasher: inout Hasher) { hasher.combine(name); hasher.combine(size) }
+    var primaryKeyValue: String {
+        name
+    }
+
+    static func == (lhs: Node, rhs: Node) -> Bool {
+        lhs.name == rhs.name && lhs.size == rhs.size
+    }
+
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(name); hasher.combine(size)
+    }
 }
 
-@Suite("ListChanges") struct ListChangesTests {
-
+@Suite("ListChanges")
+struct ListChangesTests {
     @Test("built from the array diff")
     func fromDiff() {
         let changes = rows("abc").listChanges(to: rows("bcd"))

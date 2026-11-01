@@ -1,8 +1,3 @@
-//
-//  Myers.swift
-//  Diffable
-//
-
 import Foundation
 
 /// Eugene Myers' O(ND) diff ("An O(ND) difference algorithm and its variations", 1986),
@@ -57,9 +52,7 @@ import Foundation
 ///   Great when the arrays are similar, heavy when they are completely different and huge.
 /// - Items are matched by `Diffable.diffIdentity`; with duplicate keys it matches them in order.
 struct Myers {
-
     func process<T: Diffable>(old: [T], new: [T]) -> [DiffStep<T>] {
-
         let oldKeys = old.map { $0.diffIdentity }
         let newKeys = new.map { $0.diffIdentity }
         let oldCount = oldKeys.count
@@ -87,7 +80,7 @@ struct Myers {
             let previousX = v[offset + previousK]
             let previousY = previousX - previousK
 
-            while x > previousX && y > previousY {
+            while x > previousX, y > previousY {
                 x -= 1
                 y -= 1
                 matches.append((oldIndex: x, newIndex: y))
@@ -113,7 +106,8 @@ struct Myers {
         for index in inserted.sorted() {
             steps.append(.insert(index: index, value: new[index]))
         }
-        for match in matches.sorted(by: { $0.newIndex < $1.newIndex }) where old[match.oldIndex] != new[match.newIndex] {
+        for match in matches.sorted(by: { $0.newIndex < $1.newIndex })
+            where old[match.oldIndex] != new[match.newIndex] {
             steps.append(.update(index: match.newIndex, value: new[match.newIndex]))
         }
 
@@ -122,34 +116,33 @@ struct Myers {
 
     /// Runs the forward search and returns `V` as it was at the start of every round `d`.
     ///
-    /// `V[offset + k]` is the furthest x reached on diagonal `k`; `offset` shifts negative diagonals to valid indexes.
+    /// `V[offset + k]` is the furthest x reached on diagonal `k`; `offset` shifts negative diagonals to valid
+    /// indexes.
     private func shortestEditTrace(old: [AnyHashable], new: [AnyHashable], offset: Int) -> [[Int]] {
-
         let oldCount = old.count
         let newCount = new.count
         var v = Array(repeating: 0, count: 2 * offset + 2)
         var trace: [[Int]] = []
 
-        for d in 0...offset {
+        for d in 0 ... offset {
             trace.append(v)
 
             for k in stride(from: -d, through: d, by: 2) {
-                var x: Int
-                if k == -d || (k != d && v[offset + k - 1] < v[offset + k + 1]) {
-                    x = v[offset + k + 1]
+                var x: Int = if k == -d || (k != d && v[offset + k - 1] < v[offset + k + 1]) {
+                    v[offset + k + 1]
                 } else {
-                    x = v[offset + k - 1] + 1
+                    v[offset + k - 1] + 1
                 }
                 var y = x - k
 
-                while x < oldCount && y < newCount && old[x] == new[y] {
+                while x < oldCount, y < newCount, old[x] == new[y] {
                     x += 1
                     y += 1
                 }
 
                 v[offset + k] = x
 
-                if x >= oldCount && y >= newCount {
+                if x >= oldCount, y >= newCount {
                     return trace
                 }
             }

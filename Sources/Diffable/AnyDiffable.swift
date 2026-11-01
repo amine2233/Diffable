@@ -1,14 +1,8 @@
-//
-//  AnyDiffable.swift
-//  Diffable
-//
-//  Created by Amine Bensalah on 05/12/2019.
-//
-
 import Foundation
 
 /// A type-erased diffable value.
-/// The AnyDiffable type forwards diffing, equality comparisons and hashing operations to an underlying diffing value,
+/// The AnyDiffable type forwards diffing, equality comparisons and hashing operations to an underlying
+/// diffing value,
 /// hiding its specific underlying type.
 ///
 /// let items: [AnyDiffable] = [
@@ -18,17 +12,19 @@ import Foundation
 /// ]
 ///
 public struct AnyDiffable: Diffable {
-
     private let _primaryKeyValue: () -> String
 
     /// The value wrapped by this instance.
-    /// The base property can be cast back to its original type using one of the casting operators (as?, as!, or as).
+    /// The base property can be cast back to its original type using one of the casting operators (as?, as!,
+    /// or as).
     var base: AnyHashable
 
     /// Creates a type-erased diffable value that wraps the given instance.
     ///
-    /// The following example creates two type-erased diffable values: x wraps an Article with the value 42, while y wraps a Video with the same identifier value.
-    /// Because the underlying types of x and y are different, the two variables do not compare as equal despite having equal underlying values.
+    /// The following example creates two type-erased diffable values: x wraps an Article with the value 42,
+    /// while y wraps a Video with the same identifier value.
+    /// Because the underlying types of x and y are different, the two variables do not compare as equal
+    /// despite having equal underlying values.
     ///
     /// let x = AnyDiffable(Article(identifier: 42))
     /// let y = AnyDiffable(Video(identifier: 42))
@@ -41,13 +37,13 @@ public struct AnyDiffable: Diffable {
     ///
     public init<D: Diffable>(_ base: D) {
         self.base = base
-        baseType = ObjectIdentifier(D.self)
-        _primaryKeyValue = { base.primaryKeyValue }
+        self.baseType = ObjectIdentifier(D.self)
+        self._primaryKeyValue = { base.primaryKeyValue }
     }
 
     /// The primaryKeyValue value
     public var primaryKeyValue: String {
-        return _primaryKeyValue()
+        _primaryKeyValue()
     }
 
     /// The identity used by the algorithms: the wrapped type AND its key.
@@ -57,7 +53,7 @@ public struct AnyDiffable: Diffable {
     ///  Video(42)    -> (Video,   "42")     different identities, never matched together
     /// ```
     public var diffIdentity: AnyHashable {
-        return TypedKey(type: baseType, key: primaryKeyValue)
+        TypedKey(type: baseType, key: primaryKeyValue)
     }
 
     private let baseType: ObjectIdentifier
@@ -69,13 +65,16 @@ public struct AnyDiffable: Diffable {
 }
 
 extension AnyDiffable: Equatable {
-    /// Returns a Boolean value indicating whether two type-erased diffable instances wrap the same type and value.
+    /// Returns a Boolean value indicating whether two type-erased diffable instances wrap the same type and
+    /// value.
     ///
-    /// Two instances of AnyDiffable compare as equal if and only if the underlying types have the same conformance
+    /// Two instances of AnyDiffable compare as equal if and only if the underlying types have the same
+    /// conformance
     /// to the Equatable protocol and the underlying values compare as equal.
     ///
     /// The following example creates two type-erased diffable values: x wraps an Article with identifier 42,
-    /// while y wraps a Video with the same identifier value. Because the underlying types of x and y are different,
+    /// while y wraps a Video with the same identifier value. Because the underlying types of x and y are
+    /// different,
     /// the two variables do not compare as equal despite having equal underlying values.
     ///
     /// ```
@@ -94,12 +93,11 @@ extension AnyDiffable: Equatable {
     ///   - y: A type-erased diffable value.
     /// - Returns: a Boolean value indicating whether two values are equal.
     public static func == (x: AnyDiffable, y: AnyDiffable) -> Bool {
-        return x.base == y.base
+        x.base == y.base
     }
 }
 
 extension AnyDiffable: Hashable {
-
     /// The hash value.
     /// Axiom: x == y implies x.hashValue == y.hashValue.
     public func hash(into hasher: inout Hasher) {
@@ -108,7 +106,6 @@ extension AnyDiffable: Hashable {
 }
 
 extension AnyDiffable {
-
     /// Evaluates the given closure when this `AnyDiffable` instance is type `T`,
     /// passing the unwrapped value as a parameter.
     ///
@@ -120,6 +117,7 @@ extension AnyDiffable {
         guard let object = base as? T else {
             return self
         }
+
         return try AnyDiffable(transform(object))
     }
 
@@ -132,6 +130,7 @@ extension AnyDiffable {
         guard let object = base as? T else {
             return self
         }
+
         return try transform(object)
     }
 
@@ -145,6 +144,6 @@ extension AnyDiffable {
     /// - Returns: The result of the given closure. If the closure is `nil`,
     ///   returns `nil`.
     public func apply<T: Diffable, U: Diffable>(transform: ((T) throws -> U)?) throws -> AnyDiffable? {
-        return try transform.flatMap(map)
+        try transform.flatMap(map)
     }
 }

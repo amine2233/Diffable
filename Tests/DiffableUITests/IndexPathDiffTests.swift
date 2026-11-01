@@ -1,22 +1,32 @@
 #if !os(Linux)
-import Foundation
-import Testing
 import Diffable
 import DiffableUI
+import Foundation
+import Testing
 
 private struct Item: Diffable {
     let id: String
     var value = 0
-    var primaryKeyValue: String { id }
+    var primaryKeyValue: String {
+        id
+    }
 }
 
-private func items(_ ids: String, value: Int = 0) -> [Item] { ids.map { Item(id: String($0), value: value) } }
+private func items(_ ids: String, value: Int = 0) -> [Item] {
+    ids.map { Item(id: String($0), value: value) }
+}
 
-typealias IndexPathChanges = (updates: [IndexPath], insertions: [IndexPath], deletions: [IndexPath], moves: [(IndexPath, IndexPath)])
+typealias IndexPathChanges = (
+    updates: [IndexPath],
+    insertions: [IndexPath],
+    deletions: [IndexPath],
+    moves: [(IndexPath, IndexPath)]
+)
 
-@Suite struct IndexPathDiffTests {
-
-    @Test func mapsIndexesToTheGivenSection() {
+@Suite
+struct IndexPathDiffTests {
+    @Test
+    func mapsIndexesToTheGivenSection() {
         let changes: IndexPathChanges = items("abc").diff(items("bcd"), forSection: 2)
 
         #expect(changes.deletions == [IndexPath(item: 0, section: 2)])
@@ -24,12 +34,14 @@ typealias IndexPathChanges = (updates: [IndexPath], insertions: [IndexPath], del
         #expect(changes.moves.isEmpty)
     }
 
-    @Test func defaultSectionIsZero() {
+    @Test
+    func defaultSectionIsZero() {
         let changes: IndexPathChanges = items("a").diff(items("ab"))
         #expect(changes.insertions == [IndexPath(item: 1, section: 0)])
     }
 
-    @Test func movesAreOldToNew() {
+    @Test
+    func movesAreOldToNew() {
         let changes: IndexPathChanges = items("abcd").diff(items("bcda"), forSection: 1)
 
         #expect(changes.moves.count == 1)
@@ -37,23 +49,31 @@ typealias IndexPathChanges = (updates: [IndexPath], insertions: [IndexPath], del
         #expect(changes.moves[0].1 == IndexPath(item: 3, section: 1))
     }
 
-    @Test func updatesUseTheNewIndex() {
-        let changes: IndexPathChanges = [Item(id: "a"), Item(id: "b")].diff([Item(id: "a"), Item(id: "b", value: 1)])
+    @Test
+    func updatesUseTheNewIndex() {
+        let changes: IndexPathChanges = [Item(id: "a"), Item(id: "b")].diff([
+            Item(id: "a"),
+            Item(id: "b", value: 1)
+        ])
         #expect(changes.updates == [IndexPath(item: 1, section: 0)])
     }
 
-    @Test func myersAlgorithmHasNoMoves() {
+    @Test
+    func myersAlgorithmHasNoMoves() {
         let changes: IndexPathChanges = items("abcd").diff(items("bcda"), forSection: 0, algorithm: .myers)
         #expect(changes.moves.isEmpty)
         #expect(changes.deletions.count == 1 && changes.insertions.count == 1)
     }
 
-    @Test func emptyArrays() {
+    @Test
+    func emptyArrays() {
         let changes: IndexPathChanges = [Item]().diff([])
-        #expect(changes.updates.isEmpty && changes.insertions.isEmpty && changes.deletions.isEmpty && changes.moves.isEmpty)
+        #expect(changes.updates.isEmpty && changes.insertions.isEmpty && changes.deletions.isEmpty && changes
+            .moves.isEmpty)
     }
 
-    @Test func matchesTheIntegerApi() {
+    @Test
+    func matchesTheIntegerApi() {
         let integers = items("abcde").diff(items("cdxab"))
         let paths: IndexPathChanges = items("abcde").diff(items("cdxab"))
 

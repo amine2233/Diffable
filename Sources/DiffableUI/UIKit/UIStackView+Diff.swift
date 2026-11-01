@@ -1,8 +1,3 @@
-//
-//  UIStackView+Diff.swift
-//  DiffableUI
-//
-
 #if canImport(UIKit) && !os(watchOS)
 
 #if SWIFT_PACKAGE
@@ -11,7 +6,6 @@ import Diffable
 import UIKit
 
 extension UIStackView {
-
     /// Keeps the arranged subviews in sync with a list of models: unchanged views are kept,
     /// new ones are created, removed ones are dropped, reordered ones are moved.
     ///
@@ -28,11 +22,20 @@ extension UIStackView {
     /// - Parameters:
     ///   - old: The models currently shown, in order. Must match `arrangedSubviews`.
     ///   - new: The models to show.
+    ///   - algorithm: The algorithm used to compare `old` and `new`.
     ///   - animated: Wraps the work in `UIView.animate` and lays out.
+    ///   - duration: The duration of the animation, in seconds.
     ///   - makeView: Creates the view of a new model.
     ///   - update: Refreshes an existing view whose model changed.
-    public func applyDiff<Element: Diffable, View: UIView>(from old: [Element], to new: [Element], algorithm: DiffAlgorithm = .heckel, animated: Bool = true, duration: TimeInterval = 0.25, makeView: @escaping (Element) -> View, update: @escaping (View, Element) -> Void) {
-
+    public func applyDiff<Element: Diffable, View: UIView>(
+        from old: [Element],
+        to new: [Element],
+        algorithm: DiffAlgorithm = .heckel,
+        animated: Bool = true,
+        duration: TimeInterval = 0.25,
+        makeView: @escaping (Element) -> View,
+        update: @escaping (View, Element) -> Void
+    ) {
         let changes = old.listChanges(to: new, algorithm: algorithm)
         let plan = SequentialPlan(changes: changes, oldCount: old.count, newCount: new.count)
 

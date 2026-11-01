@@ -1,8 +1,3 @@
-//
-//  MKMapView+Diff.swift
-//  DiffableUI
-//
-
 #if canImport(MapKit) && !os(watchOS)
 
 #if SWIFT_PACKAGE
@@ -15,7 +10,6 @@ import MapKit
 public protocol DiffableAnnotation: Diffable, MKAnnotation {}
 
 extension MKMapView {
-
     /// Updates the annotations on the map with a diff instead of removing and re-adding everything,
     /// so pins that did not change do not flicker, lose their selection or restart their animation.
     ///
@@ -35,12 +29,17 @@ extension MKMapView {
     /// - Parameters:
     ///   - old: The annotations currently on the map, as returned by the previous call.
     ///   - new: The annotations that should be on the map.
+    ///   - algorithm: The algorithm used to compare `old` and `new`.
     ///   - update: Copies the new content (coordinate, title...) onto the annotation already on the map.
     /// - Returns: The annotations now on the map, in the order of `new`. Pass it as `old` next time:
     ///   for updated annotations it contains the instance already on the map, not the one from `new`.
     @discardableResult
-    public func syncAnnotations<Annotation: DiffableAnnotation>(from old: [Annotation], to new: [Annotation], algorithm: DiffAlgorithm = .heckel, update: ((_ onMap: Annotation, _ new: Annotation) -> Void)? = nil) -> [Annotation] {
-
+    public func syncAnnotations<Annotation: DiffableAnnotation>(
+        from old: [Annotation],
+        to new: [Annotation],
+        algorithm: DiffAlgorithm = .heckel,
+        update: ((_ onMap: Annotation, _ new: Annotation) -> Void)? = nil
+    ) -> [Annotation] {
         let changes = old.listChanges(to: new, algorithm: algorithm)
         let inserted = Set(changes.insertions)
         let updated = Set(changes.updates)
@@ -65,7 +64,8 @@ extension MKMapView {
                 result.append(existing)
                 continue
             }
-            if let update = update {
+
+            if let update {
                 update(existing, annotation)
                 result.append(existing)
             } else {

@@ -1,10 +1,3 @@
-//
-//  UICollectionView+Diff.swift
-//  DiffableUI
-//
-//  Created by Amine Bensalah on 05/12/2019.
-//
-
 #if canImport(UIKit)
 
 #if SWIFT_PACKAGE
@@ -14,7 +7,6 @@ import UIKit
 
 #if !os(watchOS)
 extension UICollectionView {
-
     /// Applies index paths computed by `Array.diff(_:forSection:algorithm:)`.
     ///
     /// UIKit reads indexes in two different coordinate systems inside one batch, and `reloadItems`
@@ -39,8 +31,14 @@ extension UICollectionView {
     ///   - deletions: Old-array index paths.
     ///   - moves: From old-array, to new-array index paths.
     ///   - completion: Called once both batches finished.
-    public func apply(_ block: @escaping () -> Void, updates: [IndexPath], insertions: [IndexPath], deletions: [IndexPath], moves: [(from: IndexPath, to: IndexPath)], completion: (() -> Void)? = nil) {
-
+    public func apply(
+        _ block: @escaping () -> Void,
+        updates: [IndexPath],
+        insertions: [IndexPath],
+        deletions: [IndexPath],
+        moves: [(from: IndexPath, to: IndexPath)],
+        completion: (() -> Void)? = nil
+    ) {
         performBatchUpdates({
             block()
 
@@ -55,6 +53,7 @@ extension UICollectionView {
                 completion?()
                 return
             }
+
             self.performBatchUpdates({
                 self.reloadItems(at: updates)
             }, completion: { _ in
@@ -64,9 +63,21 @@ extension UICollectionView {
     }
 
     /// Applies the changes of ONE section.
-    public func apply(_ changes: ListChanges, section: Int = 0, updateData: @escaping () -> Void, completion: (() -> Void)? = nil) {
+    public func apply(
+        _ changes: ListChanges,
+        section: Int = 0,
+        updateData: @escaping () -> Void,
+        completion: (() -> Void)? = nil
+    ) {
         let paths = changes.indexPaths(section: section)
-        apply(updateData, updates: paths.updates, insertions: paths.insertions, deletions: paths.deletions, moves: paths.moves, completion: completion)
+        apply(
+            updateData,
+            updates: paths.updates,
+            insertions: paths.insertions,
+            deletions: paths.deletions,
+            moves: paths.moves,
+            completion: completion
+        )
     }
 
     /// Diffs `old` against `new` and animates the difference in one section.
@@ -74,8 +85,20 @@ extension UICollectionView {
     /// ```
     ///  collectionView.applyDiff(from: items, to: newItems) { items = newItems }
     /// ```
-    public func applyDiff<Element: Diffable>(from old: [Element], to new: [Element], section: Int = 0, algorithm: DiffAlgorithm = .heckel, updateData: @escaping () -> Void, completion: (() -> Void)? = nil) {
-        apply(old.listChanges(to: new, algorithm: algorithm), section: section, updateData: updateData, completion: completion)
+    public func applyDiff<Element: Diffable>(
+        from old: [Element],
+        to new: [Element],
+        section: Int = 0,
+        algorithm: DiffAlgorithm = .heckel,
+        updateData: @escaping () -> Void,
+        completion: (() -> Void)? = nil
+    ) {
+        apply(
+            old.listChanges(to: new, algorithm: algorithm),
+            section: section,
+            updateData: updateData,
+            completion: completion
+        )
     }
 
     /// Applies the changes of several sections.
@@ -89,8 +112,11 @@ extension UICollectionView {
     ///  moveSection(from old, to new)
     ///  deleteItems / insertItems / moveItem
     /// ```
-    public func apply(_ changes: SectionedChanges, updateData: @escaping () -> Void, completion: (() -> Void)? = nil) {
-
+    public func apply(
+        _ changes: SectionedChanges,
+        updateData: @escaping () -> Void,
+        completion: (() -> Void)? = nil
+    ) {
         performBatchUpdates({
             updateData()
 
@@ -110,6 +136,7 @@ extension UICollectionView {
                 completion?()
                 return
             }
+
             self.performBatchUpdates({
                 self.reloadSections(changes.sectionUpdateIndexes)
                 self.reloadItems(at: changes.itemUpdatePaths)
@@ -120,8 +147,18 @@ extension UICollectionView {
     }
 
     /// Diffs two lists of sections (a section is a `DiffableTree` whose children are its items).
-    public func applyDiff<Section: DiffableTree>(fromSections old: [Section], toSections new: [Section], algorithm: DiffAlgorithm = .heckel, updateData: @escaping () -> Void, completion: (() -> Void)? = nil) {
-        apply(old.sectionedChanges(to: new, algorithm: algorithm), updateData: updateData, completion: completion)
+    public func applyDiff<Section: DiffableTree>(
+        fromSections old: [Section],
+        toSections new: [Section],
+        algorithm: DiffAlgorithm = .heckel,
+        updateData: @escaping () -> Void,
+        completion: (() -> Void)? = nil
+    ) {
+        apply(
+            old.sectionedChanges(to: new, algorithm: algorithm),
+            updateData: updateData,
+            completion: completion
+        )
     }
 }
 #endif

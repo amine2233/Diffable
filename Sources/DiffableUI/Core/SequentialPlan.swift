@@ -1,8 +1,3 @@
-//
-//  SequentialPlan.swift
-//  DiffableUI
-//
-
 import Foundation
 
 /// Turns `ListChanges` into an ordered list of operations where **every index is relative to the
@@ -33,7 +28,6 @@ import Foundation
 ///
 /// Updates are not part of the plan: they do not change positions.
 public struct SequentialPlan: Equatable {
-
     public enum Operation: Equatable {
         case remove(Int)
         case insert(Int)
@@ -62,15 +56,16 @@ public struct SequentialPlan: Equatable {
         }
 
         let placeholder = -1
-        var staying = (0..<oldCount).filter { !removed.contains($0) && !movedFrom.contains($0) }.makeIterator()
-        let target: [Int] = (0..<newCount).map { newIndex in
+        var staying = (0 ..< oldCount).filter { !removed.contains($0) && !movedFrom.contains($0) }
+            .makeIterator()
+        let target: [Int] = (0 ..< newCount).map { newIndex in
             if inserted.contains(newIndex) {
                 return placeholder
             }
             return moveSources[newIndex] ?? staying.next() ?? placeholder
         }
 
-        var tokens = (0..<oldCount).filter { !removed.contains($0) }
+        var tokens = (0 ..< oldCount).filter { !removed.contains($0) }
 
         for (newIndex, wanted) in target.enumerated() {
             if wanted == placeholder {
@@ -97,11 +92,11 @@ public struct SequentialPlan: Equatable {
     public func perform(remove: (Int) -> Void, insert: (Int) -> Void, move: (Int, Int) -> Void) {
         for operation in operations {
             switch operation {
-            case .remove(let index):
+            case let .remove(index):
                 remove(index)
-            case .insert(let index):
+            case let .insert(index):
                 insert(index)
-            case .move(let from, let to):
+            case let .move(from, to):
                 move(from, to)
             }
         }

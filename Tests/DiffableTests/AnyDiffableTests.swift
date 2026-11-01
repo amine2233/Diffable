@@ -1,11 +1,15 @@
 import Testing
 @testable import Diffable
 
-private struct Article: Diffable { let id: Int; var title = ""; var primaryKeyValue: String { String(id) } }
-private struct Video: Diffable { let id: Int; var primaryKeyValue: String { String(id) } }
+private struct Article: Diffable { let id: Int; var title = ""; var primaryKeyValue: String {
+    String(id)
+} }
+private struct Video: Diffable { let id: Int; var primaryKeyValue: String {
+    String(id)
+} }
 
-@Suite("AnyDiffable") struct AnyDiffableTests {
-
+@Suite("AnyDiffable")
+struct AnyDiffableTests {
     @Test("wrapping different types with the same key is not equal")
     func differentTypesAreDifferent() {
         #expect(AnyDiffable(Article(id: 42)) != AnyDiffable(Video(id: 42)))

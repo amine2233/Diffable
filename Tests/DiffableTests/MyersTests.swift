@@ -1,12 +1,12 @@
 import Testing
 @testable import Diffable
 
-@Suite("Myers") struct MyersTests {
-
+@Suite("Myers")
+struct MyersTests {
     @Test("never emits a move", arguments: edgeCases)
     func neverMoves(edit: EditCase) {
         let steps = Myers().process(old: items(edit.old), new: items(edit.new))
-        #expect(steps.allSatisfy { if case .move = $0 { return false } else { return true } })
+        #expect(steps.allSatisfy { if case .move = $0 { false } else { true } })
     }
 
     @Test("a rotation is one delete plus one insert")
@@ -26,7 +26,7 @@ import Testing
     @Test("the script is the shortest possible on random arrays with duplicates")
     func shortestOnRandomArrays() {
         var generator = SeededGenerator(seed: 11)
-        for _ in 0..<1_500 {
+        for _ in 0 ..< 1_500 {
             let old = randomItemsWithDuplicates(maxCount: 10, alphabetSize: 4, using: &generator)
             let new = randomItemsWithDuplicates(maxCount: 10, alphabetSize: 4, using: &generator)
             let lcs = longestCommonSubsequenceLength(old.map(\.id), new.map(\.id))
@@ -40,8 +40,8 @@ import Testing
 
     @Test("completely different large arrays still finish")
     func completelyDifferent() {
-        let old = (0..<300).map { TestItem(id: "o\($0)") }
-        let new = (0..<300).map { TestItem(id: "n\($0)") }
+        let old = (0 ..< 300).map { TestItem(id: "o\($0)") }
+        let new = (0 ..< 300).map { TestItem(id: "n\($0)") }
         let result = old.diff(new, algorithm: .myers)
         #expect(result.deletions.count == 300 && result.insertions.count == 300)
     }

@@ -1,8 +1,8 @@
 import Testing
 @testable import Diffable
 
-@Suite("Examples (readable scenarios)") struct ExamplesTests {
-
+@Suite("Examples (readable scenarios)")
+struct ExamplesTests {
     @Test("[a b c] → [b c d]: a is deleted, d is inserted")
     func listExample() {
         let result = items("abc").diff(items("bcd"))
@@ -24,10 +24,20 @@ import Testing
         struct Line: Diffable {
             let sku: String
             var quantity: Int
-            var primaryKeyValue: String { sku }
+            var primaryKeyValue: String {
+                sku
+            }
         }
-        let before = [Line(sku: "shoes", quantity: 1), Line(sku: "hat", quantity: 2), Line(sku: "bag", quantity: 1)]
-        let after = [Line(sku: "shoes", quantity: 3), Line(sku: "bag", quantity: 1), Line(sku: "belt", quantity: 1)]
+        let before = [
+            Line(sku: "shoes", quantity: 1),
+            Line(sku: "hat", quantity: 2),
+            Line(sku: "bag", quantity: 1)
+        ]
+        let after = [
+            Line(sku: "shoes", quantity: 3),
+            Line(sku: "bag", quantity: 1),
+            Line(sku: "belt", quantity: 1)
+        ]
 
         let result = before.diff(after)
 
@@ -38,11 +48,20 @@ import Testing
 
     @Test("a project folder: the change tree points at the edited file")
     func folderExample() {
-        let before = folder("MyApp",
-                            folder("Sources", file("main.swift", size: 10), file("util.swift", size: 5)),
-                            folder("Docs", file("README.md")))
-        let after = folder("MyApp",
-                           folder("Sources", file("main.swift", size: 12), file("util.swift", size: 5), file("new.swift")))
+        let before = folder(
+            "MyApp",
+            folder("Sources", file("main.swift", size: 10), file("util.swift", size: 5)),
+            folder("Docs", file("README.md"))
+        )
+        let after = folder(
+            "MyApp",
+            folder(
+                "Sources",
+                file("main.swift", size: 12),
+                file("util.swift", size: 5),
+                file("new.swift")
+            )
+        )
 
         let outline = before.treeDiff(to: after).map(\.description).joined(separator: "\n")
 
@@ -57,8 +76,12 @@ import Testing
 
     @Test("type erasure: Article 1 and Video 1 live in the same list")
     func typeErasureExample() {
-        struct Article: Diffable { let id: Int; var primaryKeyValue: String { String(id) } }
-        struct Video: Diffable { let id: Int; var primaryKeyValue: String { String(id) } }
+        struct Article: Diffable { let id: Int; var primaryKeyValue: String {
+            String(id)
+        } }
+        struct Video: Diffable { let id: Int; var primaryKeyValue: String {
+            String(id)
+        } }
 
         let feed: [AnyDiffable] = [AnyDiffable(Article(id: 1)), AnyDiffable(Video(id: 1))]
         let refreshed: [AnyDiffable] = [AnyDiffable(Video(id: 1)), AnyDiffable(Article(id: 1))]

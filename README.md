@@ -212,6 +212,10 @@ let feed: [AnyDiffable] = [AnyDiffable(article), AnyDiffable(video)]
 
 Swift 5.4+ (SwiftPM only). The Swift Testing suites need a recent Xcode toolchain. `UIMenu` is iOS only; the diffable data source bridges need iOS 13 / macOS 10.15.1.
 
+## Documentation
+
+DocC catalogs for both modules explain every part of the public API with examples: `Sources/Diffable/Diffable.docc` and `Sources/DiffableUI/DiffableUI.docc`. Build them with `mise run build_documentations`.
+
 ## Tests
 
 ```bash

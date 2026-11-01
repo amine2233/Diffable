@@ -1,8 +1,3 @@
-//
-//  NSOutlineView+Diff.swift
-//  DiffableUI
-//
-
 #if canImport(AppKit) && !targetEnvironment(macCatalyst)
 
 #if SWIFT_PACKAGE
@@ -11,7 +6,6 @@ import Diffable
 import AppKit
 
 extension NSOutlineView {
-
     /// Animates the difference between two trees (folders, files...) in an outline view.
     ///
     /// The tree is diffed level by level (`treeDiff`), and each level is applied with the sequential
@@ -29,12 +23,20 @@ extension NSOutlineView {
     /// - Parameters:
     ///   - old: The top-level nodes before.
     ///   - new: The top-level nodes after.
-    ///   - item: Returns the object the data source uses as the outline item for a node path, or `nil` for the
-    ///     outline root. It is only called for parents that exist in BOTH trees, and must return the same
-    ///     object your `outlineView(_:child:ofItem:)` hands out for that path after `updateData`.
+    ///   - algorithm: The algorithm used to compare the siblings of every level.
+    ///   - animations: The animation of inserted and removed items.
+    ///   - item: Returns the object the data source uses as the outline item for a node path, or `nil`
+    ///     for the outline root. It is only called for parents that exist in BOTH trees, and must return
+    ///     the same object your `outlineView(_:child:ofItem:)` hands out for that path after `updateData`.
     ///   - updateData: Mutates the data source.
-    public func applyDiff<Node: DiffableTree>(from old: [Node], to new: [Node], algorithm: DiffAlgorithm = .heckel, animations: NSTableView.DiffAnimations = .default, item: (TreePath) -> Any?, updateData: () -> Void) {
-
+    public func applyDiff<Node: DiffableTree>(
+        from old: [Node],
+        to new: [Node],
+        algorithm: DiffAlgorithm = .heckel,
+        animations: NSTableView.DiffAnimations = .default,
+        item: (TreePath) -> Any?,
+        updateData: () -> Void
+    ) {
         let changes = old.treeDiff(new, algorithm: algorithm)
 
         updateData()
@@ -44,8 +46,14 @@ extension NSOutlineView {
         endUpdates()
     }
 
-    private func applyLevel<Node: DiffableTree>(old: [Node], new: [Node], changes: [TreeChange], parent: Any?, animations: NSTableView.DiffAnimations, item: (TreePath) -> Any?) {
-
+    private func applyLevel<Node: DiffableTree>(
+        old: [Node],
+        new: [Node],
+        changes: [TreeChange],
+        parent: Any?,
+        animations: NSTableView.DiffAnimations,
+        item: (TreePath) -> Any?
+    ) {
         let list = ListChanges(siblings: changes)
 
         SequentialPlan(changes: list, oldCount: old.count, newCount: new.count).perform(remove: { index in
@@ -74,12 +82,14 @@ extension NSOutlineView {
                 continue
             }
 
-            applyLevel(old: old[oldIndex].children,
-                       new: new[change.index].children,
-                       changes: change.children,
-                       parent: item(path),
-                       animations: animations,
-                       item: item)
+            applyLevel(
+                old: old[oldIndex].children,
+                new: new[change.index].children,
+                changes: change.children,
+                parent: item(path),
+                animations: animations,
+                item: item
+            )
         }
     }
 }
