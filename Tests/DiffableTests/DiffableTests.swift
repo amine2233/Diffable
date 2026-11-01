@@ -153,16 +153,4 @@ class DiffableTests: XCTestCase {
         XCTAssertEqual(value.moves.count, 1)
         XCTAssertEqual(value.deletions.count, 0)
     }
-
-    static var allTests = [
-        ("testNewEntryDifference", testNewEntryDifference),
-        ("testNoDifference", testNoDifference),
-        ("testAddNewElementDifference", testAddNewElementDifference),
-        ("testRemoveNewElementDifference", testRemoveNewElementDifference),
-        ("testMoveElementDifference", testMoveElementDifference),
-        ("testUpdateElementDifference", testUpdateElementDifference),
-        ("testManyEntryDifference", testManyEntryDifference),
-        ("testManyEntriesDifference", testManyEntriesDifference),
-        ("testManyMoveElementsDifference", testManyMoveElementsDifference)
-    ]
 }
