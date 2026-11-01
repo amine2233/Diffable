@@ -1,3 +1,12 @@
+# [2.1.0](https://github.com/amine2233/Diffable/compare/2.0.0...2.1.0) (2026-11-01)
+
+
+## Features
+
+
+* add Set, Dictionary and RandomAccessCollection diffing (#14) ([6ee7dcf](https://github.com/amine2233/Diffable/commit/6ee7dcf4e59b2a8330bb2116927d89ca942cb4ba))
+
+
 # [2.0.0](https://github.com/amine2233/Diffable/compare/1.0.0...2.0.0) (2026-11-01)
 
 
